@@ -37,7 +37,7 @@ public class RobotContainer {
     m_dDrivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
 
-    m_dDrivetrain.setDefaultCommand(new SwerveDriveCommand(m_dDrivetrain, m_leftJoystick));
+    m_dDrivetrain.setDefaultCommand(new SwerveDriveCommand(m_dDrivetrain, m_leftJoystick, m_rightJoystick));
     
     configureButtonBindings();
 

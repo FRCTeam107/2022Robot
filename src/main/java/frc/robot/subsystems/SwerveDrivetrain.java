@@ -56,20 +56,20 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
-      Units.inchesToMeters(10),
-      Units.inchesToMeters(10)
+      Units.inchesToMeters(8),
+      Units.inchesToMeters(15)
     ),
     new Translation2d(
-      Units.inchesToMeters(10),
-      Units.inchesToMeters(-10)
+      Units.inchesToMeters(8),
+      Units.inchesToMeters(-15)
     ),
     new Translation2d(
-      Units.inchesToMeters(-10),
-      Units.inchesToMeters(10)
+      Units.inchesToMeters(-8),
+      Units.inchesToMeters(15)
     ),
     new Translation2d(
-      Units.inchesToMeters(-10),
-      Units.inchesToMeters(-10)
+      Units.inchesToMeters(-8),
+      Units.inchesToMeters(-15)
     )
   );
 
