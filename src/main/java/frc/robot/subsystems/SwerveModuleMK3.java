@@ -12,6 +12,8 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.util.Units;
 
 public class SwerveModuleMK3 {
@@ -60,9 +62,12 @@ public class SwerveModuleMK3 {
     driveTalonFXConfiguration.slot0.kI = kDriveI;
     driveTalonFXConfiguration.slot0.kD = kDriveD;
     driveTalonFXConfiguration.slot0.kF = kDriveF;
-
+ 
     driveMotor.configAllSettings(driveTalonFXConfiguration);
-    driveMotor.setNeutralMode(NeutralMode.Brake);
+    driveMotor.setNeutralMode(NeutralMode.Brake);   
+    
+    // this line sets the ration of encoder pulses to actual distance travelled (in meters)
+    driveMotor.configSelectedFeedbackCoefficient(DriveConstants.kEncoderDistancePerPulse);
 
     CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
     canCoderConfiguration.magnetOffsetDegrees = offset.getDegrees();
@@ -81,6 +86,26 @@ public class SwerveModuleMK3 {
     return canCoder.getAbsolutePosition(); //include angle offset
   }
   //:)
+
+  public double getDistance() {
+    //double x = driveMotor.getSelectedSensorPosition();
+    return driveMotor.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse;
+
+  }
+    /**
+   * Returns the current state of the module.
+   *
+   * @return The current state of the module.
+   */
+  public SwerveModuleState getState() {
+    //  getSelectedSensorVelocity needs to be in Meters per Second.
+    // Need to get conversion in kEncoderDistancePerPulse value of Constants
+    double rawVelocity = driveMotor.getSelectedSensorVelocity();
+    return new SwerveModuleState( rawVelocity * DriveConstants.kEncoderDistancePerPulse, getAngle());
+  
+  //  return new SwerveModuleState( driveMotor.getSelectedSensorVelocity(), new Rotation2d(m_turningEncoder.get()));
+  }
+
   /**
    * Set the speed + rotation of the swerve module from a SwerveModuleState object
    * @param desiredState - A SwerveModuleState representing the desired new state of the module

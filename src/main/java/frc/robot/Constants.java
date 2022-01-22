@@ -133,11 +133,14 @@ public final class Constants {
                 public static final DifferentialDriveKinematics kDriveKinematics =
                     new DifferentialDriveKinematics(kTrackwidthMeters);
             
-                //public static final int kEncoderCPR = 1024; // 4096;
-                //public static final double kWheelDiameterMeters = Units.inchesToMeters(6.0); // 0.1524;
-                public static final double kEncoderDistancePerPulse =
-                     Units.inchesToMeters(1.0) / 2132;//1000.0; //994 //2132 pulses per inch measured
-                    // Assumes the encoders are directly mounted on the wheel shafts
+                public static final int kEncoderCPR = 2048; // 4096;
+                public static final double kWheelDiameterMeters = Units.inchesToMeters(3.0); // 0.1524;
+                private static final double kWheelGearing = 8.16;  // gearing from motor to swerve drive
+                public static final double kEncoderDistancePerPulse = 
+                      (kWheelDiameterMeters * Math.PI) / (double) ( kEncoderCPR * kWheelGearing) ;
+                //Units.inchesToMeters(3.0) * Math.PI / 16592;  // actual pulses per rotation measured
+                ;
+                  // Assumes the encoders are directly mounted on the wheel shafts
                     //(kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
             
                 // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!

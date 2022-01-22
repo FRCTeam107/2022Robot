@@ -11,6 +11,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
@@ -44,7 +45,8 @@ public class SwerveDrivetrain extends SubsystemBase {
   public static final int frontRightCANCoderId = 5; 
   public static final int frontRightSteerId = 6; 
   //put your can Id's here!
-  public static final int backLeftDriveId = 10; 
+
+    public static final int backLeftDriveId = 10; 
   public static final int backLeftCANCoderId = 11; 
   public static final int backLeftSteerId = 12;
   //put your can Id's here!
@@ -73,16 +75,22 @@ public class SwerveDrivetrain extends SubsystemBase {
     )
   );
 
- 
+      // Odometry class for tracking robot pose
+      SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());
 
-  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
+   private SwerveModuleMK3 m_frontLeft = new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
+   private SwerveModuleMK3 m_frontRight = new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
+   private SwerveModuleMK3 m_rearLeft = new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset));
+   private SwerveModuleMK3 m_rearRight = new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset));
 
-    new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
-    new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset)), // Front Right
-    new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset)), // Back Left
-    new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset))  // Back Right
-
-  };
+   private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
+   
+  //  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
+  //   new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
+  //   new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset)), // Front Right
+  //   new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset)), // Back Left
+  //   new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset))  // Back Right
+  // };
 
   public SwerveDrivetrain() {
    // gyro.reset(); 
@@ -123,8 +131,21 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
-  }
+    // Update the odometry in the periodic block
+    m_odometry.update(
+        gyro.getRotation2d(),
+        m_frontLeft.getState(),  // frontLeft
+        m_rearLeft.getState(),  // frontRight
+        m_frontRight.getState(),
+        m_rearRight.getState());  
+      
+        SmartDashboard.putNumber("FL Dist", m_frontLeft.getDistance() );
+        SmartDashboard.putNumber("BL Dist", m_rearLeft.getDistance() );
+        SmartDashboard.putNumber("FR Dist", m_frontRight.getDistance() );
+        SmartDashboard.putNumber("Br Dist", m_rearRight.getDistance() );
+      }
 
   @Override
   public void simulationPeriodic() {
