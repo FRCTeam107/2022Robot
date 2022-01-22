@@ -4,9 +4,23 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveDriveCommand;
@@ -21,7 +35,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
  */
 public class RobotContainer {
   private final Joystick m_leftJoystick, m_rightJoystick, m_controllerJoystick;
-  private final SwerveDrivetrain m_dDrivetrain;
+  private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
   // private final Compressor m_compressor;
 
@@ -34,10 +48,10 @@ public class RobotContainer {
     m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
 
-    m_dDrivetrain  = new SwerveDrivetrain();
+    m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
 
-    m_dDrivetrain.setDefaultCommand(new SwerveDriveCommand(m_dDrivetrain, m_leftJoystick, m_rightJoystick));
+    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
     
     configureButtonBindings();
 
@@ -76,5 +90,57 @@ public class RobotContainer {
       // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
 
     }
+
+
+      /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // Create config for trajectory
+    TrajectoryConfig config =
+        new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics);
+
+    // An example trajectory to follow.  All units in meters.
+    Trajectory exampleTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(3, 0, new Rotation2d(0)),
+            config);
+
+    var thetaController =
+        new ProfiledPIDController(
+            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+//SwerveControllerCommand x = new SwerveControllerCommand(trajectory, pose, kinematics, xController, yController, thetaController, outputModuleStates, requirements)
+
+SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            exampleTrajectory,
+            m_Drivetrain::getPose, // Functional interface to feed supplier
+            DriveConstants.kDriveKinematics,
+
+            // Position controllers
+            new PIDController(AutoConstants.kPXController, 0, 0),
+            new PIDController(AutoConstants.kPYController, 0, 0),
+            thetaController,
+            m_Drivetrain::setModuleStates,
+            m_Drivetrain);
+
+    // Reset odometry to the starting pose of the trajectory.
+    m_Drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false, false));
+  }
 
 }

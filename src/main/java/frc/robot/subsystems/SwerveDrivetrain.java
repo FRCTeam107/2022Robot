@@ -16,17 +16,18 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
+
 //import com.kauailabs.navx.*;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SerialPort;
+//import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 public class SwerveDrivetrain extends SubsystemBase {
 
-  //these are limits you can change!!!
-  public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
-  public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-  public static double feildCalibration = 0;
+
 
   //this is where you put the angle offsets you got from the smart dashboard
 
@@ -54,29 +55,29 @@ public class SwerveDrivetrain extends SubsystemBase {
   public static final int backRightDriveId = 7; 
   public static final int backRightCANCoderId = 8; 
   public static final int backRightSteerId = 9;   
-  public static AHRS gyro = new AHRS(SPI.Port.kMXP);
+  public static AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    new Translation2d(
-      Units.inchesToMeters(8),
-      Units.inchesToMeters(15)
-    ),
-    new Translation2d(
-      Units.inchesToMeters(8),
-      Units.inchesToMeters(-15)
-    ),
-    new Translation2d(
-      Units.inchesToMeters(-8),
-      Units.inchesToMeters(15)
-    ),
-    new Translation2d(
-      Units.inchesToMeters(-8),
-      Units.inchesToMeters(-15)
-    )
-  );
+  // private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  //   new Translation2d(
+  //     Units.inchesToMeters(8),
+  //     Units.inchesToMeters(15)
+  //   ),
+  //   new Translation2d(
+  //     Units.inchesToMeters(8),
+  //     Units.inchesToMeters(-15)
+  //   ),
+  //   new Translation2d(
+  //     Units.inchesToMeters(-8),
+  //     Units.inchesToMeters(15)
+  //   ),
+  //   new Translation2d(
+  //     Units.inchesToMeters(-8),
+  //     Units.inchesToMeters(-15)
+  //   )
+  // );
 
       // Odometry class for tracking robot pose
-      SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());
+   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
 
    private SwerveModuleMK3 m_frontLeft = new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
    private SwerveModuleMK3 m_frontRight = new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
@@ -108,15 +109,15 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean calibrateGyro) {
     
     if(calibrateGyro){
-      gyro.reset(); //recalibrates gyro offset
+      m_gyro.reset(); //recalibrates gyro offset
     }
 
     SwerveModuleState[] states =
-      kinematics.toSwerveModuleStates(
+      DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-gyro.getAngle()))
+          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_gyro.getAngle()))
           : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, kMaxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.kMaxSpeedMetersPerSecond);
     //SwerveDriveKinematics.normalizeWheelSpeeds(states, kMaxSpeed);
     for (int i = 0; i < states.length; i++) {
       SwerveModuleMK3 module = modules[i];
@@ -125,9 +126,10 @@ public class SwerveDrivetrain extends SubsystemBase {
      // SmartDashboard.putNumber("speed "+String.valueOf(i), module.get)
       //below is a line to comment out from step 5
       module.setDesiredState(state);
-      SmartDashboard.putNumber("gyro Angle", gyro.getAngle());
+      SmartDashboard.putNumber("gyro Angle", m_gyro.getAngle());
     }
   }
+  
 
   @Override
   public void periodic() {
@@ -135,20 +137,83 @@ public class SwerveDrivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
     // Update the odometry in the periodic block
     m_odometry.update(
-        gyro.getRotation2d(),
+        m_gyro.getRotation2d(),
         m_frontLeft.getState(),  // frontLeft
         m_rearLeft.getState(),  // frontRight
         m_frontRight.getState(),
         m_rearRight.getState());  
       
-        SmartDashboard.putNumber("FL Dist", m_frontLeft.getDistance() );
-        SmartDashboard.putNumber("BL Dist", m_rearLeft.getDistance() );
-        SmartDashboard.putNumber("FR Dist", m_frontRight.getDistance() );
-        SmartDashboard.putNumber("Br Dist", m_rearRight.getDistance() );
+        // SmartDashboard.putNumber("FL Dist", m_frontLeft.getDistance() );
+        // SmartDashboard.putNumber("BL Dist", m_rearLeft.getDistance() );
+        // SmartDashboard.putNumber("FR Dist", m_frontRight.getDistance() );
+        // SmartDashboard.putNumber("Br Dist", m_rearRight.getDistance() );
       }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+   /**
+   * Sets the swerve ModuleStates.
+   *
+   * @param desiredStates The desired SwerveModule states.
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(desiredStates[0]);
+    m_frontRight.setDesiredState(desiredStates[1]);
+    m_rearLeft.setDesiredState(desiredStates[2]);
+    m_rearRight.setDesiredState(desiredStates[3]);
+  }
+
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+  
+  /**
+   * Resets the odometry to the specified pose.
+   *
+   * @param pose The pose to which to set the odometry.
+   */
+  public void resetOdometry(Pose2d pose) {
+    m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+  }
+  
+    /** Resets the drive encoders to currently read a position of 0. */
+    // public void resetEncoders() {
+    //   m_frontLeft.resetEncoders();
+    //   m_rearLeft.resetEncoders();
+    //   m_frontRight.resetEncoders();
+    //   m_rearRight.resetEncoders();
+    // }
+  
+    /** Zeroes the heading of the robot. */
+    public void zeroHeading() {
+      m_gyro.reset();
+    }
+  
+    /**
+     * Returns the heading of the robot.
+     *
+     * @return the robot's heading in degrees, from -180 to 180
+     */
+    public double getHeading() {
+      return m_gyro.getRotation2d().getDegrees();
+    }
+  
+    /**
+     * Returns the turn rate of the robot.
+     *
+     * @return The turn rate of the robot, in degrees per second
+     */
+    public double getTurnRate() {
+      return m_gyro.getRate(); // * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    }
 }

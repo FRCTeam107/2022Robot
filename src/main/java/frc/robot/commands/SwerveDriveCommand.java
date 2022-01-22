@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveDrivetrain;
 //import frc.robot.subsystems.SwerveModuleMK3;
 
@@ -35,14 +36,14 @@ public class SwerveDriveCommand extends CommandBase {
     // negative values when we push forward.
     final var xSpeed =
       xspeedLimiter.calculate(leftController.getY())
-        * SwerveDrivetrain.kMaxSpeed;
+        * DriveConstants.kMaxSpeedMetersPerSecond;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
       yspeedLimiter.calculate(leftController.getX())
-        * SwerveDrivetrain.kMaxSpeed;
+        * DriveConstants.kMaxSpeedMetersPerSecond;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
@@ -50,7 +51,7 @@ public class SwerveDriveCommand extends CommandBase {
     // the right by default.
     final var rot =
        rotLimiter.calculate(rightController.getY())
-         * SwerveDrivetrain.kMaxAngularSpeed;
+         * DriveConstants.kMaxSpeedMetersPerSecond;
     // final var rot =
     //     -rotLimiter.calculate(0) //leftController.getZ())
     //       * SwerveDrivetrain.kMaxAngularSpeed;

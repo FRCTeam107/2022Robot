@@ -131,9 +131,9 @@ public class SwerveModuleMK3 {
 
     //below is a line to comment out from step 5
     // original code had "PercentOutput"  Not sure why
-    driveMotor.set(TalonFXControlMode.PercentOutput, feetPerSecond / SwerveDrivetrain.kMaxSpeed);
+    driveMotor.set(TalonFXControlMode.PercentOutput, feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
    //driveMotor.set(TalonFXControlMode.Velocity, feetPerSecond / SwerveDrivetrain.kMaxSpeed);
-    SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / SwerveDrivetrain.kMaxSpeed);
+    SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
   }
 
 }
