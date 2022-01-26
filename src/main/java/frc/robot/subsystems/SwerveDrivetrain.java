@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -13,16 +15,27 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
 //import com.kauailabs.navx.*;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 //import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 public class SwerveDrivetrain extends SubsystemBase {
@@ -216,4 +229,59 @@ public class SwerveDrivetrain extends SubsystemBase {
     public double getTurnRate() {
       return m_gyro.getRate(); // * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
-}
+
+
+   /**
+   * Creates a command to follow a Trajectory on the drivetrain.
+   * @param trajectory trajectory to follow
+   * @return command that will run the trajectory
+   */
+  public Command createCommandForTrajectory(Trajectory trajectory, Boolean initPose) {
+
+    var thetaController =
+    new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    //SwerveControllerCommand x = new SwerveControllerCommand(trajectory, pose, kinematics, xController, yController, thetaController, outputModuleStates, requirements)
+
+    // sample code utilized the smart speed controllers instead of on-board code in RoboRio 
+    SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            trajectory,
+            this::getPose, // Functional interface to feed supplier
+            DriveConstants.kDriveKinematics,
+
+            // Position controllers
+            new PIDController(AutoConstants.kPXController, 0, 0),
+            new PIDController(AutoConstants.kPYController, 0, 0),
+            thetaController,
+            this::setModuleStates,
+            this);
+
+    if (initPose) {
+      // Reset odometry to the starting pose of the trajectory.
+      var reset =  new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
+      return reset.andThen(swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false, false)));
+    }
+    else {
+      return swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false, false));
+    }
+  }
+  
+
+    protected static Trajectory loadTrajectory(String trajectoryName) throws IOException {
+      return TrajectoryUtil.fromPathweaverJson(
+        Filesystem.getDeployDirectory().toPath().resolve("paths/" + trajectoryName + ".wpilib.json"));
+        // Filesystem.getDeployDirectory().toPath().resolve(Paths.get("output", trajectoryName + ".wpilib.json")));
+    }
+    
+    public Trajectory loadTrajectoryFromFile(String filename) {
+      try {
+        return loadTrajectory(filename);
+      } catch (IOException e) {
+        DriverStation.reportError("Failed to load auto trajectory: " + filename, false);
+        return new Trajectory();
+      }
+    }
+
+  }

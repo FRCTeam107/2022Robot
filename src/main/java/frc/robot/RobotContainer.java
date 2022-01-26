@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -42,6 +43,9 @@ public class RobotContainer {
   //private final XboxController controller = new XboxController(0);
   //private final Joystick controller = new Joystick(0);
 
+      // A chooser for autonomous commands
+  private final SendableChooser<Command> m_chooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_leftJoystick = new Joystick(Constants.UsbPorts.LEFT_STICK);
@@ -55,7 +59,10 @@ public class RobotContainer {
     
     configureButtonBindings();
 
-
+    // Add commands to the autonomous command chooser
+    m_chooser = new SendableChooser<>();
+    m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
+    //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
   }
 
   private void configureButtonBindings() {
@@ -98,6 +105,13 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    
+    return m_chooser.getSelected();
+    //return m_SimpleAutonCommand;
+  }
+  
+  public Command ORIGgetAutonomousCommand() {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
@@ -116,6 +130,8 @@ public class RobotContainer {
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(3, 0, new Rotation2d(0)),
             config);
+
+//  return m_Drivetrain.createCommandForTrajectory(exampleTrajectory, true);
 
     var thetaController =
         new ProfiledPIDController(

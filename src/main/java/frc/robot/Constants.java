@@ -157,7 +157,8 @@ public final class Constants {
                                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
                 // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-                public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(6);;
+                public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(6);
+
   //these are limits you can change!!!
                // public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
                 public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
@@ -176,14 +177,6 @@ public final class Constants {
                 public static final double kPDriveVel = 1.62; //0.8;
               }
               
-        //       public static final class AutoConstants {
-        //         public static final double kMaxSpeedMetersPerSecond = 1.0;
-        //         public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; //3;
-            
-        //         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-        //         public static final double kRamseteB = 2;
-        //         public static final double kRamseteZeta = 0.7;
-        //       }
 
               public static final class AutoConstants {
                 public static final double kMaxSpeedMetersPerSecond = 1;
