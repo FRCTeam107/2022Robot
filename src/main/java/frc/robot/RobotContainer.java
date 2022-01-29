@@ -22,9 +22,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.RunClimber;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -38,6 +40,7 @@ public class RobotContainer {
   private final Joystick m_leftJoystick, m_rightJoystick, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
+  private final Climber m_climber;
   // private final Compressor m_compressor;
 
   //private final XboxController controller = new XboxController(0);
@@ -54,7 +57,7 @@ public class RobotContainer {
 
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
-
+    m_climber = new Climber ();
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
     
     configureButtonBindings();
@@ -88,6 +91,12 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
+      new RunClimber(0.5, m_climber)
+    );
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
+      new RunClimber(-0.5, m_climber)
+    );
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
     

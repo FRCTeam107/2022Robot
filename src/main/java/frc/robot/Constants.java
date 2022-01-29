@@ -71,8 +71,8 @@ public final class Constants {
                 // //public static final int TURRET_RIGHT = 5;
                 // public static final int DROP_INTAKE = 6;
                 // public static final int MANUAL_OVERRIDE = 7;
-                // public static final int CLIMBER_EXTEND = 8;
-                //  public static final int CLIMBER_RETRACT = 9;
+                public static final int CLIMBER_EXTEND = 8;
+                public static final int CLIMBER_RETRACT = 9;
                 //  public static final int LOWER_ARM = 10;
                 //  public static final int RAISE_ARM = 11;
         }
