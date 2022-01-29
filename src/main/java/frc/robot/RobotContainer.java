@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
@@ -27,6 +28,7 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.VisionCamera;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,6 +40,7 @@ public class RobotContainer {
   private final Joystick m_leftJoystick, m_rightJoystick, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
+  private final VisionCamera m_Camera;
   // private final Compressor m_compressor;
 
   //private final XboxController controller = new XboxController(0);
@@ -54,6 +57,7 @@ public class RobotContainer {
 
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
+    m_Camera = new VisionCamera();
 
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
     
@@ -90,14 +94,16 @@ public class RobotContainer {
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
-    
+    new JoystickButton(m_leftJoystick, 1).whenPressed(m_Camera::lowerCamera);
+    new JoystickButton(m_leftJoystick, 2).whenPressed(m_Camera::middleCamera);
+    new JoystickButton(m_leftJoystick, 3).whenPressed(m_Camera::raiseCamera);
+
     // CONTROLLER'S JOYSTICK BUTTONS
      // JoystickButton btnManualOverride = new JoystickButton(m_controllerJoystick, ControllerJoystick.MANUAL_OVERRIDE);
       //btnManualOverride.whenPressed(m_climber::allowAdditionalMovement);
       // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
 
     }
-
 
       /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
