@@ -25,6 +25,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 
@@ -38,6 +39,7 @@ public class RobotContainer {
   private final Joystick m_leftJoystick, m_rightJoystick, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
+  private final LEDLights m_LEDLights;
   // private final Compressor m_compressor;
 
   //private final XboxController controller = new XboxController(0);
@@ -51,7 +53,7 @@ public class RobotContainer {
     m_leftJoystick = new Joystick(Constants.UsbPorts.LEFT_STICK);
     m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
-
+    m_LEDLights = new LEDLights();
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
 
@@ -88,6 +90,8 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
+
+    new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
     
@@ -157,6 +161,10 @@ SwerveControllerCommand swerveControllerCommand =
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false, false));
+
+
+
   }
+
 
 }
