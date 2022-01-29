@@ -106,8 +106,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    
-    return m_chooser.getSelected();
+    return ORIGgetAutonomousCommand();
+    //return m_chooser.getSelected();
     //return m_SimpleAutonCommand;
   }
   
@@ -156,6 +156,7 @@ SwerveControllerCommand swerveControllerCommand =
     m_Drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
+    //return swerveControllerCommand;
     return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false, false));
   }
 
