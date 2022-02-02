@@ -18,6 +18,10 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private final WPI_TalonFX m_shootbottom, m_shoottop;
+
+  private DataRecorder dataRecorder;
+  private Integer recordTopIx, recordBottomIx;
+
   private double setSpeedTop, setSpeedBottom;
 
   // private double kP, kI, kD, kFF, kMaxOutput, kMinOutput, maxRPM;
@@ -31,6 +35,11 @@ public class Shooter extends SubsystemBase {
    */
   public Shooter() {
     super();
+
+    dataRecorder = null;
+    recordTopIx=0;
+    recordBottomIx=0;
+
 
     manualForceReady = false;
     cacheBottomReady = false;
@@ -82,6 +91,12 @@ public class Shooter extends SubsystemBase {
     // SmartDashboard.putNumber("Min Output", kMinOutput);
   }
 
+  public void setDataRecorder(DataRecorder _dataRecorder, Integer _topIx, Integer _bottomIx){
+    this.dataRecorder = _dataRecorder;
+    this.recordTopIx = _topIx;
+    this.recordBottomIx = _bottomIx;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -122,6 +137,12 @@ public class Shooter extends SubsystemBase {
       m_shootbottom.set(TalonFXControlMode.Velocity, setSpeedBottom);
       m_shoottop.set(TalonFXControlMode.Velocity, setSpeedTop);      
     }
+
+    if (this.dataRecorder != null) {
+      this.dataRecorder.recordValue(this.recordTopIx, setSpeedTop);
+      this.dataRecorder.recordValue(this.recordBottomIx, setSpeedBottom);
+    }
+    
   }
 
   public void setForceReady(boolean enableOverride){

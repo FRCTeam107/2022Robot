@@ -9,7 +9,6 @@ import java.io.IOException;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -26,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.DataRecorder.datapoint;
 
 //import com.kauailabs.navx.*;
 import com.kauailabs.navx.frc.AHRS;
@@ -91,13 +91,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 
       // Odometry class for tracking robot pose
    SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
-
-   private SwerveModuleMK3 m_frontLeft = new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
-   private SwerveModuleMK3 m_frontRight = new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
-   private SwerveModuleMK3 m_rearLeft = new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset));
-   private SwerveModuleMK3 m_rearRight = new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset));
-
-   private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
+   private SwerveModuleMK3 m_frontLeft, m_frontRight, m_rearLeft, m_rearRight;
+   private SwerveModuleMK3[] modules;
    
   //  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
   //   new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
@@ -108,6 +103,21 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   public SwerveDrivetrain() {
    // gyro.reset(); 
+  
+    m_frontLeft = new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
+    m_frontRight = new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
+    m_rearLeft = new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset));
+    m_rearRight = new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset));
+   
+    modules = new SwerveModuleMK3[] {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
+   
+  }
+
+  public void setDataRecorder(DataRecorder _dataRecorder){
+    m_frontLeft.setDataRecorder(_dataRecorder, datapoint.FrontLeftDrive, datapoint.FrontLeftSteer );
+    m_frontRight.setDataRecorder(_dataRecorder, datapoint.FrontRightDrive, datapoint.FrontRightSteer);
+    m_rearLeft.setDataRecorder(_dataRecorder, datapoint.RearLeftDrive, datapoint.RearLeftSteer);
+    m_rearRight.setDataRecorder(_dataRecorder, datapoint.RearRightDrive, datapoint.RearRightSteer);
   }
 
   /**
