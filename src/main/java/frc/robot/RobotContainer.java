@@ -25,10 +25,12 @@ import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.DataRecorder;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
+import frc.robot.subsystems.DataRecorder.datapoint;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,6 +43,9 @@ public class RobotContainer {
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
   private final VisionCamera m_Camera;
+
+  public DataRecorder m_DataRecorder = new DataRecorder();
+
   // private final Compressor m_compressor;
 
   //private final XboxController controller = new XboxController(0);
@@ -57,7 +62,11 @@ public class RobotContainer {
 
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
+    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
     m_Camera = new VisionCamera();
+
+    m_DataRecorder = new DataRecorder();
+    m_Drivetrain.setDataRecorder(m_DataRecorder);
 
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
     
