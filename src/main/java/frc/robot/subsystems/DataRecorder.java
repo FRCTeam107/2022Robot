@@ -7,6 +7,14 @@
 
 package frc.robot.subsystems;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+//import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Writer;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,6 +36,10 @@ public class DataRecorder extends SubsystemBase {
 
   private double[] datavalues = {0,0,0,0,0,0,0,0,0,0,0}; // same number of datapoints from  list above
   
+  //private FileInputStream in = null;
+ // private FileOutputStream outFile = null;
+     private BufferedWriter outBuffer = null;
+     private FileWriter outFile = null;
 
 //private final Servo m_Servo = new Servo(0);
 
@@ -39,17 +51,44 @@ public class DataRecorder extends SubsystemBase {
     // This method will be called once per scheduler run
     //datavalues[0] = System.currentTimeMillis();
     SmartDashboard.putNumberArray("recordedValues", datavalues);
+    //SmartDashboard.putString("DataValues" )
   }
 
-  public void startRecording(double position){
+  public void startRecording(){
+   
+      //outFile = new FileOutputStream("output.txt");
+     try {
+      outFile = new  FileWriter("/home/lvuser/file.csv");
+      outBuffer = new BufferedWriter(outFile);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+     
+        
 
   }
 
    public void endRecording(){
 
+    if (outFile != null)
+    { 
+      try {
+        outBuffer.flush();
+        outBuffer.close();
+        outFile.flush();
+        outFile.close();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+
   }
 
   public void recordValue(Integer ix, double valueToRecord){
+    if (outFile==null) {return;}
+
     datavalues[ix] = valueToRecord;
   }
 
