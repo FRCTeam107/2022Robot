@@ -62,12 +62,12 @@ public class RobotContainer {
 
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
-    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
     m_Camera = new VisionCamera();
 
     m_DataRecorder = new DataRecorder();
     m_Drivetrain.setDataRecorder(m_DataRecorder);
-
+    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
+   
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
     
     configureButtonBindings();
