@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,10 +20,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Climber extends SubsystemBase {
 private final CANSparkMax m_climber;
-
+private SparkMaxLimitSwitch m_forwardLimit;
+private SparkMaxLimitSwitch m_reverseLimit;
 private final double kClimberMaxPosition = 200.000; //268.14905;
 private final double kClimberMinPosition = 0.0;
 private boolean armIsUp;
@@ -35,35 +40,59 @@ private boolean armIsUp;
 
     m_climber.restoreFactoryDefaults();
     m_climber.setIdleMode(IdleMode.kBrake);
+    m_climber.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+    m_climber.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
 
     m_climber.getEncoder().setPosition(kClimberMinPosition);
 
-    m_climber.setSoftLimit(SoftLimitDirection.kReverse, (float)kClimberMinPosition);
-    m_climber.setSoftLimit(SoftLimitDirection.kForward, (float)kClimberMaxPosition);
-    m_climber.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_climber.enableSoftLimit(SoftLimitDirection.kForward, true);
+   // m_climber.setSoftLimit(SoftLimitDirection.kReverse, (float)kClimberMinPosition);
+    //m_climber.setSoftLimit(SoftLimitDirection.kForward, (float)kClimberMaxPosition);
+   // m_climber.enableSoftLimit(SoftLimitDirection.kReverse, true);
+   // m_climber.enableSoftLimit(SoftLimitDirection.kForward, true);
 
     //m_Solenoid.set(Value.kForward);
     armIsUp = true;
+
+    m_forwardLimit.enableLimitSwitch(false);
+    m_reverseLimit.enableLimitSwitch(false);
+    SmartDashboard.putBoolean("Forward Limit Enabled", m_forwardLimit.isLimitSwitchEnabled());
+    SmartDashboard.putBoolean("Reverse Limit Enabled", m_reverseLimit.isLimitSwitchEnabled());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("Climber Position",  m_climber.getEncoder().getPosition());
+    m_forwardLimit.enableLimitSwitch(SmartDashboard.getBoolean("Forward Limit Enabled", false));
+    m_reverseLimit.enableLimitSwitch(SmartDashboard.getBoolean("Reverse Limit Enabled", false));
+
+    SmartDashboard.putBoolean("Forward Limit Switch", m_forwardLimit.isPressed());
+    SmartDashboard.putBoolean("Reverse Limit Switch", m_reverseLimit.isPressed());
   }
 
   public void runMotor(double speed){
-    if (!armIsUp){
-    //if (m_Solenoid.get() != Value.kForward) {
+    // if (!armIsUp){
+    // //if (m_Solenoid.get() != Value.kForward) {
+    //   m_climber.set(0);
+    // }
+    // else {
+    //   double currentPosition = m_climber.getEncoder().getPosition();
+    //   if (speed > 0 && currentPosition > kClimberMaxPosition) {speed=0;}
+    //   if (speed < 0 && currentPosition < kClimberMinPosition) {speed=0;}
+    //   //SmartDashboard.putNumber("Climber speed", speed);
+    //   m_climber.set(speed);
+    // }
+    if (m_reverseLimit.isPressed()){
+      if(speed>0){m_climber.set(speed);}
+    }
+    else{
       m_climber.set(0);
     }
-    else {
-      double currentPosition = m_climber.getEncoder().getPosition();
-      if (speed > 0 && currentPosition > kClimberMaxPosition) {speed=0;}
-      if (speed < 0 && currentPosition < kClimberMinPosition) {speed=0;}
-      //SmartDashboard.putNumber("Climber speed", speed);
-      m_climber.set(speed);
+    if (m_forwardLimit.isPressed()){
+      if(speed<0){m_climber.set(speed);}
+    }
+    else{
+      m_climber.set(0);
     }
   }
 
