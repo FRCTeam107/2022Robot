@@ -50,72 +50,86 @@ public class DataRecorder extends SubsystemBase {
   public DataRecorder() {
   }
 
+  private void writeValuesToFile(){
+     if (outBuffer==null) {return;}
+     
+     // String stringdatavalues = datavalues.toString();
+     StringBuilder line = new StringBuilder();
+     for (int i=0; i < datavalues.length; i++) {
+        line.append(datavalues[i]);
+        if (i != datavalues.length - 1) { line.append(','); }     
+     }
+     line.append("\n");
+     try {
+      outBuffer.write(line.toString());
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+     SmartDashboard.putString("Data Values", line.toString());
+   
+    //  try {
+    //    outBuffer.write(stringdatavalues);
+    //  } catch (IOException e) {
+    //    // TODO Auto-generated catch block
+    //    e.printStackTrace();
+    //  } 
+  }
+  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     //datavalues[0] = System.currentTimeMillis();
     SmartDashboard.putNumberArray("recordedValues", datavalues);
     //SmartDashboard.putString("DataValues" )
-
     if (outBuffer==null) {return;}
-
-    String stringdatavalues = datavalues.toString();
-    // SmartDashboard.putString("Data Values", stringdatavalues);
-  
-    try {
-      outBuffer.write(stringdatavalues);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  
-  
+    writeValuesToFile();
   }
 
   public void startRecording(){
    
-      //outFile = new FileOutputStream("output.txt");
-     try {
-      datavalues = blankvalues;
-      
+      //outFile = new FileOutputStream("output.txt");  
       File file = new File("/home/lvuser/file.csv");
-
-      if (file.exists()) {
-
-        outFile = new FileWriter(file,true); 
+      try {
+        if (file.exists()) {
+        outFile = new FileWriter(file,false); 
+        }
+        else {
+          outFile = new FileWriter(file);
+        }
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
-      else {
 
-        outFile = new FileWriter(file);
-      }
-      
+
       file.setWritable(true);
       file.setReadable(true);
-      
-     
 
-      
+
       outBuffer = new BufferedWriter(outFile);
-      
 
-      SmartDashboard.putString("Absolute path", file.getAbsolutePath());
+      datavalues = blankvalues;
+      writeValuesToFile();
 
-
-
-      String stringdatavalues = datavalues.toString();
-      // SmartDashboard.putString("Data Values", stringdatavalues);
-      
-      outBuffer.write(stringdatavalues);
-
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    //   try {
      
-    
+    //   //SmartDashboard.putString("Absolute path", file.getAbsolutePath());
 
+    //  // writeValuesToFile();
+    //   String stringdatavalues = datavalues.toString();
+    //   // SmartDashboard.putString("Data Values", stringdatavalues);
+      
+    //  // outBuffer.write(stringdatavalues);
+
+    // } catch (IOException e) {
+    //   // TODO Auto-generated catch block
+    //   e.printStackTrace();
+    // }
   }
-
+  
    public void endRecording(){
 
     if (outFile != null)
