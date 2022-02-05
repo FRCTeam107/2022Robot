@@ -8,12 +8,14 @@
 package frc.robot.subsystems;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 //import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.Buffer;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,8 +36,10 @@ public class DataRecorder extends SubsystemBase {
     public static final int ShooterBottom = 10;
   }
 
-  private double[] datavalues = {0,0,0,0,0,0,0,0,0,0,0}; // same number of datapoints from  list above
   
+  private double[] blankvalues = {0,0,0,0,0,0,0,0,0,0,0};
+  private double[] datavalues = blankvalues; // same number of datapoints from  list above
+
   //private FileInputStream in = null;
  // private FileOutputStream outFile = null;
      private BufferedWriter outBuffer = null;
@@ -52,20 +56,63 @@ public class DataRecorder extends SubsystemBase {
     //datavalues[0] = System.currentTimeMillis();
     SmartDashboard.putNumberArray("recordedValues", datavalues);
     //SmartDashboard.putString("DataValues" )
+
+    if (outBuffer==null) {return;}
+
+    String stringdatavalues = datavalues.toString();
+    // SmartDashboard.putString("Data Values", stringdatavalues);
+  
+    try {
+      outBuffer.write(stringdatavalues);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  
+  
   }
 
   public void startRecording(){
    
       //outFile = new FileOutputStream("output.txt");
      try {
-      outFile = new  FileWriter("/home/lvuser/file.csv");
+      datavalues = blankvalues;
+      
+      File file = new File("/home/lvuser/file.csv");
+
+      if (file.exists()) {
+
+        outFile = new FileWriter(file,true); 
+      }
+      else {
+
+        outFile = new FileWriter(file);
+      }
+      
+      file.setWritable(true);
+      file.setReadable(true);
+      
+     
+
+      
       outBuffer = new BufferedWriter(outFile);
+      
+
+      SmartDashboard.putString("Absolute path", file.getAbsolutePath());
+
+
+
+      String stringdatavalues = datavalues.toString();
+      // SmartDashboard.putString("Data Values", stringdatavalues);
+      
+      outBuffer.write(stringdatavalues);
+
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
      
-        
+    
 
   }
 
@@ -78,6 +125,8 @@ public class DataRecorder extends SubsystemBase {
         outBuffer.close();
         outFile.flush();
         outFile.close();
+        outBuffer = null;
+        outFile = null;
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
