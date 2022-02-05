@@ -90,7 +90,7 @@ public final class Constants {
                 // public static final int HOPPER_NEO = 9;
                 // public static final int BALL_INDEXER = 10;
                 // public static final int TURRET_LIFT = 11; // Talon SRX
-                public static final int CLIMBER_ONE = 12; // CANspark max
+                public static final int CLIMBER_ONE = 19; // Falcon 500
                 // public static final int TURRET_SPIN = 13; // Talon SRX
                 // public static final int BALL_INTAKE = 14;   
         }

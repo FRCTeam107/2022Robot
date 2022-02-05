@@ -64,8 +64,8 @@ public class RobotContainer {
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
 
     m_Drivetrain  = new SwerveDrivetrain();
-    m_shooter = new Shooter ();
-    m_climber = new Climber ();
+    m_shooter = new Shooter();
+    m_climber = new Climber();
     m_Camera = new VisionCamera();
 
     m_DataRecorder = new DataRecorder();
@@ -106,10 +106,10 @@ public class RobotContainer {
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
     new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
-      new RunClimber(0.5, m_climber)
+      new RunClimber(0.25, m_climber)
     );
     new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
-      new RunClimber(-0.5, m_climber)
+      new RunClimber(-0.25, m_climber)
     );
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
