@@ -7,15 +7,24 @@
 
 package frc.robot.subsystems;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 //import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.Buffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -85,7 +94,7 @@ public class DataRecorder extends SubsystemBase {
     SmartDashboard.putNumberArray("recordedValues", datavalues);
     //SmartDashboard.putString("DataValues" )
     if (outBuffer==null) {return;}
-    writeValuesToFile();
+    writeValuesToFile();1
   }
 
   public void startRecording(){
@@ -153,6 +162,50 @@ public class DataRecorder extends SubsystemBase {
     if (outFile==null) {return;}
 
     datavalues[ix] = valueToRecord;
+  }
+
+  public List<double[]> LoadFile(String fileName) {
+    // Path filPath = new Path() {
+      
+    // };
+    // List<Double[]> lines = 
+    // Files.lines(Pathes.get("/path/to/file.csv"))
+    //      .skip(1) // Skip the heading
+    //      .map(line -> Arrays.stream(line.split(","))
+    //                         .skip(1) // Skip the "station_readings"
+    //                         .map(Double::new)
+    //                         .toArray(Double[]::new)
+    //           )
+    //      .collect(Collectors.toList());
+    // ////
+
+// read all lines of file
+// try (Stream<String> lines = Files.lines(Paths.get("/Users/dshvechikov/file"))) {
+//   lines.forEach(System.out::println);
+// }
+
+  List<double[]> lines = new ArrayList<double[]>();
+  String[] strRow;
+  double[] row;
+
+  try (BufferedReader br = new BufferedReader(new FileReader("/Users/dshvechikov/file"))) {
+    for(String line; (line = br.readLine()) != null; ) {
+        //System.out.println(line);
+        strRow = line.split(",");
+        row = new double[strRow.length - 1];
+        for (int i=1; i<strRow.length; i++) {
+          row[i - 2] = Double.parseDouble(strRow[i]);
+      }
+      lines.add(row);
+    }
+  } catch (IOException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+
+
+    return lines;
+
   }
 
 }
