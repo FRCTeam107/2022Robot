@@ -94,7 +94,7 @@ public class DataRecorder extends SubsystemBase {
     SmartDashboard.putNumberArray("recordedValues", datavalues);
     //SmartDashboard.putString("DataValues" )
     if (outBuffer==null) {return;}
-    writeValuesToFile();1
+    writeValuesToFile();
   }
 
   public void startRecording(){
