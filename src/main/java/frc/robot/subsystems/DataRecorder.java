@@ -14,10 +14,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 //import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.Buffer;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -55,8 +58,10 @@ public class DataRecorder extends SubsystemBase {
      private FileWriter outFile = null;
 
 //private final Servo m_Servo = new Servo(0);
-
+  
   public DataRecorder() {
+    SmartDashboard.putString("RecordfileName", "file.csv");
+    
   }
 
   private void writeValuesToFile(){
@@ -99,8 +104,9 @@ public class DataRecorder extends SubsystemBase {
 
   public void startRecording(){
    
-      //outFile = new FileOutputStream("output.txt");  
-      File file = new File("/home/lvuser/file.csv");
+      //outFile = new FileOutputStream("output.txt"); 
+      String fileNameString = SmartDashboard.getString("RecordfileName", "file.csv");
+      File file = new File("/home/lvuser/" + fileNameString);
       try {
         if (file.exists()) {
         outFile = new FileWriter(file,false); 
@@ -163,7 +169,9 @@ public class DataRecorder extends SubsystemBase {
 
     datavalues[ix] = valueToRecord;
   }
-
+  public void testload(){
+    List<double[]> lines = LoadFile("Noahsfile.csv");
+  }
   public List<double[]> LoadFile(String fileName) {
     // Path filPath = new Path() {
       
@@ -187,22 +195,23 @@ public class DataRecorder extends SubsystemBase {
   List<double[]> lines = new ArrayList<double[]>();
   String[] strRow;
   double[] row;
-
-  try (BufferedReader br = new BufferedReader(new FileReader("/Users/dshvechikov/file"))) {
+  // string xx = Filesystem.getDeployDirectory().getAbsolutePath()
+  try (BufferedReader br = new BufferedReader(new FileReader("/home/lvuser/deploy/" + fileName))) {
     for(String line; (line = br.readLine()) != null; ) {
         //System.out.println(line);
+        SmartDashboard.putString("fileLine", line);
         strRow = line.split(",");
         row = new double[strRow.length - 1];
-        for (int i=1; i<strRow.length; i++) {
-          row[i - 2] = Double.parseDouble(strRow[i]);
-      }
+         for (int i=1; i<strRow.length; i++) {
+           row[i - 1] = Double.parseDouble(strRow[i]);
+         }
       lines.add(row);
     }
   } catch (IOException e) {
     // TODO Auto-generated catch block
     e.printStackTrace();
   }
-
+  SmartDashboard.putString("fileLine", "SUCCESS!");
 
     return lines;
 
