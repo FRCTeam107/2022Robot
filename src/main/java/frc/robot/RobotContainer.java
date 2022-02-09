@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.ReplayFile;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DataRecorder;
@@ -62,12 +63,12 @@ public class RobotContainer {
 
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
-    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
     m_Camera = new VisionCamera();
 
     m_DataRecorder = new DataRecorder();
     m_Drivetrain.setDataRecorder(m_DataRecorder);
-
+    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
+   
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
     
     configureButtonBindings();
@@ -101,7 +102,10 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
-
+    new JoystickButton(m_controllerJoystick, 1).whenPressed(m_DataRecorder::startRecording);
+    new JoystickButton(m_controllerJoystick, 2).whenPressed(m_DataRecorder::endRecording);
+    new JoystickButton(m_controllerJoystick, 11).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Noahsfile.csv"));
+    new JoystickButton(m_controllerJoystick, 10).whenPressed(m_DataRecorder::testload);
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
     new JoystickButton(m_leftJoystick, 1).whenPressed(m_Camera::lowerCamera);
     new JoystickButton(m_leftJoystick, 2).whenPressed(m_Camera::middleCamera);
