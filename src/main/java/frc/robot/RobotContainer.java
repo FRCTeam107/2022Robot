@@ -40,7 +40,8 @@ import frc.robot.subsystems.DataRecorder.datapoint;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Joystick m_leftJoystick, m_rightJoystick, m_controllerJoystick;
+  // private final Joystick m_leftJoystick, m_rightJoystick, m_controllerJoystick;
+  private final Joystick m_flightcontroller, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
   private final VisionCamera m_Camera;
@@ -57,8 +58,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_leftJoystick = new Joystick(Constants.UsbPorts.LEFT_STICK);
-    m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
+    m_flightcontroller = new Joystick(Constants.UsbPorts.LEFT_STICK);
+    m_flightcontroller.setXChannel(3);
+    m_flightcontroller.setYChannel(4);
+    m_flightcontroller.setZChannel(0);
+    // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
 
     m_Drivetrain  = new SwerveDrivetrain();
@@ -69,7 +73,7 @@ public class RobotContainer {
     m_Drivetrain.setDataRecorder(m_DataRecorder);
     m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
    
-    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_leftJoystick, m_rightJoystick));
+    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
     
     configureButtonBindings();
 
@@ -107,9 +111,9 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, 11).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Noahsfile.csv"));
     new JoystickButton(m_controllerJoystick, 10).whenPressed(m_DataRecorder::testload);
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
-    new JoystickButton(m_leftJoystick, 1).whenPressed(m_Camera::lowerCamera);
-    new JoystickButton(m_leftJoystick, 2).whenPressed(m_Camera::middleCamera);
-    new JoystickButton(m_leftJoystick, 3).whenPressed(m_Camera::raiseCamera);
+    new JoystickButton(m_flightcontroller, 1).whenPressed(m_Camera::lowerCamera);
+    new JoystickButton(m_flightcontroller, 2).whenPressed(m_Camera::middleCamera);
+    new JoystickButton(m_flightcontroller, 3).whenPressed(m_Camera::raiseCamera);
 
     // CONTROLLER'S JOYSTICK BUTTONS
      // JoystickButton btnManualOverride = new JoystickButton(m_controllerJoystick, ControllerJoystick.MANUAL_OVERRIDE);
