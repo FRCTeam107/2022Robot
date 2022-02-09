@@ -119,7 +119,12 @@ public class SwerveDrivetrain extends SubsystemBase {
     m_rearLeft.setDataRecorder(_dataRecorder, datapoint.RearLeftDrive, datapoint.RearLeftSteer);
     m_rearRight.setDataRecorder(_dataRecorder, datapoint.RearRightDrive, datapoint.RearRightSteer);
   }
-
+  public void replayRow (double[] dataRow ){
+    m_frontLeft.replayValues(dataRow[datapoint.FrontLeftSteer], dataRow[datapoint.FrontLeftDrive]);
+    m_frontRight.replayValues(dataRow[datapoint.FrontRightSteer], dataRow[datapoint.FrontRightDrive]);
+    m_rearLeft.replayValues(dataRow[datapoint.RearLeftSteer], dataRow[datapoint.RearLeftDrive]);
+    m_rearRight.replayValues(dataRow[datapoint.RearRightSteer], dataRow[datapoint.RearRightDrive]);
+  }
   /**
    * Method to drive the robot using joystick info.
    *

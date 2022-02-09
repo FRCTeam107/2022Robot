@@ -153,5 +153,8 @@ public class SwerveModuleMK3 {
    }
    //   SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
   }
-
+  public void replayValues (double desiredTicks, double motorSpeed){
+    angleMotor.set(TalonFXControlMode.Position, desiredTicks);
+    driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
+  }
 }

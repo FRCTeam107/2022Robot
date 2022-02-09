@@ -24,7 +24,7 @@ public class ReplayFile extends CommandBase {
   private final SwerveDrivetrain m_drivetrain;
   private final Shooter m_Shooter;
   private final DataRecorder m_datarecorder;
-  private final List<double[]> ReplayList;
+  private final List<double[]> m_replayList;
   
   
  
@@ -32,7 +32,7 @@ public class ReplayFile extends CommandBase {
     m_drivetrain = _drivetrain;
     m_Shooter = _shooter;
     m_datarecorder = _datarecoder;
-    ReplayList = m_datarecorder.LoadFile(filename);
+    m_replayList = m_datarecorder.LoadFile(filename);
    
     // Use addRequirements() here to declare subsystem dependencies.
     
@@ -48,7 +48,12 @@ public class ReplayFile extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    if (m_replayList.size()>0){
+      double[] replayRow = m_replayList.get(0);
+      m_drivetrain.replayRow(replayRow);
+      m_replayList.remove(0);  
+    }
+   
   }
 
   // Called once the command ends or is interrupted.
