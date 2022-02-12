@@ -51,7 +51,7 @@ public class ReplayFile extends CommandBase {
     if (m_replayList.size()>0){
       double[] replayRow = m_replayList.get(0);
       m_drivetrain.replayRow(replayRow);
-      m_replayList.remove(0);  
+      m_replayList.remove(0);   
     }
    
   }
