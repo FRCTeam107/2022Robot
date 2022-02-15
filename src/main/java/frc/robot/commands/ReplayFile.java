@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DataRecorder;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.DataRecorder.datapoint;
 
 public class ReplayFile extends CommandBase {
   /**
@@ -26,7 +27,7 @@ public class ReplayFile extends CommandBase {
   private final DataRecorder m_datarecorder;
   private final List<double[]> m_replayList;
   
-  
+private StringBuilder msg = new StringBuilder("");
  
   public ReplayFile(SwerveDrivetrain _drivetrain, Shooter _shooter, DataRecorder _datarecoder, String filename) {
     m_drivetrain = _drivetrain;
@@ -34,6 +35,8 @@ public class ReplayFile extends CommandBase {
     m_datarecorder = _datarecoder;
     m_replayList = m_datarecorder.LoadFile(filename);
    
+
+
     // Use addRequirements() here to declare subsystem dependencies.
     
     addRequirements(m_drivetrain, m_Shooter, m_datarecorder);
@@ -43,15 +46,30 @@ public class ReplayFile extends CommandBase {
   @Override
   public void initialize() {
     //m_Limelight.EnableVisionProcessing();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putNumber("replayQueueLen", m_replayList.size());
     if (m_replayList.size()>0){
       double[] replayRow = m_replayList.get(0);
-      m_drivetrain.replayRow(replayRow);
+
+      msg.append(replayRow[datapoint.Drive_X]);
+      msg.append(" ~ ");
+      msg.append(replayRow[datapoint.Drive_Y]);
+      msg.append(" ~ ");
+      msg.append(replayRow[datapoint.Drive_Z]);
+      msg.append("\n");
+
+      // m_drivetrain.drive(replayRow[datapoint.Drive_X], 
+      //       replayRow[datapoint.Drive_Y],
+      //       replayRow[datapoint.Drive_Z], 
+      //       true, false);
+
       m_replayList.remove(0);   
+   SmartDashboard.putString("ReplayData", msg.toString());
     }
    
   }

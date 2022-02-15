@@ -36,16 +36,11 @@ public class DataRecorder extends SubsystemBase {
 
   public class datapoint{
     // first entry is timestamp in milliseconds
-    public static final int FrontLeftDrive = 1;
-    public static final int FrontLeftSteer = 2;
-    public static final int FrontRightDrive = 3;
-    public static final int FrontRightSteer = 4;
-    public static final int RearLeftDrive = 5;
-    public static final int RearLeftSteer = 6;
-    public static final int RearRightDrive = 7;
-    public static final int RearRightSteer = 8;
-    public static final int ShooterTop = 9;
-    public static final int ShooterBottom = 10;
+    public static final int Drive_X = 1;
+    public static final int Drive_Y = 2;
+    public static final int Drive_Z = 3;
+    public static final int ShooterTop = 4;
+    public static final int ShooterBottom = 5;
   }
 
   
@@ -61,7 +56,7 @@ public class DataRecorder extends SubsystemBase {
   
   public DataRecorder() {
     SmartDashboard.putString("RecordfileName", "file.csv");
-    
+    SmartDashboard.putString("Recording?", "---");
   }
 
   private void writeValuesToFile(){
@@ -129,6 +124,8 @@ public class DataRecorder extends SubsystemBase {
       datavalues = blankvalues;
       writeValuesToFile();
 
+      SmartDashboard.putString("Recording?", "ON");
+
     //   try {
      
     //   //SmartDashboard.putString("Absolute path", file.getAbsolutePath());
@@ -151,8 +148,8 @@ public class DataRecorder extends SubsystemBase {
     { 
       try {
         outBuffer.flush();
-        outBuffer.close();
         outFile.flush();
+        outBuffer.close();
         outFile.close();
         outBuffer = null;
         outFile = null;
@@ -160,6 +157,7 @@ public class DataRecorder extends SubsystemBase {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+      SmartDashboard.putString("Recording?", "OFF");
     }
 
   }
@@ -169,9 +167,7 @@ public class DataRecorder extends SubsystemBase {
 
     datavalues[ix] = valueToRecord;
   }
-  public void testload(){
-    List<double[]> lines = LoadFile("Noahsfile.csv");
-  }
+
   public List<double[]> LoadFile(String fileName) {
     // Path filPath = new Path() {
       
@@ -191,7 +187,6 @@ public class DataRecorder extends SubsystemBase {
 // try (Stream<String> lines = Files.lines(Paths.get("/Users/dshvechikov/file"))) {
 //   lines.forEach(System.out::println);
 // }
-
   List<double[]> lines = new ArrayList<double[]>();
   String[] strRow;
   double[] row;
@@ -202,8 +197,8 @@ public class DataRecorder extends SubsystemBase {
         SmartDashboard.putString("fileLine", line);
         strRow = line.split(",");
         row = new double[strRow.length - 1];
-         for (int i=1; i<strRow.length; i++) {
-           row[i - 1] = Double.parseDouble(strRow[i]);
+         for (int i=0; i<strRow.length-1; i++) {
+           row[i] = Double.parseDouble(strRow[i]);
          }
       lines.add(row);
     }
@@ -211,7 +206,8 @@ public class DataRecorder extends SubsystemBase {
     // TODO Auto-generated catch block
     e.printStackTrace();
   }
-  SmartDashboard.putString("fileLine", "SUCCESS!");
+  
+  //SmartDashboard.putString("fileLine", "SUCCESS!");
 
     return lines;
 
