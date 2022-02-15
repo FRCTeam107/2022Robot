@@ -45,7 +45,7 @@ public class RobotContainer {
   private final Joystick m_flightcontroller, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
-  private final LEDLights m_LEDLights;
+  //private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
 
   public DataRecorder m_DataRecorder = new DataRecorder();
@@ -66,7 +66,7 @@ public class RobotContainer {
     m_flightcontroller.setZChannel(0);
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
-    m_LEDLights = new LEDLights();
+    //m_LEDLights = new LEDLights();
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
     m_Camera = new VisionCamera();
@@ -111,7 +111,7 @@ public class RobotContainer {
 
     new JoystickButton(m_controllerJoystick, 1).whenPressed(m_DataRecorder::startRecording);
     new JoystickButton(m_controllerJoystick, 2).whenPressed(m_DataRecorder::endRecording);
-    new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
+    //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     new JoystickButton(m_controllerJoystick, 11).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Noahsfile.csv"));
     new JoystickButton(m_controllerJoystick, 10).whenPressed(m_DataRecorder::testload);
 
