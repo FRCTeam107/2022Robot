@@ -33,8 +33,8 @@ public class SwerveDriveCommand extends CommandBase {
 
   @Override
   public void execute() {
-    SmartDashboard.putNumber("X channel", FlightController.getX());
-    SmartDashboard.putNumber("Y channel", FlightController.getY());
+    // SmartDashboard.putNumber("X channel", FlightController.getX());
+    // SmartDashboard.putNumber("Y channel", FlightController.getY());
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     double X = -FlightController.getX();

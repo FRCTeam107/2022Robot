@@ -39,8 +39,9 @@ public class DataRecorder extends SubsystemBase {
     public static final int Drive_X = 1;
     public static final int Drive_Y = 2;
     public static final int Drive_Z = 3;
-    public static final int ShooterTop = 4;
-    public static final int ShooterBottom = 5;
+    public static final int GyroAngle = 4;
+    public static final int ShooterTop = 5;
+    public static final int ShooterBottom = 6;
   }
 
   
@@ -55,7 +56,8 @@ public class DataRecorder extends SubsystemBase {
 //private final Servo m_Servo = new Servo(0);
   
   public DataRecorder() {
-    SmartDashboard.putString("RecordfileName", "file.csv");
+    String test = SmartDashboard.getString("RecordfileName", "file.csv");
+    SmartDashboard.putString("RecordfileName", test);
     SmartDashboard.putString("Recording?", "---");
   }
 
