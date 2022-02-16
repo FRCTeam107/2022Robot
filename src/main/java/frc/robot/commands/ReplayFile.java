@@ -27,7 +27,7 @@ public class ReplayFile extends CommandBase {
   private final DataRecorder m_datarecorder;
   private final List<double[]> m_replayList;
   
-private StringBuilder msg = new StringBuilder("");
+//private StringBuilder msg = new StringBuilder("");
  
   public ReplayFile(SwerveDrivetrain _drivetrain, Shooter _shooter, DataRecorder _datarecoder, String filename) {
     m_drivetrain = _drivetrain;
@@ -52,24 +52,23 @@ private StringBuilder msg = new StringBuilder("");
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("replayQueueLen", m_replayList.size());
     if (m_replayList.size()>0){
       double[] replayRow = m_replayList.get(0);
 
-      msg.append(replayRow[datapoint.Drive_X]);
-      msg.append(" ~ ");
-      msg.append(replayRow[datapoint.Drive_Y]);
-      msg.append(" ~ ");
-      msg.append(replayRow[datapoint.Drive_Z]);
-      msg.append("\n");
+      // msg.append(replayRow[datapoint.Drive_X]);
+      // msg.append(" ~ ");
+      // msg.append(replayRow[datapoint.Drive_Y]);
+      // msg.append(" ~ ");
+      // msg.append(replayRow[datapoint.Drive_Z]);
+      // msg.append("\n");
 
-      // m_drivetrain.drive(replayRow[datapoint.Drive_X], 
-      //       replayRow[datapoint.Drive_Y],
-      //       replayRow[datapoint.Drive_Z], 
-      //       true, false);
+      m_drivetrain.drive(replayRow[datapoint.Drive_X], 
+            replayRow[datapoint.Drive_Y],
+            replayRow[datapoint.Drive_Z], 
+            true, false);
 
       m_replayList.remove(0);   
-   SmartDashboard.putString("ReplayData", msg.toString());
+   //SmartDashboard.putString("ReplayData", msg.toString());
     }
    
   }
