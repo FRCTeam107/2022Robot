@@ -73,8 +73,9 @@ public final class Constants {
                 // public static final int MANUAL_OVERRIDE = 7;
                 // public static final int CLIMBER_EXTEND = 8;
                 //  public static final int CLIMBER_RETRACT = 9;
-                //  public static final int LOWER_ARM = 10;
-                //  public static final int RAISE_ARM = 11;
+                public static final int REPLAY_RECORDING = 7;
+                public static final int START_RECORDING = 10;
+                public static final int END_RECORDING = 11;
         }
 
         //MOTORS

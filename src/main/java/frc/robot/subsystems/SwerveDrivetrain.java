@@ -93,7 +93,8 @@ public class SwerveDrivetrain extends SubsystemBase {
    SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
    private SwerveModuleMK3 m_frontLeft, m_frontRight, m_rearLeft, m_rearRight;
    private SwerveModuleMK3[] modules;
-   
+   private DataRecorder dataRecorder;
+
   //  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
   //   new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
   //   new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset)), // Front Right
@@ -114,17 +115,9 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   public void setDataRecorder(DataRecorder _dataRecorder){
-    m_frontLeft.setDataRecorder(_dataRecorder, datapoint.FrontLeftDrive, datapoint.FrontLeftSteer );
-    m_frontRight.setDataRecorder(_dataRecorder, datapoint.FrontRightDrive, datapoint.FrontRightSteer);
-    m_rearLeft.setDataRecorder(_dataRecorder, datapoint.RearLeftDrive, datapoint.RearLeftSteer);
-    m_rearRight.setDataRecorder(_dataRecorder, datapoint.RearRightDrive, datapoint.RearRightSteer);
+    this.dataRecorder = _dataRecorder;
   }
-  public void replayRow (double[] dataRow ){
-    m_frontLeft.replayValues(dataRow[datapoint.FrontLeftSteer], dataRow[datapoint.FrontLeftDrive]);
-    m_frontRight.replayValues(dataRow[datapoint.FrontRightSteer], dataRow[datapoint.FrontRightDrive]);
-    m_rearLeft.replayValues(dataRow[datapoint.RearLeftSteer], dataRow[datapoint.RearLeftDrive]);
-    m_rearRight.replayValues(dataRow[datapoint.RearRightSteer], dataRow[datapoint.RearRightDrive]);
-  }
+
   /**
    * Method to drive the robot using joystick info.
    *
@@ -138,6 +131,15 @@ public class SwerveDrivetrain extends SubsystemBase {
     
     if(calibrateGyro){
       m_gyro.reset(); //recalibrates gyro offset
+    }
+
+    if (this.dataRecorder != null)
+    {
+      this.dataRecorder.recordValue(datapoint.Drive_X, xSpeed);
+      this.dataRecorder.recordValue(datapoint.Drive_Y, ySpeed);
+      this.dataRecorder.recordValue(datapoint.Drive_Z, rot);
+      this.dataRecorder.recordValue(datapoint.GyroAngle, m_gyro.getAngle());
+      m_frontLeft.getAngle()
     }
 
     SwerveModuleState[] states =
