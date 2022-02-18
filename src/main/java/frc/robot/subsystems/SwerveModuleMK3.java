@@ -65,7 +65,10 @@ public class SwerveModuleMK3 {
  
     driveMotor.configAllSettings(driveTalonFXConfiguration);
     driveMotor.setNeutralMode(NeutralMode.Brake);   
-    
+    // set voltage compensation to 11 volts to smooth out battery variations
+    driveMotor.configVoltageCompSaturation(11, 0);
+    driveMotor.enableVoltageCompensation(true);
+
     // this line sets the ration of encoder pulses to actual distance travelled (in meters)
     driveMotor.configSelectedFeedbackCoefficient(DriveConstants.kEncoderDistancePerPulse);
 
