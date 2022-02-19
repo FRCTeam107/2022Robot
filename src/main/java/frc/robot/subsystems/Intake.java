@@ -1,0 +1,78 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+package frc.robot.subsystems;
+
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.Motors;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+public class Intake extends SubsystemBase {
+  private final WPI_TalonSRX m_IntakeMotor;
+  private final WPI_TalonSRX m_IntakeArm;
+  private boolean intakeExtended;
+  public static final class IntakeArmConstants {
+    public static final double kP = 0.25; 
+    public static final double kI = 0.0005;
+    public static final double kD = 0.0001; 
+    public static final double kIz = 8000; 
+    public static final double kFF = 0;//.000015; 
+    // public static final double kMaxOutput = 1; 
+    // public static final double kMinOutput = -1;
+    // public static final double maxRPM = 5700;  
+}
+  /**
+   * Creates a new Intake.
+   */
+  public Intake() {
+    m_IntakeMotor = new WPI_TalonSRX(Motors.BALL_INTAKE);
+    m_IntakeMotor.configFactoryDefault();
+    m_IntakeMotor.setInverted(false);
+   
+    m_IntakeArm = new WPI_TalonSRX(Motors.INTAKE_ARM);
+    m_IntakeArm.configFactoryDefault();
+    m_IntakeArm.setInverted(false);
+    m_IntakeArm.setSelectedSensorPosition(0);
+    //TODO set PID values for INTAKE_ARM
+    m_IntakeArm.config_kP(0, IntakeArmConstants.kP);
+    m_IntakeArm.config_kI(0, IntakeArmConstants.kI);
+    m_IntakeArm.config_kD(0, IntakeArmConstants.kD);
+    m_IntakeArm.config_IntegralZone(0, IntakeArmConstants.kIz);
+    m_IntakeArm.config_kF(0, IntakeArmConstants.kFF);
+    intakeExtended = false;
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+  public void runMotor(double speed){
+    m_IntakeMotor.set(speed);
+  }
+
+  public void ExtendIntake(){
+    if (!intakeExtended){
+      intakeExtended = true;
+      //TODO run arm motor to extended position, find right position
+      m_IntakeArm.set(ControlMode.Position, 100);
+    }
+  }
+
+  public void RetractIntake(){
+    if (intakeExtended){
+      intakeExtended = false;
+      //run arm motor to retracted position
+      m_IntakeArm.set(ControlMode.Position, 0);
+    }
+  }
+}
