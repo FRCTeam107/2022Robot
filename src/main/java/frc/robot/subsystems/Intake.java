@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
   private boolean intakeExtended;
   private double m_IntakeSpeed;
   private double m_CurrentSpeed;
+  
   public static final class IntakeArmConstants {
     public static final double kP = 0.25; 
     public static final double kI = 0.0005;
@@ -40,10 +41,12 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor = new WPI_TalonSRX(Motors.BALL_INTAKE);
     m_IntakeMotor.configFactoryDefault();
     m_IntakeMotor.setInverted(false);
+    m_IntakeMotor.configOpenloopRamp(0.2);
 
     m_IntakeSpeed = 0.20;
     m_CurrentSpeed = 0;
    
+
     m_IntakeArm = new WPI_TalonSRX(Motors.INTAKE_ARM);
     m_IntakeArm.configFactoryDefault();
     m_IntakeArm.setInverted(false);
