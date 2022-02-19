@@ -27,12 +27,14 @@ import frc.robot.commands.ReplayFile;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DataRecorder;
+import frc.robot.subsystems.Intake;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
 import frc.robot.subsystems.DataRecorder.datapoint;
+import frc.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,6 +47,7 @@ public class RobotContainer {
   private final Joystick m_flightcontroller, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
+  private final Intake m_Intake;
   //private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
 
@@ -69,11 +72,14 @@ public class RobotContainer {
     //m_LEDLights = new LEDLights();
     m_Drivetrain  = new SwerveDrivetrain();
     m_shooter = new Shooter ();
+    m_Intake = new Intake ();
     m_Camera = new VisionCamera();
 
     m_DataRecorder = new DataRecorder();
     m_Drivetrain.setDataRecorder(m_DataRecorder);
     m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
+    // TODO add DataRecorder to Intake subsystem
+    // m_Intake.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
    
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
     
@@ -114,6 +120,12 @@ public class RobotContainer {
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
 
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.TOGGLE_INTAKE).whenPressed(m_Intake::ToggleIntake);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whileHeld(m_Intake::HeimlichManeuver);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whenReleased(m_Intake::ResumeNormalSpeed);
+
+
+
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
     new JoystickButton(m_flightcontroller, 1).whenPressed(m_Camera::lowerCamera);
     new JoystickButton(m_flightcontroller, 2).whenPressed(m_Camera::middleCamera);
@@ -123,6 +135,9 @@ public class RobotContainer {
      // JoystickButton btnManualOverride = new JoystickButton(m_controllerJoystick, ControllerJoystick.MANUAL_OVERRIDE);
       //btnManualOverride.whenPressed(m_climber::allowAdditionalMovement);
       // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
+
+
+
 
     }
 

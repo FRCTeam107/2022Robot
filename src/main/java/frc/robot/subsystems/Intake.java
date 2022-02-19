@@ -21,6 +21,8 @@ public class Intake extends SubsystemBase {
   private final WPI_TalonSRX m_IntakeMotor;
   private final WPI_TalonSRX m_IntakeArm;
   private boolean intakeExtended;
+  private double m_IntakeSpeed;
+  private double m_CurrentSpeed;
   public static final class IntakeArmConstants {
     public static final double kP = 0.25; 
     public static final double kI = 0.0005;
@@ -38,6 +40,9 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor = new WPI_TalonSRX(Motors.BALL_INTAKE);
     m_IntakeMotor.configFactoryDefault();
     m_IntakeMotor.setInverted(false);
+
+    m_IntakeSpeed = 0.20;
+    m_CurrentSpeed = 0;
    
     m_IntakeArm = new WPI_TalonSRX(Motors.INTAKE_ARM);
     m_IntakeArm.configFactoryDefault();
@@ -55,24 +60,51 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    runMotor(m_CurrentSpeed);
+
   }
   public void runMotor(double speed){
     m_IntakeMotor.set(speed);
   }
 
-  public void ExtendIntake(){
+  public void ToggleIntake(){
     if (!intakeExtended){
+      
       intakeExtended = true;
       //TODO run arm motor to extended position, find right position
       m_IntakeArm.set(ControlMode.Position, 100);
+      m_CurrentSpeed = m_IntakeSpeed;
     }
-  }
-
-  public void RetractIntake(){
-    if (intakeExtended){
+    else if (intakeExtended) {
       intakeExtended = false;
       //run arm motor to retracted position
       m_IntakeArm.set(ControlMode.Position, 0);
+      m_CurrentSpeed = 0;
     }
+
   }
-}
+
+  public void HeimlichManeuver() {
+
+    m_CurrentSpeed = -0.2;
+
+  }
+   
+  public void ResumeNormalSpeed() {
+
+    if (intakeExtended) {
+
+      m_CurrentSpeed = m_IntakeSpeed;
+
+    }
+
+    else {
+
+      m_CurrentSpeed = 0;
+
+    }
+
+  }
+
+  }
