@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.Motors;
 import frc.robot.subsystems.DataRecorder.datapoint;
 
 //import com.kauailabs.navx.*;
@@ -50,24 +51,24 @@ public class SwerveDrivetrain extends SubsystemBase {
   public static double backRightOffset = 75.5;// 255.5; //290.21;
 
 
-  //put your can Id's here!
-  public static final int frontLeftDriveId = 1; 
-  public static final int frontLeftCANCoderId = 2; 
-  public static final int frontLeftSteerId = 3;
-  //put your can Id's here!
-  public static final int frontRightDriveId = 4; 
-  public static final int frontRightCANCoderId = 5; 
-  public static final int frontRightSteerId = 6; 
-  //put your can Id's here!
+  // //put your can Id's here!
+  // public static final int frontLeftDriveId = 1; 
+  // public static final int frontLeftCANCoderId = 2; 
+  // public static final int frontLeftSteerId = 3;
+  // //put your can Id's here!
+  // public static final int frontRightDriveId = 4; 
+  // public static final int frontRightCANCoderId = 5; 
+  // public static final int frontRightSteerId = 6; 
+  // //put your can Id's here!
 
-    public static final int backLeftDriveId = 10; 
-  public static final int backLeftCANCoderId = 11; 
-  public static final int backLeftSteerId = 12;
-  //put your can Id's here!
+  //   public static final int backLeftDriveId = 10; 
+  // public static final int backLeftCANCoderId = 11; 
+  // public static final int backLeftSteerId = 12;
+  // //put your can Id's here!
 
-  public static final int backRightDriveId = 7; 
-  public static final int backRightCANCoderId = 8; 
-  public static final int backRightSteerId = 9;   
+  // public static final int backRightDriveId = 7; 
+  // public static final int backRightCANCoderId = 8; 
+  // public static final int backRightSteerId = 9;   
   public static AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -93,7 +94,8 @@ public class SwerveDrivetrain extends SubsystemBase {
    SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
    private SwerveModuleMK3 m_frontLeft, m_frontRight, m_rearLeft, m_rearRight;
    private SwerveModuleMK3[] modules;
-   
+   private DataRecorder dataRecorder;
+
   //  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
   //   new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
   //   new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset)), // Front Right
@@ -104,20 +106,17 @@ public class SwerveDrivetrain extends SubsystemBase {
   public SwerveDrivetrain() {
    // gyro.reset(); 
   
-    m_frontLeft = new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
-    m_frontRight = new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
-    m_rearLeft = new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset));
-    m_rearRight = new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset));
+    m_frontLeft = new SwerveModuleMK3(new TalonFX(Motors.frontLeftDriveId), new TalonFX(Motors.frontLeftSteerId), new CANCoder(Motors.frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
+    m_frontRight = new SwerveModuleMK3(new TalonFX(Motors.frontRightDriveId), new TalonFX(Motors.frontRightSteerId), new CANCoder(Motors.frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
+    m_rearLeft = new SwerveModuleMK3(new TalonFX(Motors.backLeftDriveId), new TalonFX(Motors.backLeftSteerId), new CANCoder(Motors.backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset));
+    m_rearRight = new SwerveModuleMK3(new TalonFX(Motors.backRightDriveId), new TalonFX(Motors.backRightSteerId), new CANCoder(Motors.backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset));
    
     modules = new SwerveModuleMK3[] {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
    
   }
 
   public void setDataRecorder(DataRecorder _dataRecorder){
-    m_frontLeft.setDataRecorder(_dataRecorder, datapoint.FrontLeftDrive, datapoint.FrontLeftSteer );
-    m_frontRight.setDataRecorder(_dataRecorder, datapoint.FrontRightDrive, datapoint.FrontRightSteer);
-    m_rearLeft.setDataRecorder(_dataRecorder, datapoint.RearLeftDrive, datapoint.RearLeftSteer);
-    m_rearRight.setDataRecorder(_dataRecorder, datapoint.RearRightDrive, datapoint.RearRightSteer);
+    this.dataRecorder = _dataRecorder;
   }
 
   /**
@@ -133,6 +132,15 @@ public class SwerveDrivetrain extends SubsystemBase {
     
     if(calibrateGyro){
       m_gyro.reset(); //recalibrates gyro offset
+    }
+
+    if (this.dataRecorder != null)
+    {
+      this.dataRecorder.recordValue(datapoint.Drive_X, xSpeed);
+      this.dataRecorder.recordValue(datapoint.Drive_Y, ySpeed);
+      this.dataRecorder.recordValue(datapoint.Drive_Z, rot);
+      this.dataRecorder.recordValue(datapoint.GyroAngle, m_gyro.getAngle());
+      m_frontLeft.getAngle();
     }
 
     SwerveModuleState[] states =

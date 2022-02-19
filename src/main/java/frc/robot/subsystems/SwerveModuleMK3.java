@@ -36,17 +36,11 @@ public class SwerveModuleMK3 {
   private CANCoder canCoder;
   private Rotation2d offset;
 
-  private DataRecorder dataRecorder;
-  private int recordDriveIx=0, recordSteerIx = 0;
-
-  //private RecordAndPlayback RecAndPlay = r
   public SwerveModuleMK3(TalonFX driveMotor, TalonFX angleMotor, CANCoder canCoder, Rotation2d offset) {
     this.driveMotor = driveMotor;
     this.angleMotor = angleMotor;
     this.canCoder = canCoder;
     this.offset = offset;
-
-    this.dataRecorder = null;
 
     TalonFXConfiguration angleTalonFXConfiguration = new TalonFXConfiguration();
 
@@ -71,19 +65,16 @@ public class SwerveModuleMK3 {
  
     driveMotor.configAllSettings(driveTalonFXConfiguration);
     driveMotor.setNeutralMode(NeutralMode.Brake);   
-    
+    // set voltage compensation to 11 volts to smooth out battery variations
+    driveMotor.configVoltageCompSaturation(11, 0);
+    driveMotor.enableVoltageCompensation(true);
+
     // this line sets the ration of encoder pulses to actual distance travelled (in meters)
     driveMotor.configSelectedFeedbackCoefficient(DriveConstants.kEncoderDistancePerPulse);
 
     CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
     canCoderConfiguration.magnetOffsetDegrees = offset.getDegrees();
     canCoder.configAllSettings(canCoderConfiguration);
-  }
-
-  public void setDataRecorder(DataRecorder _dataRecorder, Integer driveIx, Integer steerIx){
-    this.dataRecorder = _dataRecorder;
-    this.recordDriveIx = driveIx;
-    this.recordSteerIx = steerIx;
   }
 
   /**
@@ -145,13 +136,6 @@ public class SwerveModuleMK3 {
     driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
    //driveMotor.set(TalonFXControlMode.Velocity, feetPerSecond / SwerveDrivetrain.kMaxSpeed);
 
-
-   if (this.dataRecorder != null)
-   {
-     this.dataRecorder.recordValue(this.recordSteerIx, desiredTicks);
-     this.dataRecorder.recordValue(this.recordDriveIx, motorSpeed);
-   }
    //   SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
   }
-
 }

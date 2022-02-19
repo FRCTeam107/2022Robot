@@ -75,6 +75,12 @@ public final class Constants {
                 public static final int CLIMBER_RETRACT = 9;
                 //  public static final int LOWER_ARM = 10;
                 //  public static final int RAISE_ARM = 11;
+
+                // public static final int CLIMBER_EXTEND = 8;
+                //  public static final int CLIMBER_RETRACT = 9;
+                public static final int REPLAY_RECORDING = 7;
+                public static final int START_RECORDING = 10;
+                public static final int END_RECORDING = 11;
         }
 
         //MOTORS
@@ -85,6 +91,24 @@ public final class Constants {
                 // public static final int RIGHT_DRIVE_ONE = 1;
                 // public static final int RIGHT_DRIVE_TWO = 2;
                 // public static final int RIGHT_DRIVE_THREE = 3;
+               //put your can Id's here!
+                public static final int frontLeftDriveId = 1; 
+                public static final int frontLeftCANCoderId = 2; 
+                public static final int frontLeftSteerId = 3;
+                //put your can Id's here!
+                public static final int frontRightDriveId = 4; 
+                public static final int frontRightCANCoderId = 5; 
+                public static final int frontRightSteerId = 6; 
+                //put your can Id's here!
+
+                public static final int backLeftDriveId = 10; 
+                public static final int backLeftCANCoderId = 11; 
+                public static final int backLeftSteerId = 12;
+                //put your can Id's here!
+
+                public static final int backRightDriveId = 7; 
+                public static final int backRightCANCoderId = 8; 
+                public static final int backRightSteerId = 9;   
                 public static final int SHOOTER_TOP = 17;
                 public static final int SHOOTER_BOTTOM = 18;
                 // public static final int HOPPER_NEO = 9;
@@ -92,7 +116,8 @@ public final class Constants {
                 // public static final int TURRET_LIFT = 11; // Talon SRX
                 public static final int CLIMBER_ONE = 19; // Falcon 500
                 // public static final int TURRET_SPIN = 13; // Talon SRX
-                // public static final int BALL_INTAKE = 14;   
+                public static final int BALL_INTAKE = 14;   
+                public static final int INTAKE_ARM = 15;
         }
 
         // SOLENOIDS
