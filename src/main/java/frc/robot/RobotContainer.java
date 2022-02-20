@@ -24,6 +24,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ReplayFile;
+import frc.robot.commands.SetRobotOrientationOnField;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DataRecorder;
@@ -124,6 +125,8 @@ public class RobotContainer {
       //btnManualOverride.whenPressed(m_climber::allowAdditionalMovement);
       // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
 
+
+      new JoystickButton(m_controllerJoystick, 5).whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 80));
     }
 
       /**
