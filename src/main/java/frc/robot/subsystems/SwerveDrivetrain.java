@@ -42,7 +42,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class SwerveDrivetrain extends SubsystemBase {
 
 
-
   //this is where you put the angle offsets you got from the smart dashboard
 
   public static double frontLeftOffset = 15.8; //346.90;
@@ -50,60 +49,15 @@ public class SwerveDrivetrain extends SubsystemBase {
   public static double backLeftOffset = 90.7; //273.25;
   public static double backRightOffset = 75.5;// 255.5; //290.21;
 
-
-  // //put your can Id's here!
-  // public static final int frontLeftDriveId = 1; 
-  // public static final int frontLeftCANCoderId = 2; 
-  // public static final int frontLeftSteerId = 3;
-  // //put your can Id's here!
-  // public static final int frontRightDriveId = 4; 
-  // public static final int frontRightCANCoderId = 5; 
-  // public static final int frontRightSteerId = 6; 
-  // //put your can Id's here!
-
-  //   public static final int backLeftDriveId = 10; 
-  // public static final int backLeftCANCoderId = 11; 
-  // public static final int backLeftSteerId = 12;
-  // //put your can Id's here!
-
-  // public static final int backRightDriveId = 7; 
-  // public static final int backRightCANCoderId = 8; 
-  // public static final int backRightSteerId = 9;   
   public static AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
-  // private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-  //   new Translation2d(
-  //     Units.inchesToMeters(8),
-  //     Units.inchesToMeters(15)
-  //   ),
-  //   new Translation2d(
-  //     Units.inchesToMeters(8),
-  //     Units.inchesToMeters(-15)
-  //   ),
-  //   new Translation2d(
-  //     Units.inchesToMeters(-8),
-  //     Units.inchesToMeters(15)
-  //   ),
-  //   new Translation2d(
-  //     Units.inchesToMeters(-8),
-  //     Units.inchesToMeters(-15)
-  //   )
-  // );
-
-      // Odometry class for tracking robot pose
+  // Odometry class for tracking robot pose
    SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
    private SwerveModuleMK3 m_frontLeft, m_frontRight, m_rearLeft, m_rearRight;
    private SwerveModuleMK3[] modules;
    private DataRecorder dataRecorder;
 
-  //  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
-  //   new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
-  //   new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset)), // Front Right
-  //   new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset)), // Back Left
-  //   new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset))  // Back Right
-  // };
-
-  public SwerveDrivetrain() {
+   public SwerveDrivetrain() {
    // gyro.reset(); 
   
     m_frontLeft = new SwerveModuleMK3(new TalonFX(Motors.frontLeftDriveId), new TalonFX(Motors.frontLeftSteerId), new CANCoder(Motors.frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
