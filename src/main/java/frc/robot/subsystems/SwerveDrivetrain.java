@@ -43,7 +43,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
 
   //this is where you put the angle offsets you got from the smart dashboard
-
   public static double frontLeftOffset = 15.8; //346.90;
   public static double frontRightOffset = 291.9; //111.9; //70.25;
   public static double backLeftOffset = 90.7; //273.25;
@@ -57,8 +56,9 @@ public class SwerveDrivetrain extends SubsystemBase {
    private SwerveModuleMK3[] modules;
    private DataRecorder dataRecorder;
 
-   public SwerveDrivetrain() {
-   // gyro.reset(); 
+   public SwerveDrivetrain(double fieldOffsetAngle) {
+    // gyro.reset(); 
+    zeroHeading(fieldOffsetAngle);  // at time of initializtion, assume a zero offset
   
     m_frontLeft = new SwerveModuleMK3(new TalonFX(Motors.frontLeftDriveId), new TalonFX(Motors.frontLeftSteerId), new CANCoder(Motors.frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
     m_frontRight = new SwerveModuleMK3(new TalonFX(Motors.frontRightDriveId), new TalonFX(Motors.frontRightSteerId), new CANCoder(Motors.frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
@@ -82,11 +82,12 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param calibrateGyro button to recalibrate the gyro offset
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean calibrateGyro) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     
-    if(calibrateGyro){
-      m_gyro.reset(); //recalibrates gyro offset
-    }
+    // if(calibrateGyro){
+    //   //m_gyro.reset(); //recalibrates gyro offset
+    //   zeroHeading(0); // assume manual re-calibrating pointing straight 'north' on field
+    // }
 
     if (this.dataRecorder != null)
     {
@@ -178,9 +179,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     //   m_rearRight.resetEncoders();
     // }
   
-    /** Zeroes the heading of the robot. */
-    public void zeroHeading() {
+    /** Zeroes the heading of the robot. Based on fieldOffsetAngle */
+    public void zeroHeading(double fieldOffsetAngle) {
       m_gyro.reset();
+      m_gyro.setAngleAdjustment(fieldOffsetAngle);
     }
   
     /**
@@ -232,10 +234,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     if (initPose) {
       // Reset odometry to the starting pose of the trajectory.
       var reset =  new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
-      return reset.andThen(swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false, false)));
+      return reset.andThen(swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false)));
     }
     else {
-      return swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false, false));
+      return swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false));
     }
   }
   

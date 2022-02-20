@@ -67,7 +67,7 @@ public class RobotContainer {
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
     //m_LEDLights = new LEDLights();
-    m_Drivetrain  = new SwerveDrivetrain();
+    m_Drivetrain  = new SwerveDrivetrain(0); // begin assuming no field offset angle of robot (facing straight "north")
     m_shooter = new Shooter ();
     m_Camera = new VisionCamera();
 
@@ -184,7 +184,7 @@ SwerveControllerCommand swerveControllerCommand =
 
     // Run path following command, then stop at the end.
     //return swerveControllerCommand;
-    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false));
 
   }
 

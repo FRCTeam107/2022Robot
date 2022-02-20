@@ -70,10 +70,10 @@ public class SwerveDriveCommand extends CommandBase {
     // final var rot =
     //     -rotLimiter.calculate(0) //leftController.getZ())
     //       * SwerveDrivetrain.kMaxAngularSpeed;
-    boolean calibrate = false; //controller.getLeftBumper();
+    //boolean calibrate = false; //controller.getLeftBumper();
 //SmartDashboard.putBoolean("calibrate", calibrate);
 
-    drivetrain.drive(xSpeed, ySpeed, rot, true, calibrate);
+    drivetrain.drive(xSpeed, ySpeed, rot, true);//, calibrate);
    
   }
 
