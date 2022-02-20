@@ -140,7 +140,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       this.dataRecorder.recordValue(datapoint.Drive_Y, ySpeed);
       this.dataRecorder.recordValue(datapoint.Drive_Z, rot);
       this.dataRecorder.recordValue(datapoint.GyroAngle, m_gyro.getAngle());
-      m_frontLeft.getAngle();
     }
 
     SwerveModuleState[] states =
