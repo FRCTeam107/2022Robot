@@ -146,7 +146,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
@@ -172,12 +172,12 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
   
     /** Resets the drive encoders to currently read a position of 0. */
-    // public void resetEncoders() {
-    //   m_frontLeft.resetEncoders();
-    //   m_rearLeft.resetEncoders();
-    //   m_frontRight.resetEncoders();
-    //   m_rearRight.resetEncoders();
-    // }
+    public void resetEncoders() {
+      m_frontLeft.resetEncoders();
+      m_rearLeft.resetEncoders();
+      m_frontRight.resetEncoders();
+      m_rearRight.resetEncoders();
+    }
   
     /** Zeroes the heading of the robot. Based on fieldOffsetAngle */
     public void zeroHeading(double fieldOffsetAngle) {

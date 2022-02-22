@@ -126,7 +126,7 @@ public class RobotContainer {
       // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
 
 
-      new JoystickButton(m_controllerJoystick, 5).whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 80));
+      new JoystickButton(m_controllerJoystick, 5).whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 80).andThen(m_Drivetrain::resetEncoders));
     }
 
       /**
