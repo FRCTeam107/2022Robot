@@ -21,7 +21,7 @@ private final AnalogInput m_ultrasonic;
    */
   public LEDLights() {
     super();
-    m_LEDLights = new PWMSparkMax(0);
+    m_LEDLights = new PWMSparkMax(1);
     m_ultrasonic = new AnalogInput(0);
     m_color = -0.99;
     m_LEDLights.set(0);
