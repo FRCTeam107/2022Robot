@@ -109,6 +109,14 @@ public final class Constants {
                 public static final int INTAKE_ARM = 15;
         }
 
+        //LED LIGHTS
+        public class DashboardTags{
+               
+                public static final String LEDColorTag = "Color of LEDs";
+        
+        }
+
+
         // SOLENOIDS
         public class Solenoids{
                 // public static final int INTAKE_REVERSE = 0;

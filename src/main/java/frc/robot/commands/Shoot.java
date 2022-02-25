@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.LEDLights;
 
 public class Shoot extends CommandBase {
   /**
@@ -20,12 +21,14 @@ public class Shoot extends CommandBase {
    */
   private final Shooter m_shoot;
   private final BooleanSupplier m_forceShot;
+  private LEDLights m_LEDLights;
   
   private double iTop, iBottom;
  
-  public Shoot(Shooter _shooter, BooleanSupplier _forceShot) {
+  public Shoot(Shooter _shooter, BooleanSupplier _forceShot, LEDLights _LEDLights) {
     m_shoot = _shooter;
     m_forceShot = _forceShot;
+    m_LEDLights = _LEDLights;
 
     iTop = SmartDashboard.getNumber("i Top", 5000);
     iBottom = SmartDashboard.getNumber("i Bottom", 7000);
@@ -48,12 +51,29 @@ public class Shoot extends CommandBase {
     double speedTop = 8000;
     double speedBottom = 10000;
     double liftPosition = 0;
-    
+   
+
+
     speedTop = SmartDashboard.getNumber("i Top", iTop);
     speedBottom = SmartDashboard.getNumber("i Bottom", iBottom);
     liftPosition = SmartDashboard.getNumber("i Lift", liftPosition);
 
+    if (speedTop > 0){
 
+      m_LEDLights.SetColor(0.77);
+
+    }
+    else if (speedTop < 0) {
+
+      m_LEDLights.SetColor(0.61);
+
+    }
+
+    else {
+    
+      m_LEDLights.SetColor(0.67);
+    
+  }
     // if (m_Limelight.Havetarget()) {
     //   // double m_tX = m_Limelight.tX();   // how far off, the 'X' value
     //   // double m_tY = m_Limelight.tY();   //how far off, the 'Y' value

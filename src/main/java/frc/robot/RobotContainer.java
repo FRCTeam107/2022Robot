@@ -107,11 +107,11 @@ public class RobotContainer {
     //new JoystickButton(m_rightJoystick, RightJoystick.TOGGLE_LIMELIGHT).whenPressed(m_limelight::ToggleVisionProcessing, m_limelight);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
-                () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
+                () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY), m_LEDLights));
 
     new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
-    new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
+    //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
