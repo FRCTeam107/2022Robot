@@ -42,23 +42,77 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class SwerveDrivetrain extends SubsystemBase {
 
 
-  //this is where you put the angle offsets you got from the smart dashboard
-  public static double frontLeftOffset = 15.8; //346.90;
-  public static double frontRightOffset = 291.9; //111.9; //70.25;
-  public static double backLeftOffset = 90.7; //273.25;
-  public static double backRightOffset = 75.5;// 255.5; //290.21;
 
+  //this is where you put the angle offsets you got from the smart dashboard
+  // reducing the angle will adjust counter-clockwise direction
+
+  // PRACTICE ROBOT SETTINGS
+  // public static double frontLeftOffset = 15.8; //346.90;
+  // public static double frontRightOffset = 291.9; //111.9; //70.25;
+  // public static double backLeftOffset = 90.7; //273.25;
+  // public static double backRightOffset = 75.5;// 255.5; //290.21;
+
+  //COMPETITION ROBOT SETTINGS
+  public static double frontLeftOffset = 120;
+  public static double frontRightOffset = 349;
+  public static double backLeftOffset = 203;
+  public static double backRightOffset = 220;
+
+
+  // //put your can Id's here!
+  // public static final int frontLeftDriveId = 1; 
+  // public static final int frontLeftCANCoderId = 2; 
+  // public static final int frontLeftSteerId = 3;
+  // //put your can Id's here!
+  // public static final int frontRightDriveId = 4; 
+  // public static final int frontRightCANCoderId = 5; 
+  // public static final int frontRightSteerId = 6; 
+  // //put your can Id's here!
+
+  //   public static final int backLeftDriveId = 10; 
+  // public static final int backLeftCANCoderId = 11; 
+  // public static final int backLeftSteerId = 12;
+  // //put your can Id's here!
+
+  // public static final int backRightDriveId = 7; 
+  // public static final int backRightCANCoderId = 8; 
+  // public static final int backRightSteerId = 9;   
   public static AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
-  // Odometry class for tracking robot pose
+  // private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  //   new Translation2d(
+  //     Units.inchesToMeters(8),
+  //     Units.inchesToMeters(15)
+  //   ),
+  //   new Translation2d(
+  //     Units.inchesToMeters(8),
+  //     Units.inchesToMeters(-15)
+  //   ),
+  //   new Translation2d(
+  //     Units.inchesToMeters(-8),
+  //     Units.inchesToMeters(15)
+  //   ),
+  //   new Translation2d(
+  //     Units.inchesToMeters(-8),
+  //     Units.inchesToMeters(-15)
+  //   )
+  // );
+
+      // Odometry class for tracking robot pose
    SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
    private SwerveModuleMK3 m_frontLeft, m_frontRight, m_rearLeft, m_rearRight;
    private SwerveModuleMK3[] modules;
    private DataRecorder dataRecorder;
 
-   public SwerveDrivetrain(double fieldOffsetAngle) {
-    // gyro.reset(); 
-    zeroHeading(fieldOffsetAngle);  // at time of initializtion, assume a zero offset
+  //  private SwerveModuleMK3[] modules = new SwerveModuleMK3[] {
+  //   new SwerveModuleMK3(new TalonFX(frontLeftDriveId), new TalonFX(frontLeftSteerId), new CANCoder(frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset)), // Front Left
+  //   new SwerveModuleMK3(new TalonFX(frontRightDriveId), new TalonFX(frontRightSteerId), new CANCoder(frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset)), // Front Right
+  //   new SwerveModuleMK3(new TalonFX(backLeftDriveId), new TalonFX(backLeftSteerId), new CANCoder(backLeftCANCoderId), Rotation2d.fromDegrees(backLeftOffset)), // Back Left
+  //   new SwerveModuleMK3(new TalonFX(backRightDriveId), new TalonFX(backRightSteerId), new CANCoder(backRightCANCoderId), Rotation2d.fromDegrees(backRightOffset))  // Back Right
+  // };
+
+  public SwerveDrivetrain() {
+   // gyro.reset(); 
   
     m_frontLeft = new SwerveModuleMK3(new TalonFX(Motors.frontLeftDriveId), new TalonFX(Motors.frontLeftSteerId), new CANCoder(Motors.frontLeftCANCoderId), Rotation2d.fromDegrees(frontLeftOffset));
     m_frontRight = new SwerveModuleMK3(new TalonFX(Motors.frontRightDriveId), new TalonFX(Motors.frontRightSteerId), new CANCoder(Motors.frontRightCANCoderId), Rotation2d.fromDegrees(frontRightOffset));
@@ -82,12 +136,11 @@ public class SwerveDrivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param calibrateGyro button to recalibrate the gyro offset
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean calibrateGyro) {
     
-    // if(calibrateGyro){
-    //   //m_gyro.reset(); //recalibrates gyro offset
-    //   zeroHeading(0); // assume manual re-calibrating pointing straight 'north' on field
-    // }
+    if(calibrateGyro){
+      m_gyro.reset(); //recalibrates gyro offset
+    }
 
     if (this.dataRecorder != null)
     {
@@ -146,7 +199,7 @@ public class SwerveDrivetrain extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-    desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
@@ -172,18 +225,17 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
   
     /** Resets the drive encoders to currently read a position of 0. */
-    public void resetEncoders() {
-      m_frontLeft.resetEncoders();
-      m_rearLeft.resetEncoders();
-      m_frontRight.resetEncoders();
-      m_rearRight.resetEncoders();
-    }
+    // public void resetEncoders() {
+    //   m_frontLeft.resetEncoders();
+    //   m_rearLeft.resetEncoders();
+    //   m_frontRight.resetEncoders();
+    //   m_rearRight.resetEncoders();
+    // }
   
-    /** Zeroes the heading of the robot. Based on fieldOffsetAngle */
-    public void zeroHeading(double fieldOffsetAngle) {
+    /** Zeroes the heading of the robot. */
+    public void zeroHeading() {
       m_gyro.reset();
-      m_gyro.setAngleAdjustment(fieldOffsetAngle);
-    } 
+    }
   
     /**
      * Returns the heading of the robot.
@@ -234,10 +286,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     if (initPose) {
       // Reset odometry to the starting pose of the trajectory.
       var reset =  new InstantCommand(() -> this.resetOdometry(trajectory.getInitialPose()));
-      return reset.andThen(swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false)));
+      return reset.andThen(swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false, false)));
     }
     else {
-      return swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false));
+      return swerveControllerCommand.andThen(() -> this.drive(0, 0, 0, false, false));
     }
   }
   
