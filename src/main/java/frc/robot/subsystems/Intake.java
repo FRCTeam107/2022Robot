@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Motors;
 
@@ -43,6 +44,9 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.setInverted(false);
     m_IntakeMotor.configOpenloopRamp(0.2);
 
+    double junk = SmartDashboard.getNumber("intakeSpeed", 0.20);
+    SmartDashboard.putNumber("intakeSpeed", junk);
+
     m_IntakeSpeed = 0.20;
     m_CurrentSpeed = 0;
    
@@ -76,13 +80,14 @@ public class Intake extends SubsystemBase {
       
       intakeExtended = true;
       //TODO run arm motor to extended position, find right position
-      m_IntakeArm.set(ControlMode.Position, 100);
-      m_CurrentSpeed = m_IntakeSpeed;
+      //m_IntakeArm.set(ControlMode.Position, 100);
+      // m_CurrentSpeed = m_IntakeSpeed;
+      m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
     }
     else if (intakeExtended) {
       intakeExtended = false;
       //run arm motor to retracted position
-      m_IntakeArm.set(ControlMode.Position, 0);
+      //m_IntakeArm.set(ControlMode.Position, 0);
       m_CurrentSpeed = 0;
     }
 
@@ -98,7 +103,8 @@ public class Intake extends SubsystemBase {
 
     if (intakeExtended) {
 
-      m_CurrentSpeed = m_IntakeSpeed;
+      //m_CurrentSpeed = m_IntakeSpeed;
+      m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
 
     }
 
