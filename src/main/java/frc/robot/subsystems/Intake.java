@@ -35,6 +35,20 @@ public class Intake extends SubsystemBase {
     // public static final double kMinOutput = -1;
     // public static final double maxRPM = 5700;  
 }
+
+  public static final class IntakeMotorConstants {
+
+    public static final double kP = 0.03; 
+    public static final double kI = 0;
+    public static final double kD = 0; 
+    public static final double kIz = 0; 
+    public static final double kFF = 0;//.000015; 
+    // public static final double kMaxOutput = 1; 
+    // public static final double kMinOutput = -1;
+    // public static final double maxRPM = 5700; 
+
+
+  }
   /**
    * Creates a new Intake.
    */
@@ -43,6 +57,8 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.configFactoryDefault();
     m_IntakeMotor.setInverted(false);
     m_IntakeMotor.configOpenloopRamp(0.2);
+
+    
 
     double junk = SmartDashboard.getNumber("intakeSpeed", 0.20);
     SmartDashboard.putNumber("intakeSpeed", junk);
@@ -62,6 +78,12 @@ public class Intake extends SubsystemBase {
     m_IntakeArm.config_IntegralZone(0, IntakeArmConstants.kIz);
     m_IntakeArm.config_kF(0, IntakeArmConstants.kFF);
     intakeExtended = false;
+
+    m_IntakeMotor.config_kP(0, IntakeMotorConstants.kP);
+    m_IntakeMotor.config_kI(0, IntakeMotorConstants.kI);
+    m_IntakeMotor.config_kD(0, IntakeMotorConstants.kD);
+    m_IntakeMotor.config_IntegralZone(0, IntakeMotorConstants.kIz);
+    m_IntakeMotor.config_kF(0, IntakeMotorConstants.kFF);
   }
 
   @Override
@@ -72,7 +94,8 @@ public class Intake extends SubsystemBase {
 
   }
   public void runMotor(double speed){
-    m_IntakeMotor.set(speed);
+    //m_IntakeMotor.set(ControlMode.PercentOutput, speed);
+    m_IntakeMotor.set(ControlMode.Velocity, speed);
   }
 
   public void ToggleIntake(){
@@ -95,7 +118,8 @@ public class Intake extends SubsystemBase {
 
   public void HeimlichManeuver() {
 
-    m_CurrentSpeed = -0.2;
+    //m_CurrentSpeed = -0.2;
+    m_CurrentSpeed = -1 * SmartDashboard.getNumber("intakeSpeed", 0.20);
 
   }
    
