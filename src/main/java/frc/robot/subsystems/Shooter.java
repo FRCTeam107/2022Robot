@@ -10,14 +10,17 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.Constants.Motors;
 import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   private final WPI_TalonFX m_shootbottom, m_shoottop;
+  private final WPI_TalonSRX m_kicker;
 
   private DataRecorder dataRecorder;
   private Integer recordTopIx, recordBottomIx;
@@ -48,9 +51,11 @@ public class Shooter extends SubsystemBase {
     readyCounter = 0;
     m_shootbottom = new WPI_TalonFX(Motors.SHOOTER_BOTTOM);
     m_shoottop = new WPI_TalonFX(Motors.SHOOTER_TOP);
+    m_kicker = new WPI_TalonSRX(Motors.KICKER);
 
     m_shootbottom.configFactoryDefault();
     m_shoottop.configFactoryDefault();
+    m_kicker.configFactoryDefault();
 
     // m_shootbottom.configClosedloopRamp(0.3);
     // m_shoottop.configClosedloopRamp(0.3);
@@ -148,7 +153,9 @@ public class Shooter extends SubsystemBase {
   public void setForceReady(boolean enableOverride){
     manualForceReady = enableOverride;
   }
-
+  public void runKicker(double Speed){
+    m_kicker.set(ControlMode.PercentOutput, Speed);
+  }
   public boolean isReady(){
     if (manualForceReady) {
       return true;
