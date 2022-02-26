@@ -76,8 +76,8 @@ public final class Constants {
                 public static final int REPLAY_RECORDING = 7;
                 public static final int START_RECORDING = 10;
                 public static final int END_RECORDING = 11;
-                public static final int TOGGLE_INTAKE = 12;
-                public static final int GAG_REFLEX = 13;
+                public static final int TOGGLE_INTAKE = 15;
+                public static final int GAG_REFLEX = 14;
         }
 
         //MOTORS
