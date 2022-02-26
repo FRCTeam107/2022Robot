@@ -56,7 +56,7 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor = new WPI_TalonSRX(Motors.BALL_INTAKE);
     m_IntakeMotor.configFactoryDefault();
     m_IntakeMotor.setInverted(false);
-    m_IntakeMotor.configOpenloopRamp(0.2);
+    m_IntakeMotor.configClosedloopRamp(0.5);
 
     
 
