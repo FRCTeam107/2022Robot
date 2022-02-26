@@ -71,6 +71,11 @@ public final class Constants {
                 // //public static final int TURRET_RIGHT = 5;
                 // public static final int DROP_INTAKE = 6;
                 // public static final int MANUAL_OVERRIDE = 7;
+                public static final int CLIMBER_EXTEND = 8;
+                public static final int CLIMBER_RETRACT = 9;
+                //  public static final int LOWER_ARM = 10;
+                //  public static final int RAISE_ARM = 11;
+
                 // public static final int CLIMBER_EXTEND = 8;
                 //  public static final int CLIMBER_RETRACT = 9;
                 public static final int REPLAY_RECORDING = 7;
@@ -82,6 +87,12 @@ public final class Constants {
 
         //MOTORS
         public class Motors{
+                // public static final int LEFT_DRIVE_ONE = 4;
+                // public static final int LEFT_DRIVE_TWO = 5;
+                // public static final int LEFT_DRIVE_THREE = 6;
+                // public static final int RIGHT_DRIVE_ONE = 1;
+                // public static final int RIGHT_DRIVE_TWO = 2;
+                // public static final int RIGHT_DRIVE_THREE = 3;
                //put your can Id's here!
                 public static final int frontLeftDriveId = 1; 
                 public static final int frontLeftCANCoderId = 2; 
@@ -105,7 +116,7 @@ public final class Constants {
                 // public static final int HOPPER_NEO = 9;
                 public static final int KICKER = 16;
                 // public static final int TURRET_LIFT = 11; // Talon SRX
-                // public static final int CLIMBER_ONE = 12; // CANspark max
+                public static final int CLIMBER_ONE = 19; // Falcon 500
                 // public static final int TURRET_SPIN = 13; // Talon SRX
                 public static final int BALL_INTAKE = 14;   
                 public static final int INTAKE_ARM = 15;

@@ -23,12 +23,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.RunClimber;
 import frc.robot.commands.ReplayFile;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DataRecorder;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -48,6 +50,7 @@ public class RobotContainer {
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
   private final Intake m_Intake;
+  private final Climber m_climber;
   //private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
 
@@ -71,8 +74,9 @@ public class RobotContainer {
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
     //m_LEDLights = new LEDLights();
     m_Drivetrain  = new SwerveDrivetrain();
-    m_shooter = new Shooter ();
     m_Intake = new Intake ();
+    m_shooter = new Shooter();
+    m_climber = new Climber();
     m_Camera = new VisionCamera();
 
     m_DataRecorder = new DataRecorder();
@@ -114,6 +118,12 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
+      new RunClimber(0.25, m_climber)
+    );
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
+      new RunClimber(-0.25, m_climber)
+    );
 
     new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
