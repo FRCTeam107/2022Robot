@@ -93,6 +93,10 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
   }
   //:)
 
+  public void resetEncoders(){
+    driveMotor.setSelectedSensorPosition(0);
+  }
+
   public double getDistance() {
     //double x = driveMotor.getSelectedSensorPosition();
     return driveMotor.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse;
