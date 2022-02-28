@@ -102,7 +102,7 @@ public class Intake extends SubsystemBase {
     // runMotor(m_CurrentSpeed);
         //m_IntakeMotor.set(ControlMode.PercentOutput, m_CurrentSpeed);
     m_IntakeMotor.set(ControlMode.Velocity, m_CurrentSpeed);
-
+SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
     // if upper or lower limit switch is hit, then reset encoder position to upper or lower
     if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
       m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armUpperLimit);
@@ -115,8 +115,14 @@ public class Intake extends SubsystemBase {
   //   //m_IntakeMotor.set(ControlMode.PercentOutput, speed);
   //   m_IntakeMotor.set(ControlMode.Velocity, speed);
   // }
+public void extendArm(){
+  m_IntakeArm.set(ControlMode.PercentOutput, 0.3);
+}
+public void retractArm(){
+  m_IntakeArm.set(ControlMode.PercentOutput, -0.3);
+}
 
-  public void ToggleIntake(){
+public void ToggleIntake(){
     if (!intakeExtended){
       intakeExtended = true;
       //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armUpperLimit);
@@ -129,7 +135,6 @@ public class Intake extends SubsystemBase {
       //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armLowerLimit);
       m_CurrentSpeed = 0;
     }
-
   }
 
   public void HeimlichManeuver() {

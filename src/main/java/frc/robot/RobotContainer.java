@@ -126,11 +126,14 @@ public class RobotContainer {
       new RunClimber(-0.25, m_climber)
     );
 
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
-
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whenPressed(m_Intake::extendArm);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whenPressed(m_Intake::retractArm);
+   
+   
     new JoystickButton(m_controllerJoystick, ControllerJoystick.TOGGLE_INTAKE).whenPressed(m_Intake::ToggleIntake);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whileHeld(m_Intake::HeimlichManeuver);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whenReleased(m_Intake::ResumeNormalSpeed);
@@ -138,9 +141,9 @@ public class RobotContainer {
 
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
-    new JoystickButton(m_flightcontroller, 1).whenPressed(m_Camera::lowerCamera);
-    new JoystickButton(m_flightcontroller, 2).whenPressed(m_Camera::middleCamera);
-    new JoystickButton(m_flightcontroller, 3).whenPressed(m_Camera::raiseCamera);
+    // new JoystickButton(m_flightcontroller, 1).whenPressed(m_Camera::lowerCamera);
+    // new JoystickButton(m_flightcontroller, 2).whenPressed(m_Camera::middleCamera);
+    // new JoystickButton(m_flightcontroller, 3).whenPressed(m_Camera::raiseCamera);
 
     // CONTROLLER'S JOYSTICK BUTTONS
      // JoystickButton btnManualOverride = new JoystickButton(m_controllerJoystick, ControllerJoystick.MANUAL_OVERRIDE);

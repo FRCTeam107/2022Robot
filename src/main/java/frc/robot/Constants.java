@@ -65,8 +65,8 @@ public final class Constants {
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
                 // public static final int INTAKE_IN = 2;
-                // public static final int FILL_HOPPER = 3;
-                // public static final int INTAKE_EJECT = 5;
+                public static final int INTAKE_EXTEND = 3;
+                public static final int INTAKE_RETRACT = 4;
                  public static final int FORCE_READY = 4;
                 // //public static final int TURRET_RIGHT = 5;
                 // public static final int DROP_INTAKE = 6;
