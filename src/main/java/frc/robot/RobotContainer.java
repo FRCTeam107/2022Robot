@@ -130,9 +130,10 @@ public class RobotContainer {
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whenPressed(m_Intake::extendArm);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whenPressed(m_Intake::retractArm);
-   
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whileHeld(m_Intake::extendArm);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whenReleased(m_Intake::stopArm);
+     new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whileHeld(m_Intake::retractArm);
+     new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whenReleased(m_Intake::stopArm);
    
     new JoystickButton(m_controllerJoystick, ControllerJoystick.TOGGLE_INTAKE).whenPressed(m_Intake::ToggleIntake);
     new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whileHeld(m_Intake::HeimlichManeuver);
