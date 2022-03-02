@@ -29,7 +29,7 @@ public class Intake extends SubsystemBase {
   
   public static final class IntakeArmConstants {
     //TODO run arm motor to extended position, find right position
-    public static final double armRetractedPos = 10000;// 535000;
+    public static final double armRetractedPos = 615000;
     public static final double armExtendedPos = 0;
     
     // intake arm PID values
@@ -133,14 +133,14 @@ public void stopArm() {
 public void ToggleIntake(){
     if (!intakeExtended){
       intakeExtended = true;
-      //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armUpperLimit);
+      m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
       // m_CurrentSpeed = m_IntakeSpeed;
       m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
     }
     else if (intakeExtended) {
       intakeExtended = false;
       //run arm motor to retracted position
-      //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armLowerLimit);
+      m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
       m_CurrentSpeed = 0;
     }
   }
