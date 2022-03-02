@@ -15,19 +15,47 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Motors;
 //import frc.robot.Constants.Solenoids;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class Climber extends SubsystemBase {
 
-private final WPI_TalonFX m_climber;
+private final WPI_TalonFX m_climber, m_climberArm;
 
+public static final class ClimberConstants {
+  private static final double armExtendPos = 200.000; //268.14905;
+  private static final double armHomePos = 0.0;
+
+    //TODO tune the climber arm PID values
+    public static final double kP = 0.04; 
+    public static final double kI = 0.0001;
+    public static final double kD = 0.0; 
+    public static final double kIz = 4000; 
+    public static final double kFF = 0;  //.000015; 
+}
 // private SparkMaxLimitSwitch m_forwardLimit;
 // private SparkMaxLimitSwitch m_reverseLimit;
-private final double kClimberMaxPosition = 200.000; //268.14905;
-private final double kClimberMinPosition = 0.0;
 //private boolean armIsUp;
-  /**
+
+
+public static final class ClimberArmConstants {
+  //TODO run arm motor to extended position, find right position
+  public static final double armReachBackPos = 0;
+  public static final double armVerticalPos = -170000;
+  
+  //TODO tune the climber arm PID values
+  public static final double kP = 0.04; 
+  public static final double kI = 0.0001;
+  public static final double kD = 0.0; 
+  public static final double kIz = 4000; 
+  public static final double kFF = 0;  //.000015; 
+  // public static final double kMaxOutput = 1; 
+  // public static final double kMinOutput = -1;
+  // public static final double maxRPM = 5700;  
+  }
+
+/**
    * Creates a new Climber.
    */
   public Climber() {
@@ -36,9 +64,15 @@ private final double kClimberMinPosition = 0.0;
 
     m_climber.configFactoryDefault();
     m_climber.setNeutralMode(NeutralMode.Brake);
-    m_climber.setSelectedSensorPosition(1);
+    m_climber.setSelectedSensorPosition(ClimberConstants.armHomePos);
     
-    
+    m_climber.config_kP(0, ClimberConstants.kP);
+    m_climber.config_kI(0, ClimberConstants.kI);
+    m_climber.config_kD(0, ClimberConstants.kD);
+    m_climber.config_IntegralZone(0, ClimberConstants.kIz);
+    m_climber.config_kF(0, ClimberConstants.kFF);
+
+
     //m_climber.setlimits
 
     // m_climber.setIdleMode(IdleMode.kBrake);
@@ -52,13 +86,25 @@ private final double kClimberMinPosition = 0.0;
    // m_climber.enableSoftLimit(SoftLimitDirection.kReverse, true);
    // m_climber.enableSoftLimit(SoftLimitDirection.kForward, true);
 
-    //m_Solenoid.set(Value.kForward);
     //armIsUp = true;
 
-    // m_forwardLimit.enableLimitSwitch(false);
-    // m_reverseLimit.enableLimitSwitch(false);
-    // SmartDashboard.putBoolean("Forward Limit Enabled", m_forwardLimit.isLimitSwitchEnabled());
-    // SmartDashboard.putBoolean("Reverse Limit Enabled", m_reverseLimit.isLimitSwitchEnabled());
+    m_climberArm = new WPI_TalonFX(Motors.CLIMBER_ARM);
+    m_climberArm.configFactoryDefault();
+    m_climberArm.setInverted(false);
+    m_climberArm.setNeutralMode(NeutralMode.Brake);
+    m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armReachBackPos);
+    // PID values for INTAKE_ARM
+    m_climberArm.config_kP(0, ClimberArmConstants.kP);
+    m_climberArm.config_kI(0, ClimberArmConstants.kI);
+    m_climberArm.config_kD(0, ClimberArmConstants.kD);
+    m_climberArm.config_IntegralZone(0, ClimberArmConstants.kIz);
+    m_climberArm.config_kF(0, ClimberArmConstants.kFF);
+
+
+    // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
+    // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
+    //m_IntakeArm.get
+
   }
 
   @Override
@@ -76,7 +122,7 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
 
   public void runMotor(double speed){
     m_climber.set(speed);
-    SmartDashboard.putNumber("climberSpeed", speed);
+   // SmartDashboard.putNumber("climberSpeed", speed);
     // if (!armIsUp){
     // //if (m_Solenoid.get() != Value.kForward) {
     //   m_climber.set(0);
@@ -102,11 +148,35 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
     //}
   }
 
-  public void allowAdditionalMovement(){
-    m_climber.setSelectedSensorPosition((float)((kClimberMaxPosition - kClimberMinPosition)/2));
+  // public void allowAdditionalMovement(){
+  //   m_climber.setSelectedSensorPosition((float)((kClimberMaxPosition - kClimberMinPosition)/2));
+  // }
+  // public void setToRetractedPosition(){
+  //   m_climber.setSelectedSensorPosition((float)kClimberMinPosition);
+  // }
+
+  public void moveArmtoReachBack(){
+    m_climberArm.set(ControlMode.Position, ClimberArmConstants.armReachBackPos);
   }
-  public void setToRetractedPosition(){
-    m_climber.setSelectedSensorPosition((float)kClimberMinPosition);
+
+  public void moveArmToVertical(){
+    m_climberArm.set(ControlMode.Position, ClimberArmConstants.armVerticalPos);
+  }
+
+  public void stopArm(){
+    m_climberArm.set(ControlMode.PercentOutput, 0);
+  }
+
+
+  public void extendClimber(){
+    m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
+  }
+
+  public void pullClimber(){
+    m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
+  }
+  public void stopClimber(){
+    m_climber.set(ControlMode.PercentOutput, 0);
   }
   
 }
