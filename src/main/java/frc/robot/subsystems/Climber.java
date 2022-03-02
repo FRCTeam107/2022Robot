@@ -41,8 +41,8 @@ public static final class ClimberConstants {
 
 public static final class ClimberArmConstants {
   //TODO run arm motor to extended position, find right position
-  public static final double armReachBackPos = 10000;
-  public static final double armVerticalPos = 0;
+  public static final double armReachBackPos = 0;
+  public static final double armVerticalPos = -170000;
   
   //TODO tune the climber arm PID values
   public static final double kP = 0.04; 
@@ -92,7 +92,7 @@ public static final class ClimberArmConstants {
     m_climberArm.configFactoryDefault();
     m_climberArm.setInverted(false);
     m_climberArm.setNeutralMode(NeutralMode.Brake);
-    m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armVerticalPos);
+    m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armReachBackPos);
     // PID values for INTAKE_ARM
     m_climberArm.config_kP(0, ClimberArmConstants.kP);
     m_climberArm.config_kI(0, ClimberArmConstants.kI);
