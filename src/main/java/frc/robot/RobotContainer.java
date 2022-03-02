@@ -112,17 +112,17 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
-      new RunClimber(0.25, m_climber)
-    );
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
-      new RunClimber(-0.25, m_climber)
-    );
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
+    //   new RunClimber(0.25, m_climber)
+    // );
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
+    //   new RunClimber(-0.25, m_climber)
+    // );
 
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
-    //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
+    // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
 
     //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
     new JoystickButton(m_flightcontroller, 1).whenPressed(m_Camera::lowerCamera);
@@ -130,10 +130,21 @@ public class RobotContainer {
     new JoystickButton(m_flightcontroller, 3).whenPressed(m_Camera::raiseCamera);
 
     // CONTROLLER'S JOYSTICK BUTTONS
-     // JoystickButton btnManualOverride = new JoystickButton(m_controllerJoystick, ControllerJoystick.MANUAL_OVERRIDE);
-      //btnManualOverride.whenPressed(m_climber::allowAdditionalMovement);
-      // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
+     JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_REACHBACK);
+     btnClimbArmReach.whenPressed(m_climber::moveArmtoReachBack);
+     btnClimbArmReach.whenReleased(m_climber::stopClimber);
 
+     JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_VERTICAL);
+     btnClimbArmVert.whenPressed(m_climber::moveArmToVertical);
+     btnClimbArmVert.whenReleased(m_climber::stopClimber);
+     
+     JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
+     btnClimberExtend.whenPressed(m_climber::extendClimber);
+     btnClimberExtend.whenReleased(m_climber::stopClimber);
+
+     JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
+     btnClimberPull.whenPressed(m_climber::pullClimber);
+     btnClimberPull.whenReleased(m_climber::stopClimber);
     }
 
       /**
