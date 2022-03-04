@@ -111,13 +111,16 @@ public static final class ClimberArmConstants {
   public void periodic() {
     //m_climber.get
     // This method will be called once per scheduler run
-    // SmartDashboard.putNumber("Climber Position",  m_climber.getEncoder().getPosition());
-    // m_forwardLimit.enableLimitSwitch(SmartDashboard.getBoolean("Forward Limit Enabled", false));
-    // m_reverseLimit.enableLimitSwitch(SmartDashboard.getBoolean("Reverse Limit Enabled", false));
+
 SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition());
 
-    //   SmartDashboard.putBoolean("Forward Limit Switch", m_forwardLimit.isPressed());
-    //   SmartDashboard.putBoolean("Reverse Limit Switch", m_reverseLimit.isPressed());
+// if upper or lower limit switch is hit, then reset encoder position to upper or lower
+    // if (m_climberArm.getSensorCollection().isFwdLimitSwitchClosed()){
+    //   m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armReachBackPos);
+    // }
+    // else if (m_climberArm.getSensorCollection().isRevLimitSwitchClosed()){
+    //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armHomePos);
+    // }
   }
 
   public void runMotor(double speed){
