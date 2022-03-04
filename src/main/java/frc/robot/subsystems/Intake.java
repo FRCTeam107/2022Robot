@@ -29,12 +29,12 @@ public class Intake extends SubsystemBase {
   
   public static final class IntakeArmConstants {
     //TODO run arm motor to extended position, find right position
-    public static final double armRetractedPos = 615000;
+    public static final double armRetractedPos = 630000;
     public static final double armExtendedPos = 0;
     
     // intake arm PID values
     public static final double kP = 0.04; 
-    public static final double kI = 0.0001;
+    public static final double kI = 0.0002;
     public static final double kD = 0.0; 
     public static final double kIz = 8000; 
     public static final double kFF = 0;//.000015; 
@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
     public static final double kP = 0.04; 
     public static final double kI = 0.00;
     public static final double kD = 0; 
-    public static final double kIz = 2000; 
+    public static final double kIz = 8000; 
     public static final double kFF = 0;//.000015; 
     // public static final double kMaxOutput = 1; 
     // public static final double kMinOutput = -1;
@@ -71,8 +71,8 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.config_IntegralZone(0, IntakeMotorConstants.kIz);
     m_IntakeMotor.config_kF(0, IntakeMotorConstants.kFF);
 
-    //double junk = SmartDashboard.getNumber("intakeSpeed", 0.20);
-    //SmartDashboard.putNumber("intakeSpeed", junk);
+    double junk = SmartDashboard.getNumber("intakeSpeed", 1000);
+    SmartDashboard.putNumber("intakeSpeed", junk);
 
     m_CurrentSpeed = 0;
    
@@ -135,13 +135,13 @@ public void ToggleIntake(){
       intakeExtended = true;
       m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
       // m_CurrentSpeed = m_IntakeSpeed;
-      m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
+      //m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
     }
     else if (intakeExtended) {
       intakeExtended = false;
       //run arm motor to retracted position
       m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
-      m_CurrentSpeed = 0;
+      //m_CurrentSpeed = 0;
     }
   }
 
@@ -149,16 +149,23 @@ public void ToggleIntake(){
     //m_CurrentSpeed = -0.2;
     m_CurrentSpeed = -1 * SmartDashboard.getNumber("intakeSpeed", 0.20);
   }
-   
-  public void ResumeNormalSpeed() {
-    if (intakeExtended) {
-      //m_CurrentSpeed = m_IntakeSpeed;
-      m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
-    }
-
-    else {
-      m_CurrentSpeed = 0;
-    }
+  public void StopIntake() {
+    //m_CurrentSpeed = -0.2;
+    m_CurrentSpeed = 0;
   }
+  public void StartIntake() {
+    //m_CurrentSpeed = -0.2;
+    m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
+  }
+  // public void ResumeNormalSpeed() {
+  //   if (intakeExtended) {
+  //     //m_CurrentSpeed = m_IntakeSpeed;
+  //     m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
+  //   }
+
+  //   else {
+  //     m_CurrentSpeed = 0;
+  //   }
+  // }
 
   }

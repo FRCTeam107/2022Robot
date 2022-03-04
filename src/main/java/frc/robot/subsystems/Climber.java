@@ -99,6 +99,9 @@ public static final class ClimberArmConstants {
     m_climberArm.config_kD(0, ClimberArmConstants.kD);
     m_climberArm.config_IntegralZone(0, ClimberArmConstants.kIz);
     m_climberArm.config_kF(0, ClimberArmConstants.kFF);
+    m_climberArm.configClosedLoopPeakOutput(0,0.5);
+   // m_climberArm.configClearPositionOnLimitF(true,10);
+    // m_climberArm.configClosedloopRamp(0.2)
 
 
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
@@ -115,12 +118,12 @@ public static final class ClimberArmConstants {
 SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition());
 
 // if upper or lower limit switch is hit, then reset encoder position to upper or lower
-    // if (m_climberArm.getSensorCollection().isFwdLimitSwitchClosed()){
-    //   m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armReachBackPos);
-    // }
-    // else if (m_climberArm.getSensorCollection().isRevLimitSwitchClosed()){
-    //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armHomePos);
-    // }
+    if (m_climberArm.getSensorCollection().isFwdLimitSwitchClosed()==1){
+      m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armReachBackPos);
+    }
+    else if (m_climberArm.getSensorCollection().isRevLimitSwitchClosed()==1){
+      m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armVerticalPos);
+    }
   }
 
   public void runMotor(double speed){
@@ -172,11 +175,13 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
 
 
   public void extendClimber(){
-    m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
+    //m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
+    m_climber.set(ControlMode.PercentOutput, 0.3);
   }
 
   public void pullClimber(){
-    m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
+    //m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
+    m_climber.set(ControlMode.PercentOutput, -0.3);
   }
   public void stopClimber(){
     m_climber.set(ControlMode.PercentOutput, 0);
