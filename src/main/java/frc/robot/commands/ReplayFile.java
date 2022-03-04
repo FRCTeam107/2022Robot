@@ -65,7 +65,7 @@ public class ReplayFile extends CommandBase {
       m_drivetrain.drive(replayRow[datapoint.Drive_X], 
             replayRow[datapoint.Drive_Y],
             replayRow[datapoint.Drive_Z], 
-            true, false);
+            true);
 
       m_replayList.remove(0);   
    //SmartDashboard.putString("ReplayData", msg.toString());

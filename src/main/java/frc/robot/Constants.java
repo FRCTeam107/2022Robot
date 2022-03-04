@@ -65,17 +65,24 @@ public final class Constants {
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
                 // public static final int INTAKE_IN = 2;
-                // public static final int FILL_HOPPER = 3;
-                // public static final int INTAKE_EJECT = 5;
+                public static final int INTAKE_EXTEND = 3;
+                public static final int INTAKE_RETRACT = 4;
                  public static final int FORCE_READY = 4;
                 // //public static final int TURRET_RIGHT = 5;
                 // public static final int DROP_INTAKE = 6;
                 // public static final int MANUAL_OVERRIDE = 7;
+                public static final int CLIMBER_EXTEND = 8;
+                public static final int CLIMBER_PULLUP = 9;
+                public static final int CLIMBER_REACHBACK = 10;
+                public static final int CLIMBER_VERTICAL = 11;
+
                 // public static final int CLIMBER_EXTEND = 8;
                 //  public static final int CLIMBER_RETRACT = 9;
                 public static final int REPLAY_RECORDING = 7;
                 public static final int START_RECORDING = 10;
                 public static final int END_RECORDING = 11;
+                public static final int TOGGLE_INTAKE = 15;
+                public static final int GAG_REFLEX = 14;
         }
 
         //MOTORS
@@ -84,29 +91,26 @@ public final class Constants {
                 public static final int frontLeftDriveId = 1; 
                 public static final int frontLeftCANCoderId = 2; 
                 public static final int frontLeftSteerId = 3;
-                //put your can Id's here!
+
                 public static final int frontRightDriveId = 4; 
                 public static final int frontRightCANCoderId = 5; 
                 public static final int frontRightSteerId = 6; 
-                //put your can Id's here!
 
                 public static final int backLeftDriveId = 10; 
                 public static final int backLeftCANCoderId = 11; 
                 public static final int backLeftSteerId = 12;
-                //put your can Id's here!
 
                 public static final int backRightDriveId = 7; 
                 public static final int backRightCANCoderId = 8; 
-                public static final int backRightSteerId = 9;   
-                public static final int SHOOTER_TOP = 17;
-                public static final int SHOOTER_BOTTOM = 18;
-                // public static final int HOPPER_NEO = 9;
-                // public static final int BALL_INDEXER = 10;
-                // public static final int TURRET_LIFT = 11; // Talon SRX
-                // public static final int CLIMBER_ONE = 12; // CANspark max
-                // public static final int TURRET_SPIN = 13; // Talon SRX
+                public static final int backRightSteerId = 9;
+
                 public static final int BALL_INTAKE = 14;   
                 public static final int INTAKE_ARM = 15;
+                public static final int KICKER = 16;
+                public static final int SHOOTER_TOP = 17;
+                public static final int SHOOTER_BOTTOM = 18;
+                public static final int CLIMBER_ONE = 19; // Falcon 500
+                public static final int CLIMBER_ARM = 20;
         }
 
         // SOLENOIDS

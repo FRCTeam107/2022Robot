@@ -1,13 +1,16 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.CANdleStatusFrame;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -41,13 +44,12 @@ public class SwerveModuleMK3 {
     this.angleMotor = angleMotor;
     this.canCoder = canCoder;
     this.offset = offset;
-
+canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     TalonFXConfiguration angleTalonFXConfiguration = new TalonFXConfiguration();
 
     angleTalonFXConfiguration.slot0.kP = kAngleP;
     angleTalonFXConfiguration.slot0.kI = kAngleI;
     angleTalonFXConfiguration.slot0.kD = kAngleD;
-
     // Use the CANCoder as the remote sensor for the primary TalonFX PID
     angleTalonFXConfiguration.remoteFilter0.remoteSensorDeviceID = canCoder.getDeviceID();
     angleTalonFXConfiguration.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
@@ -55,7 +57,7 @@ public class SwerveModuleMK3 {
     angleTalonFXConfiguration.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
     angleMotor.configAllSettings(angleTalonFXConfiguration);
     angleMotor.setNeutralMode(NeutralMode.Brake); //not needed but nice to keep the robot stopped when you want it stopped
-
+// angleMotor.configClosedloopRamp(0.5);
     TalonFXConfiguration driveTalonFXConfiguration = new TalonFXConfiguration();
 
     driveTalonFXConfiguration.slot0.kP = kDriveP;
@@ -64,7 +66,9 @@ public class SwerveModuleMK3 {
     driveTalonFXConfiguration.slot0.kF = kDriveF;
  
     driveMotor.configAllSettings(driveTalonFXConfiguration);
-    driveMotor.setNeutralMode(NeutralMode.Brake);   
+    driveMotor.setNeutralMode(NeutralMode.Coast);
+    driveMotor.configOpenloopRamp(1);
+
     // set voltage compensation to 11 volts to smooth out battery variations
     driveMotor.configVoltageCompSaturation(11, 0);
     driveMotor.enableVoltageCompensation(true);
@@ -88,6 +92,10 @@ public class SwerveModuleMK3 {
     return canCoder.getAbsolutePosition(); //include angle offset
   }
   //:)
+
+  public void resetEncoders(){
+    driveMotor.setSelectedSensorPosition(0);
+  }
 
   public double getDistance() {
     //double x = driveMotor.getSelectedSensorPosition();
@@ -126,16 +134,22 @@ public class SwerveModuleMK3 {
     double currentTicks = canCoder.getPosition() / canCoder.configGetFeedbackCoefficient();
     double desiredTicks = currentTicks + deltaTicks;
 
-    //below is a line to comment out from step 5
-    angleMotor.set(TalonFXControlMode.Position, desiredTicks);
- 
-    double feetPerSecond = Units.metersToFeet(state.speedMetersPerSecond);
+      double feetPerSecond = Units.metersToFeet(state.speedMetersPerSecond);
     double motorSpeed = feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
     //below is a line to comment out from step 5
     // original code had "PercentOutput"  Not sure why
     driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
    //driveMotor.set(TalonFXControlMode.Velocity, feetPerSecond / SwerveDrivetrain.kMaxSpeed);
 
+     //below is a line to comment out from step 5
+     if (motorSpeed==0)
+     {
+      angleMotor.set(TalonFXControlMode.PercentOutput, 0);
+     }
+     else
+     {
+      angleMotor.set(TalonFXControlMode.Position, desiredTicks);
+     }
    //   SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
   }
 }

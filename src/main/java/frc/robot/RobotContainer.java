@@ -23,16 +23,21 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.RunClimber;
 import frc.robot.commands.ReplayFile;
+import frc.robot.commands.SetRobotOrientationOnField;
 import frc.robot.commands.Shoot;
 //import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DataRecorder;
+import frc.robot.subsystems.Intake;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
 import frc.robot.subsystems.DataRecorder.datapoint;
+import frc.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,6 +50,8 @@ public class RobotContainer {
   private final Joystick m_flightcontroller, m_controllerJoystick;
   private final SwerveDrivetrain m_Drivetrain;
   private final Shooter m_shooter;
+  private final Intake m_Intake;
+  private final Climber m_climber;
   //private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
 
@@ -67,13 +74,17 @@ public class RobotContainer {
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
     //m_LEDLights = new LEDLights();
-    m_Drivetrain  = new SwerveDrivetrain();
-    m_shooter = new Shooter ();
+    m_Drivetrain  = new SwerveDrivetrain(0);  // begin assuming no field offset angle of robot (facing straight "north")
+    m_Intake = new Intake ();
+    m_shooter = new Shooter();
+    m_climber = new Climber();
     m_Camera = new VisionCamera();
 
     m_DataRecorder = new DataRecorder();
     m_Drivetrain.setDataRecorder(m_DataRecorder);
     m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
+    // TODO add DataRecorder to Intake subsystem
+    // m_Intake.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
    
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
     
@@ -108,22 +119,49 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
                 new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
+    //   new RunClimber(0.25, m_climber)
+    // );
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
+    //   new RunClimber(-0.25, m_climber)
+    // );
 
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whileHeld(m_Intake::extendArm);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whenReleased(m_Intake::stopArm);
+     new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whileHeld(m_Intake::retractArm);
+     new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whenReleased(m_Intake::stopArm);
+   
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.TOGGLE_INTAKE).whenPressed(m_Intake::ToggleIntake);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whileHeld(m_Intake::HeimlichManeuver);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whenReleased(m_Intake::StopIntake);
+    new JoystickButton(m_controllerJoystick, 16).whileHeld(m_Intake::StartIntake);
+    new JoystickButton(m_controllerJoystick, 16).whenReleased(m_Intake::StopIntake);
+    
 
-    //new JoystickButton(m_leftJoystick, 15).whenPressed(m_LEDs::LigthEmUp);
-    new JoystickButton(m_flightcontroller, 1).whenPressed(m_Camera::lowerCamera);
-    new JoystickButton(m_flightcontroller, 2).whenPressed(m_Camera::middleCamera);
-    new JoystickButton(m_flightcontroller, 3).whenPressed(m_Camera::raiseCamera);
+    // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
+    // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
+    new JoystickButton(m_controllerJoystick, 5).whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 80).andThen(m_Drivetrain::resetEncoders));
 
     // CONTROLLER'S JOYSTICK BUTTONS
-     // JoystickButton btnManualOverride = new JoystickButton(m_controllerJoystick, ControllerJoystick.MANUAL_OVERRIDE);
-      //btnManualOverride.whenPressed(m_climber::allowAdditionalMovement);
-      // btnManualOverride.whenReleased(m_climber::setToRetractedPosition);
+     JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_REACHBACK);
+     btnClimbArmReach.whenPressed(m_climber::moveArmtoReachBack);
+     btnClimbArmReach.whenReleased(m_climber::stopClimber);
 
+     JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_VERTICAL);
+     btnClimbArmVert.whenPressed(m_climber::moveArmToVertical);
+     btnClimbArmVert.whenReleased(m_climber::stopClimber);
+     
+     JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
+     btnClimberExtend.whenPressed(m_climber::extendClimber);
+     btnClimberExtend.whenReleased(m_climber::stopClimber);
+
+     JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
+     btnClimberPull.whenPressed(m_climber::pullClimber);
+     btnClimberPull.whenReleased(m_climber::stopClimber);
     }
 
       /**
@@ -184,7 +222,7 @@ SwerveControllerCommand swerveControllerCommand =
 
     // Run path following command, then stop at the end.
     //return swerveControllerCommand;
-    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false));
 
   }
 
