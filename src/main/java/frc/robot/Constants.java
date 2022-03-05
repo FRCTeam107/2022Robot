@@ -65,11 +65,12 @@ public final class Constants {
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
                 // public static final int INTAKE_IN = 2;
-                public static final int PICKUP_DOWN = 3;
-                public static final int PICKUP_UP = 4;
+                // public static final int PICKUP_DOWN = 3;
+                // public static final int PICKUP_UP = 4;
                 public static final int FORCE_READY = 4;
-                public static final int PICKUP_INTAKE = 15;
+                static final int PICKUP_UP_DOWN = 15;
                 public static final int PICKUP_EJECT = 14;
+                static final int PICKUP_INTAKE = 16;
                 // //public static final int TURRET_RIGHT = 5;
                 // public static final int DROP_INTAKE = 6;
                 // public static final int MANUAL_OVERRIDE = 7;

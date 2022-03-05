@@ -97,7 +97,19 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    // setup buttons
+
+    JoystickButton btnPickupEject = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_EJECT);
+    JoystickButton btnPickupIntake = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_INTAKE);
+    JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_REACHBACK){};
+    JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_VERTICAL);
+    JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
+    JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
+
+
     // temporary buttons for debugging
+
+
     //new JoystickButton(m_rightJoystick, 6).whenPressed(new PivotToAngle(-45, 0.5, m_drivetrain, m_gyro));
     //  new JoystickButton(m_leftJoystick, 1).whenPressed(new DriveDistance(-0.4, 50, 180, m_drivetrain, m_gyro, 60));
     //new JoystickButton(m_leftJoystick, 15).whenPressed(new DriveDistance(0.4, 50, 0, m_drivetrain, m_gyro, 60));
@@ -130,16 +142,14 @@ public class RobotContainer {
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whileHeld(m_Intake::extendArm);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_EXTEND).whenReleased(m_Intake::stopArm);
-     new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whileHeld(m_Intake::retractArm);
-     new JoystickButton(m_controllerJoystick, ControllerJoystick.INTAKE_RETRACT).whenReleased(m_Intake::stopArm);
    
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.TOGGLE_INTAKE).whenPressed(m_Intake::ToggleIntake);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whileHeld(m_Intake::HeimlichManeuver);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.GAG_REFLEX).whenReleased(m_Intake::StopIntake);
-    new JoystickButton(m_controllerJoystick, 16).whileHeld(m_Intake::StartIntake);
-    new JoystickButton(m_controllerJoystick, 16).whenReleased(m_Intake::StopIntake);
+    new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP_DOWN).whenPressed(m_Intake::ToggleIntake);
+
+    btnPickupEject.whileHeld(m_Intake::HeimlichManeuver);
+    btnPickupEject.whenReleased(m_Intake::StopIntake);
+
+    btnPickupIntake.whileHeld(m_Intake::StartIntake);
+    btnPickupIntake.whenReleased(m_Intake::StopIntake);
     
 
     // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
@@ -147,19 +157,15 @@ public class RobotContainer {
     new JoystickButton(m_controllerJoystick, 5).whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 80).andThen(m_Drivetrain::resetEncoders));
 
     // CONTROLLER'S JOYSTICK BUTTONS
-     JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_REACHBACK);
      btnClimbArmReach.whenPressed(m_climber::moveArmtoReachBack);
      btnClimbArmReach.whenReleased(m_climber::stopClimber);
 
-     JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_VERTICAL);
      btnClimbArmVert.whenPressed(m_climber::moveArmToVertical);
      btnClimbArmVert.whenReleased(m_climber::stopClimber);
      
-     JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
      btnClimberExtend.whenPressed(m_climber::extendClimber);
      btnClimberExtend.whenReleased(m_climber::stopClimber);
 
-     JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
      btnClimberPull.whenPressed(m_climber::pullClimber);
      btnClimberPull.whenReleased(m_climber::stopClimber);
     }
