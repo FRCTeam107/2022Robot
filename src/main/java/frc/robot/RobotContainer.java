@@ -106,7 +106,7 @@ public class RobotContainer {
     JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_VERTICAL);
     JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
     JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
-
+    JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
     
     //new JoystickButton(m_rightJoystick, RightJoystick.TOGGLE_LIMELIGHT).whenPressed(m_limelight::ToggleVisionProcessing, m_limelight);
    btnShoot.whileHeld(new Shoot(m_shooter, 
@@ -132,16 +132,17 @@ public class RobotContainer {
 
     // CONTROLLER'S JOYSTICK BUTTONS
      btnClimbArmReach.whenPressed(m_climber::moveArmtoReachBack);
-     btnClimbArmReach.whenReleased(m_climber::stopClimber);
+     btnClimbArmReach.whenReleased(m_climber::stopArm);
 
      btnClimbArmVert.whenPressed(m_climber::moveArmToVertical);
-     btnClimbArmVert.whenReleased(m_climber::stopClimber);
+     btnClimbArmVert.whenReleased(m_climber::stopArm);
      
      btnClimberExtend.whenPressed(m_climber::extendClimber);
      btnClimberExtend.whenReleased(m_climber::stopClimber);
 
      btnClimberPull.whenPressed(m_climber::pullClimber);
      btnClimberPull.whenReleased(m_climber::stopClimber);
+     btnCameraToggle.whenPressed(m_Camera::changeCamera);
     }
 
       /**
