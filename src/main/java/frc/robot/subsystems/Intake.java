@@ -21,11 +21,18 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 // import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import frc.robot.subsystems.DataRecorder;
+import frc.robot.subsystems.DataRecorder.datapoint;
+
 public class Intake extends SubsystemBase {
   private final WPI_TalonSRX m_IntakeMotor;
   private final WPI_TalonSRX m_IntakeArm;
   private boolean intakeExtended;
   private double m_CurrentSpeed;
+
+  private DataRecorder dataRecorder;
+  private Integer RecordCurrentSpeedix;
+  private Integer IntakeUpOrDownix;
   
   public static final class IntakeArmConstants {
     //TODO run arm motor to extended position, find right position
@@ -94,9 +101,20 @@ public class Intake extends SubsystemBase {
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
+    dataRecorder = null;
+    RecordCurrentSpeedix = 0;
+    IntakeUpOrDownix = null;
+
     intakeExtended = false;
   }
 
+  public void setDataRecorder(DataRecorder _dataRecorder, Integer _intakeUpOrDown, Integer _currentSpeed){
+    this.dataRecorder = _dataRecorder;
+    this.IntakeUpOrDownix = _intakeUpOrDown;
+    this.RecordCurrentSpeedix = _currentSpeed;
+  }
+
+   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -131,17 +149,32 @@ public void stopArm() {
 }
 
 public void ToggleIntake(){
-    if (!intakeExtended){
+  
+  if (!intakeExtended){
       intakeExtended = true;
       m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
       // m_CurrentSpeed = m_IntakeSpeed;
       //m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
+
+      
+
     }
     else if (intakeExtended) {
       intakeExtended = false;
       //run arm motor to retracted position
       m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
       //m_CurrentSpeed = 0;
+    }
+  
+    if (this.dataRecorder != null) {
+
+      if (intakeExtended) {
+        this.dataRecorder.recordValue(IntakeUpOrDownix, 1);
+      }
+      if (!intakeExtended) {
+        this.dataRecorder.recordValue(IntakeUpOrDownix, 0);
+      }
+  
     }
   }
 

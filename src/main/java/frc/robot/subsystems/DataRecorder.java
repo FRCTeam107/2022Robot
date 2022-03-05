@@ -42,6 +42,8 @@ public class DataRecorder extends SubsystemBase {
     public static final int GyroAngle = 4;
     public static final int ShooterTop = 5;
     public static final int ShooterBottom = 6;
+    public static final int IntakeUpOrDown = 7;
+    public static final int IntakeMotorSpeed = 8;
   }
 
   
