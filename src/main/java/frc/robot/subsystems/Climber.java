@@ -162,11 +162,14 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
   // }
 
   public void moveArmtoReachBack(){
-    m_climberArm.set(ControlMode.Position, ClimberArmConstants.armReachBackPos);
+    //m_climberArm.set(ControlMode.Position, ClimberArmConstants.armReachBackPos);
+    m_climberArm.set(ControlMode.PercentOutput, -0.3);
   }
 
   public void moveArmToVertical(){
-    m_climberArm.set(ControlMode.Position, ClimberArmConstants.armVerticalPos);
+    //m_climberArm.set(ControlMode.Position, ClimberArmConstants.armVerticalPos);
+    m_climberArm.set(ControlMode.PercentOutput, 0.3);
+  
   }
 
   public void stopArm(){
