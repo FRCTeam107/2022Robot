@@ -98,7 +98,8 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // setup buttons
-
+    JoystickButton btnShoot = new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT);
+    JoystickButton btnPickupToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP_DOWN);
     JoystickButton btnPickupEject = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_EJECT);
     JoystickButton btnPickupIntake = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_INTAKE);
     JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_REACHBACK){};
@@ -106,48 +107,21 @@ public class RobotContainer {
     JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
     JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
 
-
-    // temporary buttons for debugging
-
-
-    //new JoystickButton(m_rightJoystick, 6).whenPressed(new PivotToAngle(-45, 0.5, m_drivetrain, m_gyro));
-    //  new JoystickButton(m_leftJoystick, 1).whenPressed(new DriveDistance(-0.4, 50, 180, m_drivetrain, m_gyro, 60));
-    //new JoystickButton(m_leftJoystick, 15).whenPressed(new DriveDistance(0.4, 50, 0, m_drivetrain, m_gyro, 60));
-    //new JoystickButton(m_rightJoystick, 9).whenPressed(new PivotToAngle(45, 0.5, m_drivetrain, m_gyro));
-
-    //new JoystickButton(m_leftJoystick,8).whenReleased(m_drivetrain::resetEncoders);
-
     
-    // DRIVER'S LEFT JOYSTICK BUTTONS
-
-    // WARNING:  This code could mess up the turret if the Re-Sync turret is pressed during a match!!
-    // to sync turret, 2 buttons are required, both MANUAL_TURRET and SYNC_TURRET, these are on separate joysticks
-    
-    // robot facing 180 degrees (pick-up facing away from goal)
-   // new JoystickButton(m_leftJoystick, LeftJoystick.SYNC_TURRET).whenPressed(new SyncTurretWithGyro(180, m_turret, m_gyro, () -> true ));
-
-    // DRIVER'S RIGHT JOYSTICK BUTTONS
     //new JoystickButton(m_rightJoystick, RightJoystick.TOGGLE_LIMELIGHT).whenPressed(m_limelight::ToggleVisionProcessing, m_limelight);
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT).whileHeld(
-                new Shoot(m_shooter, 
+   btnShoot.whileHeld(new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND).whileHeld(
-    //   new RunClimber(0.25, m_climber)
-    // );
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_RETRACT).whileHeld(
-    //   new RunClimber(-0.25, m_climber)
-    // );
-
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
+ 
+                // new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
    
-    new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP_DOWN).whenPressed(m_Intake::ToggleIntake);
+    btnPickupToggle.whenPressed(m_Intake::ToggleIntake);
 
     btnPickupEject.whileHeld(m_Intake::HeimlichManeuver);
     btnPickupEject.whenReleased(m_Intake::StopIntake);
-
+    
     btnPickupIntake.whileHeld(m_Intake::StartIntake);
     btnPickupIntake.whenReleased(m_Intake::StopIntake);
     
