@@ -67,7 +67,9 @@ public final class Constants {
                 // public static final int INTAKE_IN = 2;
                 // public static final int PICKUP_DOWN = 3;
                 // public static final int PICKUP_UP = 4;
-                public static final int FORCE_READY = 4;
+                static final int FORCE_READY = 4;
+                static final int REORIENT_ROBOT = 5;
+                
                 static final int PICKUP_UP_DOWN = 15;
                 public static final int PICKUP_EJECT = 14;
                 static final int PICKUP_INTAKE = 16;
@@ -138,19 +140,6 @@ public final class Constants {
 
         // Trajectory / Pathweaver constants
         public static final class DriveConstants {
-                // public static final int kLeftMotor1Port = 4;
-                // public static final int kLeftMotor2Port = 5;
-                // public static final int kLeftMotor3Port = 6;
-                
-                // public static final int kRightMotor1Port = 1;
-                // public static final int kRightMotor2Port = 2;
-                // public static final int kRightMotor3Port = 3;
-            
-                // public static final int[] kLeftEncoderPorts = new int[] {0, 1};
-                // public static final int[] kRightEncoderPorts = new int[] {2, 3};
-                // public static final boolean kLeftEncoderReversed = false;
-                // public static final boolean kRightEncoderReversed = true;
-            
                // public static final double kTrackwidthMeters = 1.7;// 1.685; // Units.inchesToMeters(27.0);
                 // public static final DifferentialDriveKinematics kDriveKinematics =
                 //     new DifferentialDriveKinematics(kTrackwidthMeters);
