@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.RunClimber;
 import frc.robot.commands.ReplayFile;
 import frc.robot.commands.SetRobotOrientationOnField;
 import frc.robot.commands.Shoot;
@@ -133,17 +132,17 @@ public class RobotContainer {
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
 
     // CONTROLLER'S JOYSTICK BUTTONS
-     btnClimbArmReach.whenPressed(m_climber::moveArmtoReachBack);
+     btnClimbArmReach.whenPressed(m_climber::reachArmBack);
      btnClimbArmReach.whenReleased(m_climber::stopArm);
 
-     btnClimbArmVert.whenPressed(m_climber::moveArmToVertical);
+     btnClimbArmVert.whenPressed(m_climber::pullArmForward);
      btnClimbArmVert.whenReleased(m_climber::stopArm);
      
-     btnClimberExtend.whenPressed(m_climber::extendClimber);
-     btnClimberExtend.whenReleased(m_climber::stopClimber);
+     btnClimberExtend.whenPressed(m_climber::extendHook);
+     btnClimberExtend.whenReleased(m_climber::stopHook);
 
-     btnClimberPull.whenPressed(m_climber::pullClimber);
-     btnClimberPull.whenReleased(m_climber::stopClimber);
+     btnClimberPull.whenPressed(m_climber::pullHook);
+     btnClimberPull.whenReleased(m_climber::stopHook);
      btnCameraToggle.whenPressed(m_Camera::changeCamera);
     }
 

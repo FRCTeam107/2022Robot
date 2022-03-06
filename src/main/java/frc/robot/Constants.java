@@ -117,6 +117,12 @@ public final class Constants {
                 public static final int CLIMBER_ARM = 20;
         }
 
+        // DIO Ports
+        public class DIOPorts{
+                public static final int TALONHOOK_LEFT = 0;
+                public static final int TALONHOOK_RIGHT = 1;
+        }
+        
         // SOLENOIDS
         public class Solenoids{
                 // public static final int INTAKE_REVERSE = 0;

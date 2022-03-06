@@ -7,11 +7,13 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DIOPorts;
 import frc.robot.Constants.Motors;
 //import frc.robot.Constants.Solenoids;
 
@@ -22,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 public class Climber extends SubsystemBase {
 
 private final WPI_TalonFX m_climber, m_climberArm;
+private final DigitalInput m_talonHookLeft, m_talonHookRight;
 
 public static final class ClimberConstants {
   private static final double armExtendPos = 200.000; //268.14905;
@@ -60,6 +63,10 @@ public static final class ClimberArmConstants {
    */
   public Climber() {
     super();
+
+    m_talonHookLeft = new DigitalInput(DIOPorts.TALONHOOK_LEFT);
+    m_talonHookRight = new DigitalInput(DIOPorts.TALONHOOK_RIGHT);
+
     m_climber = new WPI_TalonFX(Motors.CLIMBER_ONE);
 
     m_climber.configFactoryDefault();
@@ -125,34 +132,50 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
       m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armVerticalPos);
     }
   }
-
-  public void runMotor(double speed){
-    m_climber.set(speed);
-   // SmartDashboard.putNumber("climberSpeed", speed);
-    // if (!armIsUp){
-    // //if (m_Solenoid.get() != Value.kForward) {
-    //   m_climber.set(0);
-    // }
-    // else {
-    //   double currentPosition = m_climber.getEncoder().getPosition();
-    //   if (speed > 0 && currentPosition > kClimberMaxPosition) {speed=0;}
-    //   if (speed < 0 && currentPosition < kClimberMinPosition) {speed=0;}
-    //   //SmartDashboard.putNumber("Climber speed", speed);
-    //   m_climber.set(speed);
-    // }
-    //if (m_reverseLimit.isPressed()){
-    //  if(speed>0){m_climber.set(speed);}
-    //}
-    //else{
-    //  m_climber.set(0);
-    //}
-    //if (m_forwardLimit.isPressed()){
-    //  if(speed<0){m_climber.set(speed);}
-    //}
-    //else{
-    //  m_climber.set(0);
-    //}
+  
+  public boolean AllTalonsHooked(){
+    return (LeftTalonHooked() && RightTalonHooked());
   }
+  public boolean LeftTalonHooked(){
+    return m_talonHookLeft.get();
+  }
+  public boolean RightTalonHooked(){
+    return m_talonHookRight.get();
+  }
+
+
+  public void extendHook(){
+    //m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
+    m_climber.set(ControlMode.PercentOutput, 0.3);
+  }
+  public void pullHook(){
+    //m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
+    m_climber.set(ControlMode.PercentOutput, -0.3);
+  }
+  public void stopHook(){
+    m_climber.set(ControlMode.PercentOutput, 0);
+  }
+  public double HookPosition(){
+    return m_climber.getSelectedSensorPosition();
+  }
+  
+  
+   public void reachArmBack(){
+    m_climberArm.set(ControlMode.PercentOutput, -0.3);
+  }
+
+  public void pullArmForward(){
+    m_climberArm.set(ControlMode.PercentOutput, 0.3);  
+  }
+
+  public void stopArm(){
+    m_climberArm.set(ControlMode.PercentOutput, 0);
+  }
+
+  public double ArmPosition(){
+    return m_climberArm.getSelectedSensorPosition();
+  }
+
 
   // public void allowAdditionalMovement(){
   //   m_climber.setSelectedSensorPosition((float)((kClimberMaxPosition - kClimberMinPosition)/2));
@@ -161,33 +184,5 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
   //   m_climber.setSelectedSensorPosition((float)kClimberMinPosition);
   // }
 
-  public void moveArmtoReachBack(){
-    //m_climberArm.set(ControlMode.Position, ClimberArmConstants.armReachBackPos);
-    m_climberArm.set(ControlMode.PercentOutput, -0.3);
-  }
 
-  public void moveArmToVertical(){
-    //m_climberArm.set(ControlMode.Position, ClimberArmConstants.armVerticalPos);
-    m_climberArm.set(ControlMode.PercentOutput, 0.3);
-  
-  }
-
-  public void stopArm(){
-    m_climberArm.set(ControlMode.PercentOutput, 0);
-  }
-
-
-  public void extendClimber(){
-    //m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
-    m_climber.set(ControlMode.PercentOutput, 0.3);
-  }
-
-  public void pullClimber(){
-    //m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
-    m_climber.set(ControlMode.PercentOutput, -0.3);
-  }
-  public void stopClimber(){
-    m_climber.set(ControlMode.PercentOutput, 0);
-  }
-  
 }
