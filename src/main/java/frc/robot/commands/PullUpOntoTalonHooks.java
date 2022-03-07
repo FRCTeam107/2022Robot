@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class PullUpOntoTalonHooks extends CommandBase {
     private final Climber m_climber;
@@ -47,27 +48,57 @@ public class PullUpOntoTalonHooks extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    boolean moveToNextState = false;
+
     switch (currentState){
       case Starting:
           // if both talon hooks are set, then don't do anything
-          currentState = currentState.getNext();
+          if (m_climber.AllTalonsHooked()) {
+            currentState=commandState.Finished;
+          }
+          else {
+            moveToNextState=true;
+          }
 
       case StraightenArm:
-      // move arm to vertical position
-         // if (m_)
+          // move arm to vertical
+          if (m_climber.pullArmForwardToPosition(ClimberConstants.armVerticalPos)){
+            moveToNextState = true;
+          }
+
       case PullTalonsAboveBar:
       // pull hook so talon hooks go past the bar
+      if (m_climber.pullHookToPosition(ClimberConstants.hookAboveBarPos)){
+        moveToNextState = true;
+      }
 
       case TransferOntoTalons:
-      // move hook up so weight is transferred to talon hooks
+      // extend hook up so weight is transferred to talon hooks
+      if (m_climber.extendHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
+        moveToNextState = true;
+      }
 
       case CheckIfHooksLatched:
       // if both talon hooks are not set, then do another pull-up to try again
+        if (m_climber.AllTalonsHooked()){
+          moveToNextState = true;
+        } 
+        else { // failed transfer, try again
+          //currentState = commandState.PullTalonsAboveBar;
+        }
 
       case Finished:
-
+      m_climber.stopArm();
+      m_climber.stopHook();
+      
       default:
     }
+
+    // move to next state?
+    if (moveToNextState){ 
+      currentState = currentState.getNext();
+    }
+
     //m_climber.runMotor(m_power);
   }
 

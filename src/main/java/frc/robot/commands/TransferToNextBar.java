@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class TransferToNextBar extends CommandBase {
     private final Climber m_climber;
@@ -29,8 +30,6 @@ public class TransferToNextBar extends CommandBase {
     }
     private commandState currentState;
 
-
-
   public TransferToNextBar(Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
@@ -41,34 +40,60 @@ public class TransferToNextBar extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    //currentState = commandState.Starting;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    boolean moveToNextState = false;
+
     switch (currentState){
       case Starting:
-      // if both talon hooks are NOT set, don't do anything!
-          currentState = currentState.getNext();
-
+        // if both talon hooks are NOT set, don't do anything!
+        if (m_climber.AllTalonsHooked()){
+          moveToNextState = true;
+        }
+        else {
+          currentState = commandState.Finished;
+        }
+         
       case BendArmBackToNextBar:
-      // move arm to reach backwards slightly past the next bar
-
+        // move arm to reach backwards slightly past the next bar
+        if (m_climber.reachArmBackToPosition(ClimberConstants.armReachForNextBar)){
+          moveToNextState = true;
+        }
+        
       case ReachHookPastBar:
-      // extend the hook past the next bar
+        // extend the hook past the next bar
+        if (m_climber.extendHookToPosition(ClimberConstants.hookReachPastNextBarPos)){
+          moveToNextState = true;
+        }
 
       case RetractArmToTouchBar:
-      // now bring arm forward to make arm touch the bar
+        // now bring arm forward to make arm touch the bar
+        if (m_climber.reachArmBackToPosition(ClimberConstants.armTouchNextBar)) {
+          moveToNextState = true;
+        }
 
       case PullHookToReleaseTalons:
-      // pull the hook far enough to release the talons hooks 
-
+        // pull the hook far enough to release the talons hooks
+        if (m_climber.pullHookToPosition(ClimberConstants.hookTransferToTalonsPos) ) {
+          moveToNextState = true;
+        }
+     
       case Finished:
+        m_climber.stopArm();
+        m_climber.stopHook();
 
       default:
     }
-    //m_climber.runMotor(m_power);
+
+    // move to next state?
+    if (moveToNextState){ 
+      currentState = currentState.getNext();
+    }
+
   }
 
   // Called once the command ends or is interrupted.
