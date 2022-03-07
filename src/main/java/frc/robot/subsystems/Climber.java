@@ -135,10 +135,10 @@ SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition(
 
 //TODO if upper or lower limit switch is hit, then reset encoder position to upper or lower
     if (m_climberArm.getSensorCollection().isFwdLimitSwitchClosed()==1){
-      m_climberArm.setSelectedSensorPosition(ClimberConstants.armVerticalPos);
+      m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
     }
     else if (m_climberArm.getSensorCollection().isRevLimitSwitchClosed()==1){
-      m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
+      m_climberArm.setSelectedSensorPosition(ClimberConstants.armVerticalPos);
     }
   }
   
