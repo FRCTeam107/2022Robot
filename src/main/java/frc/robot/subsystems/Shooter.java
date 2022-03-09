@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -56,6 +57,15 @@ public class Shooter extends SubsystemBase {
     m_shootbottom.configFactoryDefault();
     m_shoottop.configFactoryDefault();
     m_kicker.configFactoryDefault();
+
+
+    m_shoottop.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_shootbottom.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_kicker.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+
+    m_shoottop.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    m_shootbottom.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    m_kicker.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
 
     // m_shootbottom.configClosedloopRamp(0.3);
     // m_shoottop.configClosedloopRamp(0.3);

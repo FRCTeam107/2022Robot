@@ -17,6 +17,7 @@ import frc.robot.Constants.Motors;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class Climber extends SubsystemBase {
@@ -72,6 +73,8 @@ public static final class ClimberArmConstants {
     m_climber.config_IntegralZone(0, ClimberConstants.kIz);
     m_climber.config_kF(0, ClimberConstants.kFF);
 
+    m_climber.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_climber.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
 
     //m_climber.setlimits
 
@@ -100,6 +103,10 @@ public static final class ClimberArmConstants {
     m_climberArm.config_IntegralZone(0, ClimberArmConstants.kIz);
     m_climberArm.config_kF(0, ClimberArmConstants.kFF);
     m_climberArm.configClosedLoopPeakOutput(0,0.5);
+
+    m_climberArm.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_climberArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+
    // m_climberArm.configClearPositionOnLimitF(true,10);
     // m_climberArm.configClosedloopRamp(0.2)
 
