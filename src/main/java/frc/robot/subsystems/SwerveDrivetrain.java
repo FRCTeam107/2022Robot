@@ -52,10 +52,10 @@ public class SwerveDrivetrain extends SubsystemBase {
   // public static double backRightOffset = 75.5;// 255.5; //290.21;
 
   // COMPETITION ROBOT SETTINGS
-  public static double frontLeftOffset = 120;
-  public static double frontRightOffset = 349;
+  public static double frontLeftOffset = 128;
+  public static double frontRightOffset = 352;
   public static double backLeftOffset = 203; 
-  public static double backRightOffset = 220;
+  public static double backRightOffset = 227;
 
 
   public static AHRS m_gyro = new AHRS(SPI.Port.kMXP);

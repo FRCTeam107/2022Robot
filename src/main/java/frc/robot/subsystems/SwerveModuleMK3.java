@@ -44,7 +44,6 @@ public class SwerveModuleMK3 {
     this.angleMotor = angleMotor;
     this.canCoder = canCoder;
     this.offset = offset;
-canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     TalonFXConfiguration angleTalonFXConfiguration = new TalonFXConfiguration();
 
     angleTalonFXConfiguration.slot0.kP = kAngleP;
@@ -79,6 +78,7 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
     canCoderConfiguration.magnetOffsetDegrees = offset.getDegrees();
     canCoder.configAllSettings(canCoderConfiguration);
+    canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
   }
 
   /**
