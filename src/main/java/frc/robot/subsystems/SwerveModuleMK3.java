@@ -22,10 +22,10 @@ import edu.wpi.first.math.util.Units;
 public class SwerveModuleMK3 {
 
   // TODO: Tune these PID values for your robot
-  private static final double kDriveP = 0.0; //15.0;
+  private static final double kDriveP = 0.03; //15.0;
   private static final double kDriveI = 0.0; //0.01;
   private static final double kDriveD = 0.0; //0.1;
-  private static final double kDriveF = 0.00; //0.2;
+  private static final double kDriveF = 0.20; //0.2;
 
   private static final double kAngleP = 1.0;
   private static final double kAngleI = 0.0;
@@ -56,6 +56,9 @@ public class SwerveModuleMK3 {
     angleTalonFXConfiguration.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
     angleMotor.configAllSettings(angleTalonFXConfiguration);
     angleMotor.setNeutralMode(NeutralMode.Brake); //not needed but nice to keep the robot stopped when you want it stopped
+    angleMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    angleMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
+
 // angleMotor.configClosedloopRamp(0.5);
     TalonFXConfiguration driveTalonFXConfiguration = new TalonFXConfiguration();
 
@@ -67,6 +70,7 @@ public class SwerveModuleMK3 {
     driveMotor.configAllSettings(driveTalonFXConfiguration);
     driveMotor.setNeutralMode(NeutralMode.Coast);
     driveMotor.configOpenloopRamp(1);
+    driveMotor.configClosedloopRamp(1);
 
     // set voltage compensation to 11 volts to smooth out battery variations
     driveMotor.configVoltageCompSaturation(11, 0);
@@ -138,8 +142,8 @@ public class SwerveModuleMK3 {
     double motorSpeed = feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
     //below is a line to comment out from step 5
     // original code had "PercentOutput"  Not sure why
-    driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
-   //driveMotor.set(TalonFXControlMode.Velocity, feetPerSecond / SwerveDrivetrain.kMaxSpeed);
+   // driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
+     driveMotor.set(TalonFXControlMode.Velocity, motorSpeed); //feetPerSecond / SwerveDrivetrain.kMaxSpeed);
 
      //below is a line to comment out from step 5
      if (motorSpeed==0)
