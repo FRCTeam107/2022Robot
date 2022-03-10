@@ -138,12 +138,14 @@ public class SwerveModuleMK3 {
     double currentTicks = canCoder.getPosition() / canCoder.configGetFeedbackCoefficient();
     double desiredTicks = currentTicks + deltaTicks;
 
-      double feetPerSecond = Units.metersToFeet(state.speedMetersPerSecond);
-    double motorSpeed = feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
+      //double feetPerSecond = Units.metersToFeet(state.speedMetersPerSecond);
+    //double motorSpeed = feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
+    double motorSpeed = state.speedMetersPerSecond / DriveConstants.kEncoderDistancePerPulse;
     //below is a line to comment out from step 5
     // original code had "PercentOutput"  Not sure why
    // driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
-     driveMotor.set(TalonFXControlMode.Velocity, motorSpeed); //feetPerSecond / SwerveDrivetrain.kMaxSpeed);
+
+   driveMotor.set(TalonFXControlMode.Velocity, motorSpeed); //feetPerSecond / SwerveDrivetrain.kMaxSpeed);
 
      //below is a line to comment out from step 5
      if (motorSpeed==0)
@@ -154,6 +156,7 @@ public class SwerveModuleMK3 {
      {
       angleMotor.set(TalonFXControlMode.Position, desiredTicks);
      }
-   //   SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
+      // SmartDashboard.putNumber("driveMotorSpeed", motorSpeed);
+      // SmartDashboard.putNumber("driveMotorMperS", state.speedMetersPerSecond);
   }
 }
