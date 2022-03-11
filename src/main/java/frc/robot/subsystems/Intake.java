@@ -32,8 +32,6 @@ public class Intake extends SubsystemBase {
   private double m_CurrentSpeed;
 
   private DataRecorder dataRecorder;
-  private Integer RecordCurrentSpeedix;
-  private Integer IntakeUpOrDownix;
   
   public static final class IntakeArmConstants {
     //TODO run arm motor to extended position, find right position
@@ -109,15 +107,11 @@ public class Intake extends SubsystemBase {
     m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
     
     dataRecorder = null;
-    RecordCurrentSpeedix = 0;
-    IntakeUpOrDownix = null;
     intakeExtended = false;
   }
 
-  public void setDataRecorder(DataRecorder _dataRecorder, Integer _intakeUpOrDown, Integer _currentSpeed){
+  public void setDataRecorder(DataRecorder _dataRecorder){
     this.dataRecorder = _dataRecorder;
-    this.IntakeUpOrDownix = _intakeUpOrDown;
-    this.RecordCurrentSpeedix = _currentSpeed;
   }
 
    
@@ -128,13 +122,26 @@ public class Intake extends SubsystemBase {
     // runMotor(m_CurrentSpeed);
         //m_IntakeMotor.set(ControlMode.PercentOutput, m_CurrentSpeed);
     m_IntakeMotor.set(ControlMode.Velocity, m_CurrentSpeed);
-SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
+
+    if (this.dataRecorder != null) {
+      dataRecorder.recordValue(datapoint.IntakeMotorSpeed, m_CurrentSpeed);
+      if (intakeExtended) {
+        this.dataRecorder.recordValue(datapoint.IntakeUpOrDown, 1);
+      }
+      if (!intakeExtended) {
+        this.dataRecorder.recordValue(datapoint.IntakeUpOrDown, 0);
+      }
+    }
+
+//SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
     // if upper or lower limit switch is hit, then reset encoder position to upper or lower
     if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
       m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armRetractedPos);
+      stopArm();
     }
     else if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed()){
       m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
+      stopArm();
     }
   }
   // public void runMotor(double speed){
@@ -161,26 +168,12 @@ public void ToggleIntake(){
       m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
       // m_CurrentSpeed = m_IntakeSpeed;
       //m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
-
-      
-
     }
     else if (intakeExtended) {
       intakeExtended = false;
       //run arm motor to retracted position
       m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
       //m_CurrentSpeed = 0;
-    }
-  
-    if (this.dataRecorder != null) {
-
-      if (intakeExtended) {
-        this.dataRecorder.recordValue(IntakeUpOrDownix, 1);
-      }
-      if (!intakeExtended) {
-        this.dataRecorder.recordValue(IntakeUpOrDownix, 0);
-      }
-  
     }
   }
 

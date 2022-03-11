@@ -82,7 +82,9 @@ public class RobotContainer {
 
     m_DataRecorder = new DataRecorder();
     m_Drivetrain.setDataRecorder(m_DataRecorder);
-    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
+    m_shooter.setDataRecorder(m_DataRecorder);
+    m_Intake.setDataRecorder(m_DataRecorder);
+    
     // TODO add DataRecorder to Intake subsystem
     // m_Intake.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
    
