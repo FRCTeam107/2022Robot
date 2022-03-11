@@ -64,7 +64,7 @@ public final class Constants {
 
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
-                // public static final int INTAKE_IN = 2;
+                 public static final int CAMERA_TOGGLE  = 2;
                 // public static final int PICKUP_DOWN = 3;
                 // public static final int PICKUP_UP = 4;
                 static final int FORCE_READY = 4;
@@ -147,8 +147,8 @@ public final class Constants {
                 public static final int kEncoderCPR = 2048; // 4096;
                 public static final double kWheelDiameterMeters = Units.inchesToMeters(3.0); // 0.1524;
                 private static final double kWheelGearing = 8.16;  // gearing from motor to swerve drive
-                public static final double kEncoderDistancePerPulse = 
-                      (kWheelDiameterMeters * Math.PI) / (double) ( kEncoderCPR * kWheelGearing) ;
+                public static final double kEncoderDistancePerPulse = 0.25 *
+                      (kWheelDiameterMeters * Math.PI) / (double) ( kEncoderCPR / kWheelGearing) ;
                 //Units.inchesToMeters(3.0) * Math.PI / 16592;  // actual pulses per rotation measured
                 
                   // Assumes the encoders are directly mounted on the wheel shafts
@@ -166,12 +166,12 @@ public final class Constants {
                                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
                 // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-                public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(6);
+                public static final double kMaxSpeedMetersPerSecond = 0.5;//Units.feetToMeters(6);
 
   //these are limits you can change!!!
                // public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
-                public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-                public static double feildCalibration = 0;
+                public static final double kMaxAngularSpeed = Math.PI / 2; // 1/2 rotation per second
+              // public static double feildCalibration = 0;
                 
                     // These characterization values MUST be determined either experimentally or theoretically
                 // for *your* robot's drive.

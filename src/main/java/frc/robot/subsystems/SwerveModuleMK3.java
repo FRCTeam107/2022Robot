@@ -22,10 +22,10 @@ import edu.wpi.first.math.util.Units;
 public class SwerveModuleMK3 {
 
   // TODO: Tune these PID values for your robot
-  private static final double kDriveP = 0.0; //15.0;
+  private static final double kDriveP = 0.03; //15.0;
   private static final double kDriveI = 0.0; //0.01;
   private static final double kDriveD = 0.0; //0.1;
-  private static final double kDriveF = 0.00; //0.2;
+  private static final double kDriveF = 0.20; //0.2;
 
   private static final double kAngleP = 1.0;
   private static final double kAngleI = 0.0;
@@ -44,7 +44,6 @@ public class SwerveModuleMK3 {
     this.angleMotor = angleMotor;
     this.canCoder = canCoder;
     this.offset = offset;
-canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     TalonFXConfiguration angleTalonFXConfiguration = new TalonFXConfiguration();
 
     angleTalonFXConfiguration.slot0.kP = kAngleP;
@@ -57,6 +56,9 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     angleTalonFXConfiguration.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
     angleMotor.configAllSettings(angleTalonFXConfiguration);
     angleMotor.setNeutralMode(NeutralMode.Brake); //not needed but nice to keep the robot stopped when you want it stopped
+    angleMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    angleMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
+
 // angleMotor.configClosedloopRamp(0.5);
     TalonFXConfiguration driveTalonFXConfiguration = new TalonFXConfiguration();
 
@@ -68,6 +70,7 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     driveMotor.configAllSettings(driveTalonFXConfiguration);
     driveMotor.setNeutralMode(NeutralMode.Coast);
     driveMotor.configOpenloopRamp(1);
+    driveMotor.configClosedloopRamp(1);
 
     // set voltage compensation to 11 volts to smooth out battery variations
     driveMotor.configVoltageCompSaturation(11, 0);
@@ -79,6 +82,7 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
     canCoderConfiguration.magnetOffsetDegrees = offset.getDegrees();
     canCoder.configAllSettings(canCoderConfiguration);
+    canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
   }
 
   /**
@@ -134,12 +138,14 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     double currentTicks = canCoder.getPosition() / canCoder.configGetFeedbackCoefficient();
     double desiredTicks = currentTicks + deltaTicks;
 
-      double feetPerSecond = Units.metersToFeet(state.speedMetersPerSecond);
-    double motorSpeed = feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
+      //double feetPerSecond = Units.metersToFeet(state.speedMetersPerSecond);
+    //double motorSpeed = feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
+    double motorSpeed = state.speedMetersPerSecond / DriveConstants.kEncoderDistancePerPulse;
     //below is a line to comment out from step 5
     // original code had "PercentOutput"  Not sure why
-    driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
-   //driveMotor.set(TalonFXControlMode.Velocity, feetPerSecond / SwerveDrivetrain.kMaxSpeed);
+   // driveMotor.set(TalonFXControlMode.PercentOutput, motorSpeed);
+
+   driveMotor.set(TalonFXControlMode.Velocity, motorSpeed); //feetPerSecond / SwerveDrivetrain.kMaxSpeed);
 
      //below is a line to comment out from step 5
      if (motorSpeed==0)
@@ -150,6 +156,7 @@ canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
      {
       angleMotor.set(TalonFXControlMode.Position, desiredTicks);
      }
-   //   SmartDashboard.putNumber("driveMotorSpeed", feetPerSecond / DriveConstants.kMaxSpeedMetersPerSecond);
+      // SmartDashboard.putNumber("driveMotorSpeed", motorSpeed);
+      // SmartDashboard.putNumber("driveMotorMperS", state.speedMetersPerSecond);
   }
 }

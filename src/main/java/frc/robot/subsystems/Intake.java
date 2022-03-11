@@ -17,6 +17,7 @@ import java.util.ResourceBundle.Control;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 // import com.ctre.phoenix.motorcontrol.ControlMode;
 // import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -78,6 +79,9 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.config_IntegralZone(0, IntakeMotorConstants.kIz);
     m_IntakeMotor.config_kF(0, IntakeMotorConstants.kFF);
 
+    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+
     double junk = SmartDashboard.getNumber("intakeSpeed", 1000);
     SmartDashboard.putNumber("intakeSpeed", junk);
 
@@ -101,10 +105,12 @@ public class Intake extends SubsystemBase {
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    
     dataRecorder = null;
     RecordCurrentSpeedix = 0;
     IntakeUpOrDownix = null;
-
     intakeExtended = false;
   }
 
