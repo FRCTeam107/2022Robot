@@ -16,8 +16,10 @@ import frc.robot.Constants.Motors;
 //import frc.robot.Constants.Solenoids;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class Climber extends SubsystemBase {
@@ -93,7 +95,7 @@ public static final class ClimberArmConstants {
 
     m_climberArm = new WPI_TalonFX(Motors.CLIMBER_ARM);
     m_climberArm.configFactoryDefault();
-    m_climberArm.setInverted(false);
+    m_climberArm.setInverted(TalonFXInvertType.Clockwise);
     m_climberArm.setNeutralMode(NeutralMode.Brake);
     m_climberArm.setSelectedSensorPosition(ClimberArmConstants.armReachBackPos);
     // PID values for INTAKE_ARM
