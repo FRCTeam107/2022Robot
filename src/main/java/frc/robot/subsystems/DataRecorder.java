@@ -10,25 +10,12 @@ package frc.robot.subsystems;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
-//import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.Buffer;
-import java.nio.file.FileSystem;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -60,9 +47,26 @@ public class DataRecorder extends SubsystemBase {
   public DataRecorder() {
     String test = SmartDashboard.getString("RecordfileName", "file.csv");
     SmartDashboard.putString("RecordfileName", test);
-    SmartDashboard.putString("Recording?", "---");
+    SmartDashboard.putBoolean("RecordingOn", false); // default to not recording
+    
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    datavalues[0] = System.currentTimeMillis();
+    SmartDashboard.putNumberArray("recordedValues", datavalues);
+
+    boolean recordingOn = SmartDashboard.getBoolean("RecordingOn", false);
+
+    if (recordingOn && outBuffer==null){ startRecording(); }
+    if (!recordingOn && outBuffer!=null){ endRecording(); }
+
+    //SmartDashboard.putString("DataValues" )
+    if (recordingOn && outBuffer!=null) { writeValuesToFile(); }
+    
+    }
+  
   private void writeValuesToFile(){
      if (outBuffer==null) {return;}
      
@@ -79,27 +83,9 @@ public class DataRecorder extends SubsystemBase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
-     SmartDashboard.putString("Data Values", line.toString());
-   
-    //  try {
-    //    outBuffer.write(stringdatavalues);
-    //  } catch (IOException e) {
-    //    // TODO Auto-generated catch block
-    //    e.printStackTrace();
-    //  } 
+    // SmartDashboard.putString("Data Values", line.toString());
   }
   
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    //datavalues[0] = System.currentTimeMillis();
-    SmartDashboard.putNumberArray("recordedValues", datavalues);
-    //SmartDashboard.putString("DataValues" )
-    if (outBuffer==null) {return;}
-    writeValuesToFile();
-  }
 
   public void startRecording(){
    
@@ -118,32 +104,13 @@ public class DataRecorder extends SubsystemBase {
         e.printStackTrace();
       }
 
-
       file.setWritable(true);
       file.setReadable(true);
-
 
       outBuffer = new BufferedWriter(outFile);
 
       datavalues = blankvalues;
       writeValuesToFile();
-
-      SmartDashboard.putString("Recording?", "ON");
-
-    //   try {
-     
-    //   //SmartDashboard.putString("Absolute path", file.getAbsolutePath());
-
-    //  // writeValuesToFile();
-    //   String stringdatavalues = datavalues.toString();
-    //   // SmartDashboard.putString("Data Values", stringdatavalues);
-      
-    //  // outBuffer.write(stringdatavalues);
-
-    // } catch (IOException e) {
-    //   // TODO Auto-generated catch block
-    //   e.printStackTrace();
-    // }
   }
   
    public void endRecording(){
@@ -161,61 +128,40 @@ public class DataRecorder extends SubsystemBase {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      SmartDashboard.putString("Recording?", "OFF");
     }
 
   }
 
   public void recordValue(Integer ix, double valueToRecord){
-    if (outFile==null) {return;}
-
+//    if (outFile==null) {return;}
     datavalues[ix] = valueToRecord;
   }
 
+  // LoadFile method reads all lines of files and returns LIST of doubles
   public List<double[]> LoadFile(String fileName) {
-    // Path filPath = new Path() {
-      
-    // };
-    // List<Double[]> lines = 
-    // Files.lines(Pathes.get("/path/to/file.csv"))
-    //      .skip(1) // Skip the heading
-    //      .map(line -> Arrays.stream(line.split(","))
-    //                         .skip(1) // Skip the "station_readings"
-    //                         .map(Double::new)
-    //                         .toArray(Double[]::new)
-    //           )
-    //      .collect(Collectors.toList());
-    // ////
 
-// read all lines of file
-// try (Stream<String> lines = Files.lines(Paths.get("/Users/dshvechikov/file"))) {
-//   lines.forEach(System.out::println);
-// }
-  List<double[]> lines = new ArrayList<double[]>();
-  String[] strRow;
-  double[] row;
-  // string xx = Filesystem.getDeployDirectory().getAbsolutePath()
-  try (BufferedReader br = new BufferedReader(new FileReader("/home/lvuser/deploy/" + fileName))) {
-    for(String line; (line = br.readLine()) != null; ) {
+    List<double[]> lines = new ArrayList<double[]>();
+    String[] strRow;
+    double[] row;
+    // string xx = Filesystem.getDeployDirectory().getAbsolutePath()
+    try (BufferedReader br = new BufferedReader(new FileReader("/home/lvuser/deploy/" + fileName))) {
+      for(String line; (line = br.readLine()) != null; ) {
         //System.out.println(line);
-        SmartDashboard.putString("fileLine", line);
+        //SmartDashboard.putString("fileLine", line);
         strRow = line.split(",");
         row = new double[strRow.length - 1];
-         for (int i=0; i<strRow.length-1; i++) {
-           row[i] = Double.parseDouble(strRow[i]);
-         }
-      lines.add(row);
+        for (int i=0; i<strRow.length-1; i++) {
+          row[i] = Double.parseDouble(strRow[i]); //(double)test2; //Double.parseDouble(strDatapoint.toString());
+        }
+        lines.add(row);
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
-  } catch (IOException e) {
-    // TODO Auto-generated catch block
-    e.printStackTrace();
-  }
-  
-  //SmartDashboard.putString("fileLine", "SUCCESS!");
 
+    //SmartDashboard.putString("fileLine", "SUCCESS!");
     return lines;
-
   }
-
 }
 

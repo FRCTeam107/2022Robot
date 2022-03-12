@@ -10,6 +10,8 @@ package frc.robot.commands;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
+import org.opencv.core.Size;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -26,7 +28,7 @@ public class ReplayFile extends CommandBase {
   private final Shooter m_Shooter;
   private final DataRecorder m_datarecorder;
   private final List<double[]> m_replayList;
-  
+  private int replayPoint;
   private StringBuilder msg = new StringBuilder("");
  
   public ReplayFile(SwerveDrivetrain _drivetrain, Shooter _shooter, DataRecorder _datarecoder, String filename) {
@@ -36,7 +38,7 @@ public class ReplayFile extends CommandBase {
     m_replayList = m_datarecorder.LoadFile(filename);
    
 
-    SmartDashboard.putString("ReplayFile", "instantiate");
+    // SmartDashboard.putString("ReplayFile", "instantiate");
     // Use addRequirements() here to declare subsystem dependencies.
     
     addRequirements(m_drivetrain, m_Shooter, m_datarecorder);
@@ -45,33 +47,40 @@ public class ReplayFile extends CommandBase {
     // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putString("ReplayFile", "initailize");
+    // SmartDashboard.putString("ReplayFile", "initailize");
         //m_Limelight.EnableVisionProcessing();
-
+    replayPoint = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putString("ReplayFile", "execute");
-    if (m_replayList.size()>0){
-      double[] replayRow = m_replayList.get(0);
+    // SmartDashboard.putString("ReplayFile", "execute");
 
-      msg.append(replayRow[datapoint.Drive_X]);
-      msg.append(" ~ ");
-      msg.append(replayRow[datapoint.Drive_Y]);
-      msg.append(" ~ ");
-      msg.append(replayRow[datapoint.Drive_Z]);
-      msg.append("\n");
+    if (replayPoint > m_replayList.size() - 1) { return; }
 
-      m_drivetrain.drive(replayRow[datapoint.Drive_X], 
-            replayRow[datapoint.Drive_Y],
-            replayRow[datapoint.Drive_Z], 
-            true);
+  //   if (m_replayList.size() > 0){
+    double[] replayRow = m_replayList.get(replayPoint);
 
-      m_replayList.remove(0);   
-   SmartDashboard.putString("ReplayData", msg.toString());
-    }
+    // msg.append(replayRow[datapoint.Drive_X]);
+    // msg.append(" ~ ");
+    // msg.append(replayRow[datapoint.Drive_Y]);
+    // msg.append(" ~ ");
+    // msg.append(replayRow[datapoint.Drive_Z]);
+    // msg.append("\n");
+
+    m_drivetrain.drive(replayRow[datapoint.Drive_X], 
+          replayRow[datapoint.Drive_Y],
+          replayRow[datapoint.Drive_Z], 
+          true);
+
+    //m_replayList.remove(0);   
+    replayPoint += 1;
+
+    //SmartDashboard.putString("ReplayData", msg.toString());
+    //System.out.println(">>> REPLAY <<<" + msg.toString());
+    //msg = new StringBuilder("");
+    //}
    
   }
 
@@ -79,12 +88,14 @@ public class ReplayFile extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     //m_turret.isShooting = false;
-    SmartDashboard.putString("ReplayFile", "end");
+    // SmartDashboard.putString("ReplayFile", "end");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // return false;
+    // stop when we hit the end of the list
+    return(replayPoint > m_replayList.size() - 1);
   }
 }
