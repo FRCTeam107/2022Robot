@@ -102,8 +102,10 @@ public class RobotContainer {
 
     // Add commands to the autonomous command chooser
     m_chooser = new SendableChooser<>();
-    m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
+    //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
+    m_chooser.addOption("Jim.csv", new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"));
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
+    SmartDashboard.putData("Auto choices", m_chooser);
   }
 
   private void configureButtonBindings() {
@@ -166,8 +168,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return m_autoCommand;
-    return ORIGgetAutonomousCommand();
-    //return m_chooser.getSelected();
+    //return ORIGgetAutonomousCommand();
+    return m_chooser.getSelected();
     //return m_SimpleAutonCommand;
   }
   
