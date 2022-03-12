@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DataRecorder;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.DataRecorder.datapoint;
@@ -26,13 +27,17 @@ public class ReplayFile extends CommandBase {
    */
   private final SwerveDrivetrain m_drivetrain;
   private final Shooter m_Shooter;
+  private final Intake m_Intake;
   private final DataRecorder m_datarecorder;
   private final List<double[]> m_replayList;
   private int replayPoint;
+  private boolean intakeArmDown = false;
+
   private StringBuilder msg = new StringBuilder("");
  
-  public ReplayFile(SwerveDrivetrain _drivetrain, Shooter _shooter, DataRecorder _datarecoder, String filename) {
+  public ReplayFile(SwerveDrivetrain _drivetrain, Intake _intake, Shooter _shooter, DataRecorder _datarecoder, String filename) {
     m_drivetrain = _drivetrain;
+    m_Intake = _intake;
     m_Shooter = _shooter;
     m_datarecorder = _datarecoder;
     m_replayList = m_datarecorder.LoadFile(filename);
@@ -62,17 +67,31 @@ public class ReplayFile extends CommandBase {
   //   if (m_replayList.size() > 0){
     double[] replayRow = m_replayList.get(replayPoint);
 
-    // msg.append(replayRow[datapoint.Drive_X]);
-    // msg.append(" ~ ");
-    // msg.append(replayRow[datapoint.Drive_Y]);
-    // msg.append(" ~ ");
-    // msg.append(replayRow[datapoint.Drive_Z]);
-    // msg.append("\n");
+    if (replayRow.length<9)
+    {
+      SmartDashboard.putNumber("ReplayErrorLine", replayPoint);
+      SmartDashboard.putNumberArray("ReplayErrorData", replayRow);
+      replayPoint += 1;
+      return;
+    }
 
     m_drivetrain.drive(replayRow[datapoint.Drive_X], 
           replayRow[datapoint.Drive_Y],
           replayRow[datapoint.Drive_Z], 
           true);
+
+    // move intake arm up or down
+    if (replayRow[datapoint.IntakeIsExtended]>0 && !intakeArmDown) {
+      m_Intake.extendArm();
+      intakeArmDown = true;
+    }
+    else if (replayRow[datapoint.IntakeIsExtended]==0 && intakeArmDown) {
+      m_Intake.retractArm();
+      intakeArmDown = false;
+    }
+    m_Intake.runIntake(replayRow[datapoint.IntakeMotorSpeed]);
+
+    m_Shooter.runMotor(replayRow[datapoint.ShooterBottom], replayRow[datapoint.ShooterTop]);
 
     //m_replayList.remove(0);   
     replayPoint += 1;

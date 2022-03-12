@@ -24,7 +24,6 @@ public class Shooter extends SubsystemBase {
   private final WPI_TalonFX m_shootbottom, m_shoottop;
   private final WPI_TalonSRX m_kicker;
 
-  private DataRecorder dataRecorder;
   private double setSpeedTop, setSpeedBottom;
 
   // private double kP, kI, kD, kFF, kMaxOutput, kMinOutput, maxRPM;
@@ -38,8 +37,6 @@ public class Shooter extends SubsystemBase {
    */
   public Shooter() {
     super();
-
-    dataRecorder = null;
 
     manualForceReady = false;
     cacheBottomReady = false;
@@ -95,10 +92,6 @@ public class Shooter extends SubsystemBase {
 
   }
 
-  public void setDataRecorder(DataRecorder _dataRecorder){
-    this.dataRecorder = _dataRecorder;
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -109,10 +102,8 @@ public class Shooter extends SubsystemBase {
     setSpeedBottom = -speedbottom;
     setSpeedTop = speedtop;
 
-    if (this.dataRecorder != null) {
-      dataRecorder.recordValue(datapoint.ShooterTop, setSpeedTop);
-      dataRecorder.recordValue(datapoint.ShooterTop, setSpeedTop);
-    }
+    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterBottom, setSpeedBottom);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterTop, setSpeedTop);
 
     if (setSpeedTop == 0 ){
       m_shootbottom.set(TalonFXControlMode.PercentOutput, 0);
@@ -123,13 +114,7 @@ public class Shooter extends SubsystemBase {
       m_shootbottom.set(TalonFXControlMode.Velocity, setSpeedBottom);
       m_shoottop.set(TalonFXControlMode.Velocity, setSpeedTop);      
     }
-
-    if (this.dataRecorder != null) {
-      this.dataRecorder.recordValue(datapoint.ShooterTop, setSpeedTop);
-      this.dataRecorder.recordValue(datapoint.ShooterBottom, setSpeedBottom);
-    }
-    
-    
+ 
   }
 
   public void setForceReady(boolean enableOverride){

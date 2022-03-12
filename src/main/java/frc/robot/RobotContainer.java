@@ -35,6 +35,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDLights;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
@@ -58,7 +59,8 @@ public class RobotContainer {
   private final Climber m_climber;
   //private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
-
+  private final Limelight m_limelight;
+  
   public DataRecorder m_DataRecorder = new DataRecorder();
 
   // private final Compressor m_compressor;
@@ -84,11 +86,12 @@ public class RobotContainer {
     m_shooter = new Shooter();
     m_climber = new Climber();
     m_Camera = new VisionCamera();
+    m_limelight = new Limelight();
 
     m_DataRecorder = new DataRecorder();
-    m_Drivetrain.setDataRecorder(m_DataRecorder);
-    m_shooter.setDataRecorder(m_DataRecorder);
-    m_Intake.setDataRecorder(m_DataRecorder);
+//    m_Drivetrain.setDataRecorder(m_DataRecorder);
+    //m_shooter.setDataRecorder(m_DataRecorder);
+    // m_Intake.setDataRecorder(m_DataRecorder);
     
     // TODO add DataRecorder to Intake subsystem
     // m_Intake.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
@@ -106,7 +109,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // setup buttons
     JoystickButton btnShoot = new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT);
-    JoystickButton btnPickupToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP_DOWN);
+    JoystickButton btnIntakeDown = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_DOWN);
+    JoystickButton btnIntakeUp = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP);
     JoystickButton btnPickupEject = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_EJECT);
     JoystickButton btnPickupIntake = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_INTAKE);
     JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_REACHBACK){};
@@ -128,9 +132,10 @@ public class RobotContainer {
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
     // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
-    new JoystickButton(m_controllerJoystick, 3).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Jim.csv"));
+    new JoystickButton(m_controllerJoystick, 3).whileHeld(new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"));
    
-    btnPickupToggle.whenPressed(m_Intake::ToggleIntake);
+    btnIntakeDown.whenPressed(m_Intake::extendArm);
+    btnIntakeUp.whenPressed(m_Intake::retractArm);
 
     btnPickupEject.whileHeld(m_Intake::HeimlichManeuver);
     btnPickupEject.whenReleased(m_Intake::StopIntake);

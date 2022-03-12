@@ -70,7 +70,8 @@ public final class Constants {
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 
-                static final int PICKUP_UP_DOWN = 15;
+                static final int PICKUP_DOWN = 15;
+                static final int PICKUP_UP = 12;
                 public static final int PICKUP_EJECT = 14;
                 static final int PICKUP_INTAKE = 16;
                 // //public static final int TURRET_RIGHT = 5;
@@ -83,9 +84,9 @@ public final class Constants {
 
                 // public static final int CLIMBER_EXTEND = 8;
                 //  public static final int CLIMBER_RETRACT = 9;
-                public static final int REPLAY_RECORDING = 7;
-                public static final int START_RECORDING = 10;
-                public static final int END_RECORDING = 11;
+                // public static final int REPLAY_RECORDING = 7;
+                // public static final int START_RECORDING = 10;
+                // public static final int END_RECORDING = 11;
 
         }
 

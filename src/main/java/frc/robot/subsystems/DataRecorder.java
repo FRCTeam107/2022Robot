@@ -29,12 +29,12 @@ public class DataRecorder extends SubsystemBase {
     public static final int GyroAngle = 4;
     public static final int ShooterTop = 5;
     public static final int ShooterBottom = 6;
-    public static final int IntakeUpOrDown = 7;
+    public static final int IntakeIsExtended = 7;
     public static final int IntakeMotorSpeed = 8;
   }
 
   
-  private double[] blankvalues = {0,0,0,0,0,0,0,0,0,0,0};
+  private double[] blankvalues = {0,0,0,0,0,0,0,0,-1};
   private double[] datavalues = blankvalues; // same number of datapoints from  list above
 
   //private FileInputStream in = null;
@@ -48,14 +48,13 @@ public class DataRecorder extends SubsystemBase {
     String test = SmartDashboard.getString("RecordfileName", "file.csv");
     SmartDashboard.putString("RecordfileName", test);
     SmartDashboard.putBoolean("RecordingOn", false); // default to not recording
-    
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    datavalues[0] = System.currentTimeMillis();
-    SmartDashboard.putNumberArray("recordedValues", datavalues);
+  
+    //SmartDashboard.putNumberArray("recordedValues", datavalues);
 
     boolean recordingOn = SmartDashboard.getBoolean("RecordingOn", false);
 
@@ -63,7 +62,19 @@ public class DataRecorder extends SubsystemBase {
     if (!recordingOn && outBuffer!=null){ endRecording(); }
 
     //SmartDashboard.putString("DataValues" )
-    if (recordingOn && outBuffer!=null) { writeValuesToFile(); }
+    if (recordingOn && outBuffer!=null) {
+      //datavalues[0] = System.currentTimeMillis();
+      datavalues[datapoint.Drive_X] = SmartDashboard.getNumber("dataRecorder." + datapoint.Drive_X, 0);
+      datavalues[datapoint.Drive_Y] = SmartDashboard.getNumber("dataRecorder." + datapoint.Drive_Y, 0);
+      datavalues[datapoint.Drive_Z] = SmartDashboard.getNumber("dataRecorder." + datapoint.Drive_Z, 0);
+      datavalues[datapoint.GyroAngle] = SmartDashboard.getNumber("dataRecorder." + datapoint.GyroAngle, 0);
+      datavalues[datapoint.ShooterBottom] = SmartDashboard.getNumber("dataRecorder." + datapoint.ShooterBottom, 0);
+      datavalues[datapoint.ShooterTop] = SmartDashboard.getNumber("dataRecorder." + datapoint.ShooterTop, 0);
+      datavalues[datapoint.IntakeIsExtended] = SmartDashboard.getNumber("dataRecorder." + datapoint.IntakeIsExtended, 0);
+      datavalues[datapoint.IntakeMotorSpeed] = SmartDashboard.getNumber("dataRecorder." + datapoint.IntakeMotorSpeed, 0);
+
+      writeValuesToFile(); 
+    }
     
     }
   
@@ -71,14 +82,18 @@ public class DataRecorder extends SubsystemBase {
      if (outBuffer==null) {return;}
      
      // String stringdatavalues = datavalues.toString();
-     StringBuilder line = new StringBuilder();
+     //StringBuilder line = new StringBuilder();
+     String line = "";
      for (int i=0; i < datavalues.length; i++) {
-        line.append(datavalues[i]);
-        if (i != datavalues.length - 1) { line.append(','); }     
+        //line.append(datavalues[i]);
+        line += datavalues[i];
+        if (i != datavalues.length - 1) { line +=",";} // line.append(','); }     
      }
-     line.append("\n");
+     //line.append("\n");
+     //line +="\n";
      try {
-      outBuffer.write(line.toString());
+      outBuffer.write(line);
+      outBuffer.write("\n");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -143,14 +158,19 @@ public class DataRecorder extends SubsystemBase {
     List<double[]> lines = new ArrayList<double[]>();
     String[] strRow;
     double[] row;
+    String errors = "";
+    Integer rowNum = 0;
+
     // string xx = Filesystem.getDeployDirectory().getAbsolutePath()
     try (BufferedReader br = new BufferedReader(new FileReader("/home/lvuser/deploy/" + fileName))) {
       for(String line; (line = br.readLine()) != null; ) {
+        rowNum += 1;
         //System.out.println(line);
         //SmartDashboard.putString("fileLine", line);
         strRow = line.split(",");
-        row = new double[strRow.length - 1];
-        for (int i=0; i<strRow.length-1; i++) {
+        row = new double[strRow.length];
+        if (strRow.length < 9){errors += "line " + rowNum + " columns=" + strRow.length; }
+        for (int i=0; i<strRow.length; i++) {
           row[i] = Double.parseDouble(strRow[i]); //(double)test2; //Double.parseDouble(strDatapoint.toString());
         }
         lines.add(row);
@@ -159,6 +179,9 @@ public class DataRecorder extends SubsystemBase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    SmartDashboard.putString("LoadFile Errors",errors);
+    SmartDashboard.putNumber("LoadFile Lines",rowNum);
+
 
     //SmartDashboard.putString("fileLine", "SUCCESS!");
     return lines;

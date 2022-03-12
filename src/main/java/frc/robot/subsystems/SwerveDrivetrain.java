@@ -64,7 +64,6 @@ public class SwerveDrivetrain extends SubsystemBase {
    SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
    private SwerveModuleMK3 m_frontLeft, m_frontRight, m_rearLeft, m_rearRight;
    private SwerveModuleMK3[] modules;
-   private DataRecorder dataRecorder;
 
    public SwerveDrivetrain(double fieldOffsetAngle) {
     // gyro.reset(); 
@@ -77,10 +76,6 @@ public class SwerveDrivetrain extends SubsystemBase {
    
     modules = new SwerveModuleMK3[] {m_frontLeft, m_frontRight, m_rearLeft, m_rearRight};
    
-  }
-
-  public void setDataRecorder(DataRecorder _dataRecorder){
-    this.dataRecorder = _dataRecorder;
   }
 
   /**
@@ -99,14 +94,11 @@ public class SwerveDrivetrain extends SubsystemBase {
     //   zeroHeading(0); // assume manual re-calibrating pointing straight 'north' on field
     // }
 
-    if (this.dataRecorder != null)
-    {
-      this.dataRecorder.recordValue(datapoint.Drive_X, xSpeed);
-      this.dataRecorder.recordValue(datapoint.Drive_Y, ySpeed);
-      this.dataRecorder.recordValue(datapoint.Drive_Z, rot);
-      this.dataRecorder.recordValue(datapoint.GyroAngle, m_gyro.getAngle());
-    }
-    
+    SmartDashboard.putNumber("dataRecorder." + datapoint.Drive_X, xSpeed);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.Drive_Y, ySpeed);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.Drive_Z, rot);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.GyroAngle, m_gyro.getAngle());
+
     SwerveModuleState[] states =
       DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
