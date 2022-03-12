@@ -27,8 +27,8 @@ public class Climber extends SubsystemBase {
 private final WPI_TalonFX m_climber, m_climberArm;
 
 public static final class ClimberConstants {
-  private static final double armExtendPos = 200.000; //268.14905;
-  private static final double armHomePos = 0.0;
+   private static final double hookMaxReachPos = 421000; //268.14905;
+   private static final double hookHomePos = 0;
 
     //TODO tune the climber arm PID values
     public static final double kP = 0.04; 
@@ -44,8 +44,8 @@ public static final class ClimberConstants {
 
 public static final class ClimberArmConstants {
   //TODO run arm motor to extended position, find right position
-  public static final double armReachBackPos = 0;
-  public static final double armVerticalPos = -170000;
+  public static final double armReachBackPos =141000;
+  public static final double armVerticalPos = 0;
   
   //TODO tune the climber arm PID values
   public static final double kP = 0.04; 
@@ -67,7 +67,7 @@ public static final class ClimberArmConstants {
 
     m_climber.configFactoryDefault();
     m_climber.setNeutralMode(NeutralMode.Brake);
-    m_climber.setSelectedSensorPosition(ClimberConstants.armHomePos);
+    m_climber.setSelectedSensorPosition(ClimberConstants.hookHomePos);
     
     m_climber.config_kP(0, ClimberConstants.kP);
     m_climber.config_kI(0, ClimberConstants.kI);
@@ -125,6 +125,7 @@ public static final class ClimberArmConstants {
     // This method will be called once per scheduler run
 
 SmartDashboard.putNumber("climberPosition", m_climber.getSelectedSensorPosition());
+SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPosition());
 
 // if upper or lower limit switch is hit, then reset encoder position to upper or lower
     if (m_climberArm.getSensorCollection().isFwdLimitSwitchClosed()==1){
