@@ -16,8 +16,10 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
@@ -38,6 +40,8 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
 import frc.robot.subsystems.DataRecorder.datapoint;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.AutonPause;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -64,6 +68,7 @@ public class RobotContainer {
 
       // A chooser for autonomous commands
   private final SendableChooser<Command> m_chooser;
+  private final AutonPause m_autoCommand = new AutonPause(5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -156,6 +161,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    //return m_autoCommand;
     return ORIGgetAutonomousCommand();
     //return m_chooser.getSelected();
     //return m_SimpleAutonCommand;

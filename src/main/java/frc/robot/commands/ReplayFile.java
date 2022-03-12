@@ -27,7 +27,7 @@ public class ReplayFile extends CommandBase {
   private final DataRecorder m_datarecorder;
   private final List<double[]> m_replayList;
   
-//private StringBuilder msg = new StringBuilder("");
+  private StringBuilder msg = new StringBuilder("");
  
   public ReplayFile(SwerveDrivetrain _drivetrain, Shooter _shooter, DataRecorder _datarecoder, String filename) {
     m_drivetrain = _drivetrain;
@@ -36,7 +36,7 @@ public class ReplayFile extends CommandBase {
     m_replayList = m_datarecorder.LoadFile(filename);
    
 
-
+    SmartDashboard.putString("ReplayFile", "instantiate");
     // Use addRequirements() here to declare subsystem dependencies.
     
     addRequirements(m_drivetrain, m_Shooter, m_datarecorder);
@@ -45,22 +45,24 @@ public class ReplayFile extends CommandBase {
     // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //m_Limelight.EnableVisionProcessing();
+    SmartDashboard.putString("ReplayFile", "initailize");
+        //m_Limelight.EnableVisionProcessing();
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putString("ReplayFile", "execute");
     if (m_replayList.size()>0){
       double[] replayRow = m_replayList.get(0);
 
-      // msg.append(replayRow[datapoint.Drive_X]);
-      // msg.append(" ~ ");
-      // msg.append(replayRow[datapoint.Drive_Y]);
-      // msg.append(" ~ ");
-      // msg.append(replayRow[datapoint.Drive_Z]);
-      // msg.append("\n");
+      msg.append(replayRow[datapoint.Drive_X]);
+      msg.append(" ~ ");
+      msg.append(replayRow[datapoint.Drive_Y]);
+      msg.append(" ~ ");
+      msg.append(replayRow[datapoint.Drive_Z]);
+      msg.append("\n");
 
       m_drivetrain.drive(replayRow[datapoint.Drive_X], 
             replayRow[datapoint.Drive_Y],
@@ -68,7 +70,7 @@ public class ReplayFile extends CommandBase {
             true);
 
       m_replayList.remove(0);   
-   //SmartDashboard.putString("ReplayData", msg.toString());
+   SmartDashboard.putString("ReplayData", msg.toString());
     }
    
   }
@@ -77,7 +79,7 @@ public class ReplayFile extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     //m_turret.isShooting = false;
-    
+    SmartDashboard.putString("ReplayFile", "end");
   }
 
   // Returns true when the command should end.

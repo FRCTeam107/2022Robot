@@ -57,11 +57,12 @@ public class Shooter extends SubsystemBase {
 
     m_shoottop.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     m_shootbottom.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
-    m_kicker.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
 
     m_shoottop.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
     m_shootbottom.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
-    m_kicker.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+
+    m_kicker.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    m_kicker.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
 
     // m_shootbottom.configClosedloopRamp(0.3);
     // m_shoottop.configClosedloopRamp(0.3);
@@ -77,7 +78,7 @@ public class Shooter extends SubsystemBase {
     // kFF = 0;//.000015; 
     // kMaxOutput = 1; 
     // kMinOutput = -1;
-    // maxRPM = 5700;  
+    // maxRPM = 5700;
     m_shootbottom.config_kP(0, ShooterConstants.kP);
     m_shootbottom.config_kI(0, ShooterConstants.kI);
     m_shootbottom.config_kD(0, ShooterConstants.kD);
