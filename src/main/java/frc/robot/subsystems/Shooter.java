@@ -98,12 +98,12 @@ public class Shooter extends SubsystemBase {
  }
 
  
-  public void runMotor(double speedbottom, double speedtop){
+public void runMotor(double speedbottom, double speedtop){
+    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterBottom, speedbottom);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterTop, speedtop);
+
     setSpeedBottom = -speedbottom;
     setSpeedTop = speedtop;
-
-    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterBottom, setSpeedBottom);
-    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterTop, setSpeedTop);
 
     if (setSpeedTop == 0 ){
       m_shootbottom.set(TalonFXControlMode.PercentOutput, 0);
@@ -114,7 +114,6 @@ public class Shooter extends SubsystemBase {
       m_shootbottom.set(TalonFXControlMode.Velocity, setSpeedBottom);
       m_shoottop.set(TalonFXControlMode.Velocity, setSpeedTop);      
     }
- 
   }
 
   public void setForceReady(boolean enableOverride){
@@ -122,6 +121,7 @@ public class Shooter extends SubsystemBase {
   }
   public void runKicker(double Speed){
     m_kicker.set(ControlMode.PercentOutput, Speed);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.KickerSpeed, Speed);
   }
   public boolean isReady(){
     if (manualForceReady) {

@@ -27,14 +27,15 @@ public class DataRecorder extends SubsystemBase {
     public static final int Drive_Y = 2;
     public static final int Drive_Z = 3;
     public static final int GyroAngle = 4;
-    public static final int ShooterTop = 5;
-    public static final int ShooterBottom = 6;
-    public static final int IntakeIsExtended = 7;
-    public static final int IntakeMotorSpeed = 8;
+    public static final int IntakeIsExtended = 5;
+    public static final int IntakeMotorSpeed = 6;
+    public static final int ShooterTop = 7;
+    public static final int ShooterBottom = 8;
+    public static final int KickerSpeed = 9;
   }
 
   
-  private double[] blankvalues = {0,0,0,0,0,0,0,0,-1};
+  private double[] blankvalues = {0,0,0,0,0,0,0,0,0,0};
   private double[] datavalues = blankvalues; // same number of datapoints from  list above
 
   //private FileInputStream in = null;
@@ -72,6 +73,7 @@ public class DataRecorder extends SubsystemBase {
       datavalues[datapoint.ShooterTop] = SmartDashboard.getNumber("dataRecorder." + datapoint.ShooterTop, 0);
       datavalues[datapoint.IntakeIsExtended] = SmartDashboard.getNumber("dataRecorder." + datapoint.IntakeIsExtended, 0);
       datavalues[datapoint.IntakeMotorSpeed] = SmartDashboard.getNumber("dataRecorder." + datapoint.IntakeMotorSpeed, 0);
+      datavalues[datapoint.KickerSpeed] = SmartDashboard.getNumber("dataRecorder." + datapoint.KickerSpeed, 0);
 
       writeValuesToFile(); 
     }

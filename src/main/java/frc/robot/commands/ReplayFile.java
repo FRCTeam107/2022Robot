@@ -67,7 +67,7 @@ public class ReplayFile extends CommandBase {
   //   if (m_replayList.size() > 0){
     double[] replayRow = m_replayList.get(replayPoint);
 
-    if (replayRow.length<9)
+    if (replayRow.length<10)
     {
       SmartDashboard.putNumber("ReplayErrorLine", replayPoint);
       SmartDashboard.putNumberArray("ReplayErrorData", replayRow);
@@ -92,6 +92,7 @@ public class ReplayFile extends CommandBase {
     m_Intake.runIntake(replayRow[datapoint.IntakeMotorSpeed]);
 
     m_Shooter.runMotor(replayRow[datapoint.ShooterBottom], replayRow[datapoint.ShooterTop]);
+    m_Shooter.runKicker(replayRow[datapoint.KickerSpeed]);
 
     //m_replayList.remove(0);   
     replayPoint += 1;
