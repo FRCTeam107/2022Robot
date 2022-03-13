@@ -31,16 +31,18 @@ private final DigitalInput m_talonHookLeft, m_talonHookRight;
 
 public static final class ClimberConstants {
     // TODO find values for actual robot climber arm positions
-    public static final double armVerticalPos = 0; // starting position
-    public static final double armTouchNextBar = 50000;
-    public static final double armReachForNextBar = 60000;
+    public static final double armsStartingPos = 0; // starting position
+    public static final double armPullupPos = 45000; // reach up to bar
+    public static final double armVerticalPos = 55000; // reach up to bar
+    public static final double armTouchNextBar = 131500;
+    public static final double armReachForNextBar = 141250;
     public static final double armMaxReach = 170000;
     
     public static final double hookStartingPos = 0;
-    public static final double hookTransferToTalonsPos = 2000;
-    public static final double hookAboveBarPos = 5000;
+    public static final double hookTransferToTalonsPos = 400000;
+    public static final double hookAboveBarPos = 421000;
     public static final double hookTouchNextBarPos = 7000;
-    public static final double hookReachPastNextBarPos = 9000;
+    public static final double hookReachPastNextBarPos = 421000;
     private static final double hookMaxReachPos = 421000; //268.14905;
 
   // private static final double armExtendPos = 200.000; //268.14905;
@@ -117,7 +119,7 @@ public static final class ClimberArmConstants {
     m_climberArm.configFactoryDefault();
     m_climberArm.setInverted(TalonFXInvertType.Clockwise);
     m_climberArm.setNeutralMode(NeutralMode.Brake);
-    m_climberArm.setSelectedSensorPosition(ClimberConstants.armVerticalPos);
+    m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
     // PID values for INTAKE_ARM
     m_climberArm.config_kP(0, ClimberArmConstants.kP);
     m_climberArm.config_kI(0, ClimberArmConstants.kI);
@@ -152,7 +154,7 @@ SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPos
       m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
     }
     else if (m_climberArm.getSensorCollection().isRevLimitSwitchClosed()==1){
-      m_climberArm.setSelectedSensorPosition(ClimberConstants.armVerticalPos);
+      m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
     }
   }
   
