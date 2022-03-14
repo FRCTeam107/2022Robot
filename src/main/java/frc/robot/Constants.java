@@ -29,11 +29,12 @@ public final class Constants {
         }
 
         //JOYSTICKS
-        public class LeftJoystick{
-                // public static final int JOYSTICK_ONE = 1;
-                // public static final int DOWN_SHIFT = 2;
-                // public static final int INTAKE_IN = 3;
-                // // public static final int JOYSTICK_FOUR = 4;
+        public class FlightController{
+                public static final int DRIVE_X_AXIS = 3;
+                public static final int DRIVE_Y_AXIS = 4;
+                public static final int DRIVE_Z_AXIS = 0;
+                
+                public static final int CLIMBER_MANUAL = 4;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;
                 // public static final int GREEN_ZONE = 11;

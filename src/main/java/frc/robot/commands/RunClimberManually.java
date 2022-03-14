@@ -1,15 +1,12 @@
 package frc.robot.commands;
 
 //import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.SwerveDrivetrain;
 //import frc.robot.subsystems.SwerveModuleMK3;
 
 public class RunClimberManually extends CommandBase {
@@ -29,9 +26,22 @@ public class RunClimberManually extends CommandBase {
 
   @Override
   public void execute() {
-    double X = -    m_Joystick.getX();
-    double Y = m_Joystick.getY();
-    double Z = m_Joystick.getZ();
+    int hookMove = m_Joystick.getPOV();
+    double armMove = m_Joystick.getY();
+
+    if (hookMove==0 || hookMove==1 || hookMove==7){
+      m_Climber.extendHook();
+    }
+    else if (hookMove==3 || hookMove==4 || hookMove==5){
+      m_Climber.pullHook();
+    }
+
+    if (armMove < -0.5){
+      m_Climber.reachArmBack();
+    }
+    else if (armMove > 0.5){
+      m_Climber.pullArmForward();
+    } 
   }
 
 }

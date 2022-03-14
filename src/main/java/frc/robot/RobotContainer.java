@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FlightController;
+import frc.robot.commands.RunClimberManually;
 import frc.robot.commands.ReplayFile;
 import frc.robot.commands.SetRobotOrientationOnField;
 import frc.robot.commands.Shoot;
@@ -74,9 +76,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_flightcontroller = new Joystick(Constants.UsbPorts.LEFT_STICK);
-    m_flightcontroller.setXChannel(3);
-    m_flightcontroller.setYChannel(4);
-    m_flightcontroller.setZChannel(0);
+    m_flightcontroller.setXChannel(FlightController.DRIVE_X_AXIS);
+    m_flightcontroller.setYChannel(FlightController.DRIVE_Y_AXIS);
+    m_flightcontroller.setZChannel(FlightController.DRIVE_Z_AXIS);
+
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
     //m_LEDLights = new LEDLights();
@@ -88,12 +91,6 @@ public class RobotContainer {
     m_limelight = new Limelight();
 
     m_DataRecorder = new DataRecorder();
-//    m_Drivetrain.setDataRecorder(m_DataRecorder);
-    //m_shooter.setDataRecorder(m_DataRecorder);
-    // m_Intake.setDataRecorder(m_DataRecorder);
-    
-    // TODO add DataRecorder to Intake subsystem
-    // m_Intake.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
    
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
     
@@ -120,7 +117,7 @@ public class RobotContainer {
     JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
     JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
     JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
-    
+    JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
 
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
@@ -148,6 +145,8 @@ public class RobotContainer {
      btnClimbArmReach.whenPressed(m_climber::reachArmBack);
      btnClimbArmReach.whenReleased(m_climber::stopArm);
 
+     btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));
+     
      btnClimbArmVert.whenPressed(m_climber::pullArmForward);
      btnClimbArmVert.whenReleased(m_climber::stopArm);
      
