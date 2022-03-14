@@ -40,7 +40,7 @@ public class ReachForTheBar extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    currentState = commandState.Starting; // reset to starting state
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -91,7 +91,6 @@ public class ReachForTheBar extends CommandBase {
   public void end(boolean interrupted) {
     m_climber.stopHook();
     m_climber.stopArm();
-    currentState = commandState.Starting; // reset to starting state
   }
 
   // Returns true when the command should end.

@@ -33,7 +33,7 @@ public final class Constants {
                 public static final int DRIVE_X_AXIS = 3;
                 public static final int DRIVE_Y_AXIS = 4;
                 public static final int DRIVE_Z_AXIS = 0;
-                
+
                 public static final int CLIMBER_MANUAL = 4;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;
@@ -66,8 +66,7 @@ public final class Constants {
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
                  public static final int CAMERA_TOGGLE  = 2;
-                // public static final int PICKUP_DOWN = 3;
-                // public static final int PICKUP_UP = 4;
+
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 
@@ -75,20 +74,17 @@ public final class Constants {
                 static final int PICKUP_UP = 12;
                 public static final int PICKUP_EJECT = 14;
                 static final int PICKUP_INTAKE = 16;
-                // //public static final int TURRET_RIGHT = 5;
-                // public static final int DROP_INTAKE = 6;
-                // public static final int MANUAL_OVERRIDE = 7;
-                public static final int CLIMBER_EXTEND = 8;
+
+                public static final int CLIMBER_FIRSTBAR = 8;
                 public static final int CLIMBER_PULLUP = 9;
-                public static final int ARM_REACHBACK = 10;
-                public static final int ARM_VERTICAL = 11;
+                public static final int CLIMBER_GRABNEXTBAR = 10;
+                // public static final int CLIMBER_EXTEND = 8;
+                // public static final int CLIMBER_PULLUP = 9;
+                // public static final int ARM_REACHBACK = 10;
+                // public static final int ARM_VERTICAL = 11;
 
                 // public static final int CLIMBER_EXTEND = 8;
                 //  public static final int CLIMBER_RETRACT = 9;
-                // public static final int REPLAY_RECORDING = 7;
-                // public static final int START_RECORDING = 10;
-                // public static final int END_RECORDING = 11;
-
         }
 
         //MOTORS
