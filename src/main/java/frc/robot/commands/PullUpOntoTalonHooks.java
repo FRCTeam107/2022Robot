@@ -42,7 +42,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    currentState = commandState.Starting; // reset to starting state
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,29 +54,35 @@ public class PullUpOntoTalonHooks extends CommandBase {
       case Starting:
           // if both talon hooks are set, then don't do anything
           if (m_climber.AllTalonsHooked()) {
+//TODO:  don't run if Talon hooks attached already!!
+            moveToNextState=true;
             currentState=commandState.Finished;
           }
           else {
             moveToNextState=true;
           }
+          break;
 
       case StraightenArm:
           // move arm to vertical
-          if (m_climber.pullArmForwardToPosition(ClimberConstants.armVerticalPos)){
+          if (m_climber.pullArmForwardToPosition(ClimberConstants.armPullupPos)){
             moveToNextState = true;
           }
+          break;
 
       case PullTalonsAboveBar:
-      // pull hook so talon hooks go past the bar
-      if (m_climber.pullHookToPosition(ClimberConstants.hookAboveBarPos)){
-        moveToNextState = true;
-      }
+        // pull hook so talon hooks go past the bar
+        if (m_climber.pullHookToPosition(ClimberConstants.hookAboveBarPos)){
+          moveToNextState = true;
+        }
+        break;
 
       case TransferOntoTalons:
-      // extend hook up so weight is transferred to talon hooks
-      if (m_climber.extendHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
-        moveToNextState = true;
-      }
+        // extend hook up so weight is transferred to talon hooks
+        if (m_climber.extendHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
+          moveToNextState = true;
+        }
+        break;
 
       case CheckIfHooksLatched:
       // if both talon hooks are not set, then do another pull-up to try again
@@ -86,10 +92,12 @@ public class PullUpOntoTalonHooks extends CommandBase {
         else { // failed transfer, try again
           //currentState = commandState.PullTalonsAboveBar;
         }
+        break;
 
       case Finished:
-      m_climber.stopArm();
-      m_climber.stopHook();
+        m_climber.stopArm();
+        m_climber.stopHook();
+        break;
       
       default:
     }
@@ -107,7 +115,6 @@ public class PullUpOntoTalonHooks extends CommandBase {
   public void end(boolean interrupted) {
     m_climber.stopHook();
     m_climber.stopArm();
-    currentState = commandState.Starting; // reset to starting state
   }
 
   // Returns true when the command should end.
