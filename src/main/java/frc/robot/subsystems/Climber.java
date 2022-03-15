@@ -17,6 +17,8 @@ import frc.robot.Constants.DIOPorts;
 import frc.robot.Constants.Motors;
 //import frc.robot.Constants.Solenoids;
 
+import java.util.concurrent.CyclicBarrier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -39,11 +41,11 @@ public static final class ClimberConstants {
     public static final double armMaxReach = 170000;
     
     public static final double hookStartingPos = 0;
-    public static final double hookTransferToTalonsPos = 400000;
-    public static final double hookAboveBarPos = 421000;
-    public static final double hookTouchNextBarPos = 7000;
-    public static final double hookReachPastNextBarPos = 421000;
-    private static final double hookMaxReachPos = 421000; //268.14905;
+    public static final double hookTransferToTalonsPos = 40000;
+    public static final double hookAboveBarPos = 211000;
+    public static final double hookTouchNextBarPos = 400000;
+    public static final double hookReachPastNextBarPos = 402000;
+    private static final double hookMaxReachPos = 402000; // 421000; 
 
   // private static final double armExtendPos = 200.000; //268.14905;
   // private static final double armHomePos = 0.0;
@@ -96,6 +98,8 @@ public static final class ClimberArmConstants {
     m_climber.config_kD(0, ClimberConstants.kD);
     m_climber.config_IntegralZone(0, ClimberConstants.kIz);
     m_climber.config_kF(0, ClimberConstants.kFF);
+
+    m_climber.configClosedLoopPeakOutput(0,0.3);
 
     m_climber.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     m_climber.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
@@ -162,31 +166,38 @@ SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPos
     return (LeftTalonHooked() && RightTalonHooked());
   }
   public boolean LeftTalonHooked(){
-    return m_talonHookLeft.get();
+    return (! m_talonHookLeft.get());
   }
   public boolean RightTalonHooked(){
-    return m_talonHookRight.get();
+    return ( ! m_talonHookRight.get() );
   }
 
   
   public boolean extendHookToPosition(double stopPoint){
-    if (HookPosition() >= stopPoint || hookHitBackLimit()) {
-      stopHook();
-      return true;
+    double currPosition = HookPosition();
+    if (currPosition >= stopPoint || hookHitBackLimit()) {    
+      //stopHook();
+      m_climber.set(ControlMode.Position, stopPoint);
+      //m_climber.set(ControlMode.Position, currPosition);
+      return false;
     } 
     else {
-      extendHook();
+      m_climber.set(ControlMode.Position, stopPoint);
+      //extendHook();
       return false;
     }
   }
 
   public boolean pullHookToPosition(double stopPoint){
-    if (HookPosition() >= stopPoint || hookHitForwardLimit()) {
-      stopHook();
+    double currPosition = HookPosition();
+    if (currPosition >= stopPoint || hookHitForwardLimit()) {
+      //stopHook();
+      m_climber.set(ControlMode.Position, stopPoint);
       return true;
     } 
     else {
-      pullHook();
+      //pullHook();
+      m_climber.set(ControlMode.Position, stopPoint);
       return false;
     }
   }

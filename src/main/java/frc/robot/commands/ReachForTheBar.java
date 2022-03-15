@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberConstants;
@@ -26,7 +27,7 @@ public class ReachForTheBar extends CommandBase {
             : null;
       }
     }
-    private commandState currentState;
+    private static commandState currentState;
 
 
 
@@ -47,36 +48,47 @@ public class ReachForTheBar extends CommandBase {
   @Override
   public void execute() {
     boolean moveToNextState = false;
+    SmartDashboard.putString("ReachForBar", "Executing");
 
     switch (currentState){
       case Starting:
         // if any talon hooks are set, don't do anything!
         if (m_climber.LeftTalonHooked() || m_climber.RightTalonHooked()){
+          SmartDashboard.putString("ReachForBar", "Talons hooked");
           currentState = commandState.Finished;
         }
         else {
+          SmartDashboard.putString("ReachForBar", "Started");
           moveToNextState = true;
         }
+        break;
          
       case StraightenArmAndLiftHook:
         boolean armReady = false;
         boolean hookReady = false;
+        SmartDashboard.putString("ReachForBar", "StraightenArmAndLiftHook");
         // move arm to vertical an lift hook so it is above the first bar (at same time)
         if (m_climber.pullArmForwardToPosition(ClimberConstants.armVerticalPos)){
           armReady = true;
         }
 
-        if (m_climber.extendHookToPosition(ClimberConstants.armReachForNextBar)){
+        if (m_climber.extendHookToPosition(ClimberConstants.hookAboveBarPos)){
           hookReady = true;
         }
       
-        moveToNextState = (hookReady && armReady);
+       moveToNextState = (hookReady && armReady);
+       break;
         
       case Finished:
           m_climber.stopArm();
           m_climber.stopHook();
+          //SmartDashboard.putString("ReachForBar", "Finished");
+          break;
 
       default:
+        m_climber.stopArm();
+        m_climber.stopHook();
+       // SmartDashboard.putString("ReachForBar", "Default");
     }
 
     // move to next state?
@@ -91,6 +103,13 @@ public class ReachForTheBar extends CommandBase {
   public void end(boolean interrupted) {
     m_climber.stopHook();
     m_climber.stopArm();
+    if (interrupted){
+      SmartDashboard.putString("ReachForBar","!! Interrupted !!");
+
+    }
+    else {
+      SmartDashboard.putString("ReachForBar", "--END normal--");
+    }
   }
 
   // Returns true when the command should end.
