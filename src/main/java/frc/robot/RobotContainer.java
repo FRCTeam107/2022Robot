@@ -16,14 +16,17 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerJoystick;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.RunClimber;
+import frc.robot.Constants.FlightController;
+
 import frc.robot.commands.ReplayFile;
 import frc.robot.commands.SetRobotOrientationOnField;
 import frc.robot.commands.Shoot;
@@ -33,11 +36,16 @@ import frc.robot.subsystems.Intake;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDLights;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
 import frc.robot.subsystems.DataRecorder.datapoint;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.AutonPause;
+import frc.robot.commands.ReachForTheBar;
+import frc.robot.commands.PullUpOntoTalonHooks;
+import frc.robot.commands.RunClimberManually;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,7 +62,8 @@ public class RobotContainer {
   private final Climber m_climber;
   //private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
-
+  private final Limelight m_limelight;
+  
   public DataRecorder m_DataRecorder = new DataRecorder();
 
   // private final Compressor m_compressor;
@@ -64,13 +73,15 @@ public class RobotContainer {
 
       // A chooser for autonomous commands
   private final SendableChooser<Command> m_chooser;
+  private final AutonPause m_autoCommand = new AutonPause(5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_flightcontroller = new Joystick(Constants.UsbPorts.LEFT_STICK);
-    m_flightcontroller.setXChannel(3);
-    m_flightcontroller.setYChannel(4);
-    m_flightcontroller.setZChannel(0);
+    m_flightcontroller.setXChannel(FlightController.DRIVE_X_AXIS);
+    m_flightcontroller.setYChannel(FlightController.DRIVE_Y_AXIS);
+    m_flightcontroller.setZChannel(FlightController.DRIVE_Z_AXIS);
+
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
     //m_LEDLights = new LEDLights();
@@ -79,12 +90,9 @@ public class RobotContainer {
     m_shooter = new Shooter();
     m_climber = new Climber();
     m_Camera = new VisionCamera();
+    m_limelight = new Limelight();
 
     m_DataRecorder = new DataRecorder();
-    m_Drivetrain.setDataRecorder(m_DataRecorder);
-    m_shooter.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
-    // TODO add DataRecorder to Intake subsystem
-    // m_Intake.setDataRecorder(m_DataRecorder, datapoint.ShooterTop, datapoint.ShooterBottom);
    
     m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
     
@@ -92,22 +100,31 @@ public class RobotContainer {
 
     // Add commands to the autonomous command chooser
     m_chooser = new SendableChooser<>();
-    m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
+    //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
+    m_chooser.addOption("Jim.csv", new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"));
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
+    SmartDashboard.putData("Auto choices", m_chooser);
   }
 
   private void configureButtonBindings() {
     // setup buttons
     JoystickButton btnShoot = new JoystickButton(m_controllerJoystick, ControllerJoystick.SHOOT);
-    JoystickButton btnPickupToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP_DOWN);
+    JoystickButton btnIntakeDown = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_DOWN);
+    JoystickButton btnIntakeUp = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP);
     JoystickButton btnPickupEject = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_EJECT);
     JoystickButton btnPickupIntake = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_INTAKE);
-    JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_REACHBACK){};
-    JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_VERTICAL);
-    JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
-    JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
-    JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
+    // JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_REACHBACK);
+    // JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_VERTICAL);
+    // JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
+    // JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
+    JoystickButton btnClimbFirstBar = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_FIRSTBAR);
+    JoystickButton btnClimbPullup = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
+    JoystickButton btnClimbGrabNext = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_GRABNEXTBAR);
+
     
+    JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
+    JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
+    JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
 
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
@@ -119,30 +136,36 @@ public class RobotContainer {
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
     //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
     // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
+    // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
    
-    btnPickupToggle.whenPressed(m_Intake::ToggleIntake);
+    btnIntakeDown.whenPressed(m_Intake::extendArm);
+    btnIntakeUp.whenPressed(m_Intake::retractArm);
 
     btnPickupEject.whileHeld(m_Intake::HeimlichManeuver);
     btnPickupEject.whenReleased(m_Intake::StopIntake);
     
     btnPickupIntake.whileHeld(m_Intake::StartIntake);
     btnPickupIntake.whenReleased(m_Intake::StopIntake);
-    
-    // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
-
+  
     // CONTROLLER'S JOYSTICK BUTTONS
-     btnClimbArmReach.whenPressed(m_climber::moveArmtoReachBack);
-     btnClimbArmReach.whenReleased(m_climber::stopClimber);
+    btnClimbFirstBar.whileHeld(new ReachForTheBar(m_climber));
+    btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber));
+    btnClimbGrabNext.whileHeld(new ReachForTheBar(m_climber));
 
-     btnClimbArmVert.whenPressed(m_climber::moveArmToVertical);
-     btnClimbArmVert.whenReleased(m_climber::stopClimber);
+    btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));
+
+    //  btnClimbArmReach.whenPressed(m_climber::reachArmBack);
+    //  btnClimbArmReach.whenReleased(m_climber::stopArm);
+
+    //  btnClimbArmVert.whenPressed(m_climber::pullArmForward);
+    //  btnClimbArmVert.whenReleased(m_climber::stopArm);
      
-     btnClimberExtend.whenPressed(m_climber::extendClimber);
-     btnClimberExtend.whenReleased(m_climber::stopClimber);
+    //  btnClimberExtend.whenPressed(m_climber::extendHook);
+    //  btnClimberExtend.whenReleased(m_climber::stopHook);
 
-     btnClimberPull.whenPressed(m_climber::pullClimber);
-     btnClimberPull.whenReleased(m_climber::stopClimber);
+    //  btnClimberPull.whenPressed(m_climber::pullHook);
+    //  btnClimberPull.whenReleased(m_climber::stopHook);
+     btnCameraToggle.whenPressed(m_Camera::changeCamera);
     }
 
       /**
@@ -152,8 +175,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return ORIGgetAutonomousCommand();
-    //return m_chooser.getSelected();
+    //return m_autoCommand;
+    //return ORIGgetAutonomousCommand();
+    return m_chooser.getSelected();
     //return m_SimpleAutonCommand;
   }
   

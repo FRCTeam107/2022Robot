@@ -11,19 +11,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.Constants.Motors;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.DataRecorder.datapoint;
 
 public class Shooter extends SubsystemBase {
   private final WPI_TalonFX m_shootbottom, m_shoottop;
   private final WPI_TalonSRX m_kicker;
-
-  private DataRecorder dataRecorder;
-  private Integer recordTopIx, recordBottomIx;
 
   private double setSpeedTop, setSpeedBottom;
 
@@ -39,11 +38,6 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     super();
 
-    dataRecorder = null;
-    recordTopIx=0;
-    recordBottomIx=0;
-
-
     manualForceReady = false;
     cacheBottomReady = false;
     cacheTopReady = false;
@@ -56,6 +50,16 @@ public class Shooter extends SubsystemBase {
     m_shootbottom.configFactoryDefault();
     m_shoottop.configFactoryDefault();
     m_kicker.configFactoryDefault();
+
+
+    m_shoottop.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+    m_shootbottom.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
+
+    m_shoottop.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+    m_shootbottom.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
+
+    m_kicker.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    m_kicker.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
 
     // m_shootbottom.configClosedloopRamp(0.3);
     // m_shoottop.configClosedloopRamp(0.3);
@@ -71,7 +75,7 @@ public class Shooter extends SubsystemBase {
     // kFF = 0;//.000015; 
     // kMaxOutput = 1; 
     // kMinOutput = -1;
-    // maxRPM = 5700;  
+    // maxRPM = 5700;
     m_shootbottom.config_kP(0, ShooterConstants.kP);
     m_shootbottom.config_kI(0, ShooterConstants.kI);
     m_shootbottom.config_kD(0, ShooterConstants.kD);
@@ -86,50 +90,18 @@ public class Shooter extends SubsystemBase {
     m_shoottop.config_kF(0, ShooterConstants.kFF);
     // m_shoottop.configClosedLoopPeakOutput(slotIdx, percentOut)
 
-    // display PID coefficients on SmartDashboard
-    // SmartDashboard.putNumber("P Gain", kP);
-    // SmartDashboard.putNumber("I Gain", kI);
-    // SmartDashboard.putNumber("D Gain", kD);
-    // SmartDashboard.putNumber("I Zone", kIz);
-    // SmartDashboard.putNumber("Feed Forward", kFF);
-    // SmartDashboard.putNumber("Max Output", kMaxOutput);
-    // SmartDashboard.putNumber("Min Output", kMinOutput);
-  }
-
-  public void setDataRecorder(DataRecorder _dataRecorder, Integer _topIx, Integer _bottomIx){
-    this.dataRecorder = _dataRecorder;
-    this.recordTopIx = _topIx;
-    this.recordBottomIx = _bottomIx;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // SmartDashboard.putNumber("Shooter Real B", m_shootbottom.getSelectedSensorVelocity());
-    // SmartDashboard.putNumber("Shooter Real T", m_shoottop.getSelectedSensorVelocity());
-
-    // double p = SmartDashboard.getNumber("P Gain", 0);
-    // double i = SmartDashboard.getNumber("I Gain", 0);
-    // double d = SmartDashboard.getNumber("D Gain", 0);
-    // int iz = (int)SmartDashboard.getNumber("I Zone", 0);
-    // double ff = SmartDashboard.getNumber("Feed Forward", 0);
-    //double max = SmartDashboard.getNumber("Max Output", 0);
-    //double min = SmartDashboard.getNumber("Min Output", 0);
-
-    // SmartDashboard.putNumber("shoot pos", m_shootbottom.getSelectedSensorPosition());
-
-    // if PID coefficients on SmartDashboard have changed, write new values to controller
-    // if((p != kP)) { kP = p; m_shoottop.config_kP(0, p);m_shootbottom.config_kP(0, p); }
-    // if((i != kI)) { kI = i; m_shoottop.config_kI(0, i); m_shootbottom.config_kI(0, i); }
-    // if((d != kD)) { kD = d; m_shoottop.config_kD(0, d); m_shootbottom.config_kD(0, d); }
-    // if((iz != kIz)) { kIz = iz; m_shoottop.config_IntegralZone(0, iz); m_shootbottom.config_IntegralZone(0, iz); }
-    // if((ff != kFF)) { kFF = ff; m_shoottop.config_kF(0, ff);m_shootbottom.config_kF(0, ff); }
-    // if((max != kMaxOutput) || (min != kMinOutput)) { 
-    //   m_shootbottom.setOutputRange(min, max);  kMinOutput = min; kMaxOutput = max; }
  }
 
  
-  public void runMotor(double speedbottom, double speedtop){
+public void runMotor(double speedbottom, double speedtop){
+    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterBottom, speedbottom);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.ShooterTop, speedtop);
+
     setSpeedBottom = -speedbottom;
     setSpeedTop = speedtop;
 
@@ -142,12 +114,6 @@ public class Shooter extends SubsystemBase {
       m_shootbottom.set(TalonFXControlMode.Velocity, setSpeedBottom);
       m_shoottop.set(TalonFXControlMode.Velocity, setSpeedTop);      
     }
-
-    if (this.dataRecorder != null) {
-      this.dataRecorder.recordValue(this.recordTopIx, setSpeedTop);
-      this.dataRecorder.recordValue(this.recordBottomIx, setSpeedBottom);
-    }
-    
   }
 
   public void setForceReady(boolean enableOverride){
@@ -155,6 +121,7 @@ public class Shooter extends SubsystemBase {
   }
   public void runKicker(double Speed){
     m_kicker.set(ControlMode.PercentOutput, Speed);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.KickerSpeed, Speed);
   }
   public boolean isReady(){
     if (manualForceReady) {
@@ -170,13 +137,13 @@ public class Shooter extends SubsystemBase {
     if (cacheTopReady != topReady) {cacheTopReady=topReady; SmartDashboard.putBoolean("i T Ready", topReady); }
     if (cacheBottomReady != bottomReady) {cacheBottomReady=bottomReady; SmartDashboard.putBoolean("i B Ready", bottomReady); }
     
-    return (readyCounter > 15); //require 15 consecutive readies before reporting we are ready
+    return (readyCounter > 10); //require 10 consecutive readies before reporting we are ready
   }
 
   public void clearReadyFlags(){
     cacheTopReady=false;
     cacheBottomReady=false;
     readyCounter = 0;
-    SmartDashboard.putString("ResetShooter", "Reset");
+    //SmartDashboard.putString("ResetShooter", "Reset");
   }
 }

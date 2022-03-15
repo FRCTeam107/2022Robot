@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Motors;
@@ -17,20 +18,26 @@ import java.util.ResourceBundle.Control;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 // import com.ctre.phoenix.motorcontrol.ControlMode;
 // import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import frc.robot.subsystems.DataRecorder.datapoint;
+
 public class Intake extends SubsystemBase {
   private final WPI_TalonSRX m_IntakeMotor;
   private final WPI_TalonSRX m_IntakeArm;
-  private boolean intakeExtended;
+
+  private boolean intakeExtended = false;
   private double m_CurrentSpeed;
+
+  //private DataRecorder m_dataRecorder;
   
   public static final class IntakeArmConstants {
     //TODO run arm motor to extended position, find right position
-    public static final double armRetractedPos = 630000;
-    public static final double armExtendedPos = 0;
+    public static final double armRetractedPos = 0;
+    public static final double armExtendedPos = -610000;
     
     // intake arm PID values
     public static final double kP = 0.04; 
@@ -71,12 +78,14 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.config_IntegralZone(0, IntakeMotorConstants.kIz);
     m_IntakeMotor.config_kF(0, IntakeMotorConstants.kFF);
 
-    double junk = SmartDashboard.getNumber("intakeSpeed", 1000);
+    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 500);
+    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 500);
+
+    double junk = SmartDashboard.getNumber("intakeSpeed", 25000);
     SmartDashboard.putNumber("intakeSpeed", junk);
 
     m_CurrentSpeed = 0;
    
-
     m_IntakeArm = new WPI_TalonSRX(Motors.INTAKE_ARM);
     m_IntakeArm.configFactoryDefault();
     m_IntakeArm.setInverted(false);
@@ -94,23 +103,48 @@ public class Intake extends SubsystemBase {
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    
+   // m_dataRecorder = null;
     intakeExtended = false;
   }
 
+  // public void setDataRecorder(DataRecorder _dataRecorder){
+  //   m_dataRecorder = _dataRecorder;
+  // }
+
+   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
+    SmartDashboard.putBoolean("IntakeFwdLimit", m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed());
+    SmartDashboard.putBoolean("IntakeRevLimit", m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed());
 
     // runMotor(m_CurrentSpeed);
         //m_IntakeMotor.set(ControlMode.PercentOutput, m_CurrentSpeed);
     m_IntakeMotor.set(ControlMode.Velocity, m_CurrentSpeed);
-SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
+
+    //NetworkTableInstance.getDefault().getTable("dataRecorder").
+    SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeMotorSpeed, m_CurrentSpeed);
+    if (intakeExtended) {
+      SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 1.0);
+    }
+    else {
+      SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 0.0);
+    }
+    SmartDashboard.putBoolean("dataRecorder.extended", intakeExtended);
+
+
+//SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
     // if upper or lower limit switch is hit, then reset encoder position to upper or lower
     if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
       m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armRetractedPos);
+      if (!intakeExtended) { stopArm(); }
     }
     else if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed()){
       m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
+      if (intakeExtended) { stopArm(); }
     }
   }
   // public void runMotor(double speed){
@@ -119,53 +153,44 @@ SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition())
   // }
 public void extendArm(){
   // m_IntakeArm.set(ControlMode.PercentOutput, 1);
+  SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 1.0);
   m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
+  intakeExtended = true;
+
+  // if (m_dataRecorder != null) {
+  //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)1.00);
+  // }
 }
+
 public void retractArm(){
   //m_IntakeArm.set(ControlMode.PercentOutput, -1);
+  SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 0.0);
+
   m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
+  intakeExtended = false;
+  
+  // if (m_dataRecorder != null) {
+  //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)0.00);
+  // }
+
 }
 
 public void stopArm() {
   m_IntakeArm.set(ControlMode.PercentOutput, 0);
 }
 
-public void ToggleIntake(){
-    if (!intakeExtended){
-      intakeExtended = true;
-      m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
-      // m_CurrentSpeed = m_IntakeSpeed;
-      //m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
-    }
-    else if (intakeExtended) {
-      intakeExtended = false;
-      //run arm motor to retracted position
-      m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
-      //m_CurrentSpeed = 0;
-    }
+public void runIntake(double speed){
+    m_CurrentSpeed = speed;
   }
 
   public void HeimlichManeuver() {
-    //m_CurrentSpeed = -0.2;
-    m_CurrentSpeed = -1 * SmartDashboard.getNumber("intakeSpeed", 0.20);
+    runIntake( -1 * SmartDashboard.getNumber("intakeSpeed", 25000));
   }
   public void StopIntake() {
-    //m_CurrentSpeed = -0.2;
-    m_CurrentSpeed = 0;
+    runIntake(0);
   }
   public void StartIntake() {
-    //m_CurrentSpeed = -0.2;
-    m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
+    runIntake(SmartDashboard.getNumber("intakeSpeed", 25000));
   }
-  // public void ResumeNormalSpeed() {
-  //   if (intakeExtended) {
-  //     //m_CurrentSpeed = m_IntakeSpeed;
-  //     m_CurrentSpeed = SmartDashboard.getNumber("intakeSpeed", 0.20);
-  //   }
 
-  //   else {
-  //     m_CurrentSpeed = 0;
-  //   }
-  // }
-
-  }
+}

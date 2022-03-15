@@ -6,46 +6,53 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
-
+import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Climber;
 
-public class RunClimber extends CommandBase {
+public class AutonPause extends CommandBase {
   /**
-   * Creates a new ActivateClimber.
+   * Creates a new Shoot.
    */
+  private double m_pauseTime;
+  private double startTime;
+  
+  public AutonPause(double pauseSeconds) {
+    // m_pauseTime = _pauseTime;
+    m_pauseTime = pauseSeconds;
 
-    private final Climber m_climber;
-    private final double m_power;
-
-  public RunClimber(double p, Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_climber = climber;
-    m_power = p;
-    addRequirements(m_climber);
+    //addRequirements();
   }
 
-  // Called when the command is initially scheduled.
+    // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    //m_Limelight.EnableVisionProcessing();
+    if (m_pauseTime < 0) {
+      // m_pauseTime = SmartDashboard.getNumber("Auton Wait", 1);
+      // SmartDashboard.putNumber("Auton Wait", m_pauseTime);
+    }
+    startTime = Timer.getFPGATimestamp();
+    System.out.println("------>>>>>> Begin Auton pause at " + String.valueOf(startTime));
+    //if (m_pauseTime > 0) { Timer.delay(m_pauseTime);}
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_climber.runMotor(m_power);
+    // Timer.delay(m_pauseTime);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.runMotor(0);
+    System.out.println("------>>>>>> End Auton pause at " + String.valueOf(Timer.getFPGATimestamp()));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return ((Timer.getFPGATimestamp() - startTime) > m_pauseTime);
   }
 }

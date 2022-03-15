@@ -29,11 +29,12 @@ public final class Constants {
         }
 
         //JOYSTICKS
-        public class LeftJoystick{
-                // public static final int JOYSTICK_ONE = 1;
-                // public static final int DOWN_SHIFT = 2;
-                // public static final int INTAKE_IN = 3;
-                // // public static final int JOYSTICK_FOUR = 4;
+        public class FlightController{
+                public static final int DRIVE_X_AXIS = 3;
+                public static final int DRIVE_Y_AXIS = 4;
+                public static final int DRIVE_Z_AXIS = 0;
+
+                public static final int CLIMBER_MANUAL = 4;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;
                 // public static final int GREEN_ZONE = 11;
@@ -64,29 +65,26 @@ public final class Constants {
 
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
-                // public static final int INTAKE_IN = 2;
-                // public static final int PICKUP_DOWN = 3;
-                // public static final int PICKUP_UP = 4;
+                 public static final int CAMERA_TOGGLE  = 2;
+
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 
-                static final int PICKUP_UP_DOWN = 15;
+                static final int PICKUP_DOWN = 15;
+                static final int PICKUP_UP = 12;
                 public static final int PICKUP_EJECT = 14;
                 static final int PICKUP_INTAKE = 16;
-                // //public static final int TURRET_RIGHT = 5;
-                // public static final int DROP_INTAKE = 6;
-                // public static final int MANUAL_OVERRIDE = 7;
-                public static final int CLIMBER_EXTEND = 8;
+
+                public static final int CLIMBER_FIRSTBAR = 8;
                 public static final int CLIMBER_PULLUP = 9;
-                public static final int ARM_REACHBACK = 10;
-                public static final int ARM_VERTICAL = 11;
+                public static final int CLIMBER_GRABNEXTBAR = 10;
+                // public static final int CLIMBER_EXTEND = 8;
+                // public static final int CLIMBER_PULLUP = 9;
+                // public static final int ARM_REACHBACK = 10;
+                // public static final int ARM_VERTICAL = 11;
 
                 // public static final int CLIMBER_EXTEND = 8;
                 //  public static final int CLIMBER_RETRACT = 9;
-                public static final int REPLAY_RECORDING = 7;
-                public static final int START_RECORDING = 10;
-                public static final int END_RECORDING = 11;
-
         }
 
         //MOTORS
@@ -117,6 +115,12 @@ public final class Constants {
                 public static final int CLIMBER_ARM = 20;
         }
 
+        // DIO Ports
+        public class DIOPorts{
+                public static final int TALONHOOK_LEFT = 0;
+                public static final int TALONHOOK_RIGHT = 1;
+        }
+        
         // SOLENOIDS
         public class Solenoids{
                 // public static final int INTAKE_REVERSE = 0;
@@ -147,8 +151,8 @@ public final class Constants {
                 public static final int kEncoderCPR = 2048; // 4096;
                 public static final double kWheelDiameterMeters = Units.inchesToMeters(3.0); // 0.1524;
                 private static final double kWheelGearing = 8.16;  // gearing from motor to swerve drive
-                public static final double kEncoderDistancePerPulse = 
-                      (kWheelDiameterMeters * Math.PI) / (double) ( kEncoderCPR * kWheelGearing) ;
+                public static final double kEncoderDistancePerPulse = 0.25 *
+                      (kWheelDiameterMeters * Math.PI) / (double) ( kEncoderCPR / kWheelGearing) ;
                 //Units.inchesToMeters(3.0) * Math.PI / 16592;  // actual pulses per rotation measured
                 
                   // Assumes the encoders are directly mounted on the wheel shafts
@@ -166,12 +170,12 @@ public final class Constants {
                                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
                 // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-                public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(6);
+                public static final double kMaxSpeedMetersPerSecond = 0.85;//Units.feetToMeters(6);
 
   //these are limits you can change!!!
                // public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
-                public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-                public static double feildCalibration = 0;
+                public static final double kMaxAngularSpeed = Math.PI / 2; // 1/2 rotation per second
+              // public static double feildCalibration = 0;
                 
                     // These characterization values MUST be determined either experimentally or theoretically
                 // for *your* robot's drive.

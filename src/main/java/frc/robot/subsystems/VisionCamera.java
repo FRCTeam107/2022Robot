@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionCamera extends SubsystemBase {
@@ -23,6 +24,7 @@ public class VisionCamera extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("cameraPos", m_Servo.getAngle());
     // This method will be called once per scheduler run
   }
    public void moveServoToPosition(double position){
@@ -30,7 +32,7 @@ public class VisionCamera extends SubsystemBase {
    }
 
    public void raiseCamera(){
-    m_Servo.setAngle(90);
+    m_Servo.setAngle(135);
    }
 
    public void lowerCamera(){
@@ -41,5 +43,9 @@ public class VisionCamera extends SubsystemBase {
      m_Servo.setAngle(45);
    }
 
+   public void changeCamera(){
+    if(m_Servo.getAngle() <= 0){m_Servo.setAngle(67);}
+    else{m_Servo.setAngle(-67);}}
+   
 }
 
