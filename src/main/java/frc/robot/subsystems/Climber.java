@@ -33,19 +33,31 @@ private final DigitalInput m_talonHookLeft, m_talonHookRight;
 
 public static final class ClimberConstants {
     // TODO find values for actual robot climber arm positions
+    // starting position
     public static final double armsStartingPos = 0; // starting position
-    public static final double armPullupPos = 35000; // position to pullup and get talons to "hook"
-    public static final double armVerticalPos = 45000; // reach up to bar
+    public static final double hookStartingPos = 0;
+
+    // reach for the bar
+    public static final double armFirstBarPos = 0; // reach up to bar
+    public static final double hookAboveFirstBarPos = -234000;
+
+    
+    // do a pull-up
+    public static final double armPullupPos = 0; // keep arm stiff during pullup
+    public static final double hookPullupPos = 900; // position to pullup and get talons to "hook"
+
+    // release onto talons
+    public static final double armTransferOntoTalonsPos = 15000;
+    public static final double hookTransferToTalonsPos = -29800;
+
+
     public static final double armTouchNextBar = 131500;
     public static final double armReachForNextBar = 141250;
-    public static final double armMaxReach = 170000;
+    public static final double armMaxReach = 145000;
     
-    public static final double hookStartingPos = 0;
-    public static final double hookTransferToTalonsPos = 40000;
-    public static final double hookAboveBarPos = 211000;
-    public static final double hookTouchNextBarPos = 400000;
-    public static final double hookReachPastNextBarPos = 402000;
-    private static final double hookMaxReachPos = 402000; // 421000; 
+    public static final double hookTouchNextBarPos = -400000;
+    public static final double hookReachPastNextBarPos = -402000;
+    private static final double hookMaxReachPos = -406000; // 421000; 
 
   // private static final double armExtendPos = 200.000; //268.14905;
   // private static final double armHomePos = 0.0;
@@ -63,9 +75,6 @@ public static final class ClimberConstants {
 
 
 public static final class ClimberArmConstants { 
-  //TODO run arm motor to extended position, find right position
-  public static final double armReachBackPos =141000;
-  public static final double armVerticalPos = 0;
   
   // tune the climber arm PID values
   public static final double kP = 0.04; 
@@ -92,7 +101,7 @@ public static final class ClimberArmConstants {
     m_climber.configFactoryDefault();
     m_climber.setNeutralMode(NeutralMode.Brake);
     m_climber.setSelectedSensorPosition(ClimberConstants.hookStartingPos);
-    
+    m_climber.setInverted(TalonFXInvertType.Clockwise);
     m_climber.config_kP(0, ClimberConstants.kP);
     m_climber.config_kI(0, ClimberConstants.kI);
     m_climber.config_kD(0, ClimberConstants.kD);
@@ -158,12 +167,17 @@ SmartDashboard.putNumber("climbHookPosition", m_climber.getSelectedSensorPositio
 SmartDashboard.putBoolean("climbHookForwardLimit", hookHitForwardLimit());
 SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
 
-//TODO if upper or lower limit switch is hit, then reset encoder position to upper or lower
-    if (m_climberArm.getSensorCollection().isFwdLimitSwitchClosed()==1){
-      m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
-    }
-    else if (m_climberArm.getSensorCollection().isRevLimitSwitchClosed()==1){
+   // if upper or lower limit switch is hit, then reset encoder position to upper or lower
+    
+   //if (armHitForwardLimit()){
+    //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
+    // }
+    if (armHitBackLimit()){
       m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+    }
+
+    if (hookHitForwardLimit()){
+      m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
     }
   }
   
@@ -178,50 +192,59 @@ SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
   }
 
   
-  public boolean extendHookToPosition(double stopPoint){
-    // if ( hookHitBackLimit()) {
-    //   stopHook();
-    //   return true;
-    // } 
+  // public boolean extendHookToPosition(double stopPoint){
+  //   // if ( hookHitBackLimit()) {
+  //   //   stopHook();
+  //   //   return true;
+  //   // } 
 
-    m_climber.set(ControlMode.Position, stopPoint);
+  //   m_climber.set(ControlMode.Position, stopPoint);
 
 
-    double currPosition = HookPosition();
-    if (currPosition >= stopPoint || hookHitBackLimit()) {    
-      //stopHook();
-      //m_climber.set(ControlMode.Position, stopPoint);
-      //m_climber.set(ControlMode.Position, currPosition);
-      return true;
-    } 
+  //   double currPosition = HookPosition();
+  //   if (currPosition >= stopPoint || hookHitBackLimit()) {    
+  //     //stopHook();
+  //     //m_climber.set(ControlMode.Position, stopPoint);
+  //     //m_climber.set(ControlMode.Position, currPosition);
+  //     return true;
+  //   } 
 
-    return false;
-  }
+  //   return false;
+  // }
 
-  public boolean pullHookToPosition(double stopPoint){
-    // if (hookHitForwardLimit()) {
-    //   stopHook();
-    //   return true;
-    // } 
+  // public boolean pullHookToPosition(double stopPoint){
+  //   // if (hookHitForwardLimit()) {
+  //   //   stopHook();
+  //   //   return true;
+  //   // } 
 
-    m_climber.set(ControlMode.Position, stopPoint);
+  //   m_climber.set(ControlMode.Position, stopPoint);
     
-    double currPosition = HookPosition();
-    if (currPosition <= stopPoint || hookHitForwardLimit()) {
-      return true;
-    } 
+  //   double currPosition = HookPosition();
+  //   if (currPosition <= stopPoint || hookHitForwardLimit()) {
+  //     return true;
+  //   } 
 
+  //   return false;
+  // }
+
+  public boolean moveHookToPosition(double setPoint){
+    m_climber.set(ControlMode.Position, setPoint);
+    if (Math.abs(HookPosition() - setPoint) < 2000){
+      return true;
+    }
     return false;
   }
+
 
   public void extendHook(){
     //m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
-    m_climber.set(ControlMode.PercentOutput, 0.3);
+    m_climber.set(ControlMode.PercentOutput, -0.3);
   }
 
   public void pullHook(){
     //m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
-    m_climber.set(ControlMode.PercentOutput, -0.3);
+    m_climber.set(ControlMode.PercentOutput, 0.3);
   }
   
   public void stopHook(){
@@ -238,29 +261,45 @@ SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
     return ( m_climber.getSensorCollection().isRevLimitSwitchClosed()==1);
   }
 
+
+
+  public boolean moveArmToPosition(double setPoint){
+    m_climberArm.set(ControlMode.Position, setPoint);   
+    if (Math.abs(ArmPosition() - setPoint) < 2000){
+      return true;
+    }
+    return false;
+  }
   
 
-  public boolean reachArmBackToPosition(double stopPoint){
-    if (ArmPosition() >= stopPoint || armHitBackLimit()) {
-      stopArm();
-      return true;
-    } 
-    else {
-      reachArmBack();
-      return false;
-    }
-  }
+  // public boolean reachArmBackToPosition(double stopPoint){
+  //   if (ArmPosition() >= stopPoint) {
+  //     return true;
+  //   } 
+  //   else if (armHitBackLimit()) {
+  //     stopArm();
+  //     return true;
+  //   } 
+  //   else {
+  //     //reachArmBack();
+  //     m_climberArm.set(ControlMode.Position, stopPoint);
+  //     return false;
+  //   }
+  // }
 
-  public boolean pullArmForwardToPosition(double stopPoint){
-    if (ArmPosition() >= stopPoint || armHitForwardLimit()) {
-      stopArm();
-      return true;
-    } 
-    else {
-      pullArmForward();
-      return false;
-    }
-  }
+  // public boolean pullArmForwardToPosition(double stopPoint){
+  //   if (ArmPosition() <= stopPoint) {
+  //     return true;  
+  //   } else if (armHitForwardLimit()) {
+  //     stopArm();
+  //     return true;
+  //   } 
+  //   else {
+  //     //pullArmForward();
+  //     m_climberArm.set(ControlMode.Position, stopPoint);
+  //     return false;
+  //   }
+  // }
 
    public void reachArmBack(){
     m_climberArm.set(ControlMode.PercentOutput, -0.3);

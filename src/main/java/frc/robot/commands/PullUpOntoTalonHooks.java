@@ -18,6 +18,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
       Starting,
       StraightenArm,
       PullTalonsAboveBar,
+      ArmBackToTransferToTalons,
       TransferOntoTalons,
       CheckIfHooksLatched,
       Finished;
@@ -28,7 +29,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
             : null;
       }
     }
-    private commandState currentState;
+    private static commandState currentState;
 
 
 
@@ -54,7 +55,6 @@ public class PullUpOntoTalonHooks extends CommandBase {
       case Starting:
           // if both talon hooks are set, then don't do anything
           if (m_climber.AllTalonsHooked()) {
-//TODO:  don't run if Talon hooks attached already!!
             moveToNextState=true;
             currentState=commandState.Finished;
           }
@@ -65,21 +65,28 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case StraightenArm:
           // move arm to vertical
-          if (m_climber.pullArmForwardToPosition(ClimberConstants.armPullupPos)){
+          if (m_climber.moveArmToPosition(ClimberConstants.armPullupPos)){
             moveToNextState = true;
           }
           break;
 
       case PullTalonsAboveBar:
         // pull hook so talon hooks go past the bar
-        if (m_climber.pullHookToPosition(ClimberConstants.hookAboveBarPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos)){
+          moveToNextState = true;
+        }
+        break;
+
+      case ArmBackToTransferToTalons:
+        // reach climber arm back to swing robot forward
+        if (m_climber.moveArmToPosition(ClimberConstants.armTransferOntoTalonsPos)){
           moveToNextState = true;
         }
         break;
 
       case TransferOntoTalons:
         // extend hook up so weight is transferred to talon hooks
-        if (m_climber.extendHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
           moveToNextState = true;
         }
         break;
@@ -88,9 +95,11 @@ public class PullUpOntoTalonHooks extends CommandBase {
       // if both talon hooks are not set, then do another pull-up to try again
         if (m_climber.AllTalonsHooked()){
           moveToNextState = true;
+          //TODO:  turn LED lights GREEN !!!
         } 
         else { // failed transfer, try again
           //currentState = commandState.PullTalonsAboveBar;
+          // TODO:  Blink RED on LEDS
         }
         break;
 
@@ -106,15 +115,15 @@ public class PullUpOntoTalonHooks extends CommandBase {
     if (moveToNextState){ 
       currentState = currentState.getNext();
     }
-
-    //m_climber.runMotor(m_power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.stopHook();
-    m_climber.stopArm();
+    if (interrupted){
+      m_climber.stopHook();
+      m_climber.stopArm(); 
+    }
   }
 
   // Returns true when the command should end.

@@ -62,32 +62,32 @@ public class ReachForTheBar extends CommandBase {
           moveToNextState = true;
         }
         break;
-         
+
       case StraightenArmAndLiftHook:
         boolean armReady = false;
         boolean hookReady = false;
         SmartDashboard.putString("ReachForBar", "StraightenArmAndLiftHook");
         // move arm to vertical an lift hook so it is above the first bar (at same time)
-        if (m_climber.pullArmForwardToPosition(ClimberConstants.armVerticalPos)){
+        if (m_climber.moveArmToPosition(ClimberConstants.armFirstBarPos)){
           armReady = true;
         }
 
-        if (m_climber.extendHookToPosition(ClimberConstants.hookAboveBarPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos)){
           hookReady = true;
         }
-      
+     
        moveToNextState = (hookReady && armReady);
        break;
         
       case Finished:
-          m_climber.stopArm();
-          m_climber.stopHook();
+          // m_climber.stopArm();
+          // m_climber.stopHook();
           //SmartDashboard.putString("ReachForBar", "Finished");
           break;
 
       default:
-        m_climber.stopArm();
-        m_climber.stopHook();
+        // m_climber.stopArm();
+        // m_climber.stopHook();
        // SmartDashboard.putString("ReachForBar", "Default");
     }
 
@@ -103,13 +103,6 @@ public class ReachForTheBar extends CommandBase {
   public void end(boolean interrupted) {
     m_climber.stopHook();
     m_climber.stopArm();
-    if (interrupted){
-      SmartDashboard.putString("ReachForBar","!! Interrupted !!");
-
-    }
-    else {
-      SmartDashboard.putString("ReachForBar", "--END normal--");
-    }
   }
 
   // Returns true when the command should end.
