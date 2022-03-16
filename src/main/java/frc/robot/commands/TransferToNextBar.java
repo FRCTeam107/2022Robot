@@ -28,7 +28,7 @@ public class TransferToNextBar extends CommandBase {
             : null;
       }
     }
-    private commandState currentState;
+    private static commandState currentState;
 
   public TransferToNextBar(Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,7 +40,7 @@ public class TransferToNextBar extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //currentState = commandState.Starting;
+    currentState = commandState.Starting;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -60,31 +60,31 @@ public class TransferToNextBar extends CommandBase {
          
       case BendArmBackToNextBar:
         // move arm to reach backwards slightly past the next bar
-        if (m_climber.reachArmBackToPosition(ClimberConstants.armReachForNextBar)){
+        if (m_climber.moveArmToPosition(ClimberConstants.armReachForNextBar)){
           moveToNextState = true;
         }
         
       case ReachHookPastBar:
         // extend the hook past the next bar
-        if (m_climber.extendHookToPosition(ClimberConstants.hookReachPastNextBarPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookReachPastNextBarPos)){
           moveToNextState = true;
         }
 
       case RetractArmToTouchBar:
         // now bring arm forward to make arm touch the bar
-        if (m_climber.reachArmBackToPosition(ClimberConstants.armTouchNextBar)) {
+        if (m_climber.moveArmToPosition(ClimberConstants.armTouchNextBar)) {
           moveToNextState = true;
         }
 
       case PullHookToReleaseTalons:
         // pull the hook far enough to release the talons hooks
-        if (m_climber.pullHookToPosition(ClimberConstants.hookTransferToTalonsPos) ) {
+        if (m_climber.moveHookToPosition(ClimberConstants.hookTransferToTalonsPos) ) {
           moveToNextState = true;
         }
      
       case Finished:
-        m_climber.stopArm();
-        m_climber.stopHook();
+        // m_climber.stopArm();
+        // m_climber.stopHook();
 
       default:
     }
@@ -99,9 +99,10 @@ public class TransferToNextBar extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.stopHook();
-    m_climber.stopArm();
-    currentState = commandState.Starting; // reset to starting state
+    if (interrupted){
+      m_climber.stopHook();
+      m_climber.stopArm(); 
+    }
   }
 
   // Returns true when the command should end.
