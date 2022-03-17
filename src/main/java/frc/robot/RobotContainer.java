@@ -34,6 +34,7 @@ import frc.robot.commands.Shoot;
 import frc.robot.subsystems.DataRecorder;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.TransferToNextBar;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Limelight;
@@ -43,6 +44,7 @@ import frc.robot.subsystems.VisionCamera;
 import frc.robot.subsystems.DataRecorder.datapoint;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.AutonPause;
+import frc.robot.commands.DismountFirstBar;
 import frc.robot.commands.ReachForTheBar;
 import frc.robot.commands.PullUpOntoTalonHooks;
 import frc.robot.commands.RunClimberManually;
@@ -113,15 +115,11 @@ public class RobotContainer {
     JoystickButton btnIntakeUp = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_UP);
     JoystickButton btnPickupEject = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_EJECT);
     JoystickButton btnPickupIntake = new JoystickButton(m_controllerJoystick, ControllerJoystick.PICKUP_INTAKE);
-    // JoystickButton btnClimbArmReach = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_REACHBACK);
-    // JoystickButton btnClimbArmVert = new JoystickButton(m_controllerJoystick, ControllerJoystick.ARM_VERTICAL);
-    // JoystickButton btnClimberExtend = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_EXTEND);
-    // JoystickButton btnClimberPull = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
     JoystickButton btnClimbFirstBar = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_FIRSTBAR);
     JoystickButton btnClimbPullup = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_PULLUP);
     JoystickButton btnClimbGrabNext = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_GRABNEXTBAR);
+    JoystickButton btnClimbDismount = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_DISMOUNT);
 
-    
     JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
     JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
     JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
@@ -129,14 +127,8 @@ public class RobotContainer {
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
     //new JoystickButton(m_rightJoystick, RightJoystick.TOGGLE_LIMELIGHT).whenPressed(m_limelight::ToggleVisionProcessing, m_limelight);
-   btnShoot.whileHeld(new Shoot(m_shooter, 
+    btnShoot.whileHeld(new Shoot(m_shooter, 
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
- 
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.START_RECORDING).whenPressed(m_DataRecorder::startRecording);
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.END_RECORDING).whenPressed(m_DataRecorder::endRecording);
-    //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
-    // new JoystickButton(m_controllerJoystick, ControllerJoystick.REPLAY_RECORDING).whileHeld(new ReplayFile(m_Drivetrain, m_shooter, m_DataRecorder, "Kraken.csv"));
-    // //new JoystickButton(m_controllerJoystick, 3).whenPressed(m_LEDLights::LightUp);
    
     btnIntakeDown.whenPressed(m_Intake::extendArm);
     btnIntakeUp.whenPressed(m_Intake::retractArm);
@@ -150,21 +142,11 @@ public class RobotContainer {
     // CONTROLLER'S JOYSTICK BUTTONS
     btnClimbFirstBar.whileHeld(new ReachForTheBar(m_climber));
     btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber));
-    btnClimbGrabNext.whileHeld(new ReachForTheBar(m_climber));
+    btnClimbGrabNext.whileHeld(new TransferToNextBar(m_climber));
+    btnClimbDismount.whileHeld(new DismountFirstBar(m_climber));
 
     btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));
 
-    //  btnClimbArmReach.whenPressed(m_climber::reachArmBack);
-    //  btnClimbArmReach.whenReleased(m_climber::stopArm);
-
-    //  btnClimbArmVert.whenPressed(m_climber::pullArmForward);
-    //  btnClimbArmVert.whenReleased(m_climber::stopArm);
-     
-    //  btnClimberExtend.whenPressed(m_climber::extendHook);
-    //  btnClimberExtend.whenReleased(m_climber::stopHook);
-
-    //  btnClimberPull.whenPressed(m_climber::pullHook);
-    //  btnClimberPull.whenReleased(m_climber::stopHook);
      btnCameraToggle.whenPressed(m_Camera::changeCamera);
     }
 

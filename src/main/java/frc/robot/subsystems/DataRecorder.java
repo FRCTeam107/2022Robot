@@ -160,7 +160,7 @@ public class DataRecorder extends SubsystemBase {
     List<double[]> lines = new ArrayList<double[]>();
     String[] strRow;
     double[] row;
-    String errors = "";
+    // String errors = "";
     Integer rowNum = 0;
 
     // string xx = Filesystem.getDeployDirectory().getAbsolutePath()
@@ -171,7 +171,7 @@ public class DataRecorder extends SubsystemBase {
         //SmartDashboard.putString("fileLine", line);
         strRow = line.split(",");
         row = new double[strRow.length];
-        if (strRow.length < 9){errors += "line " + rowNum + " columns=" + strRow.length; }
+        // if (strRow.length < 9){errors += "line " + rowNum + " columns=" + strRow.length; }
         for (int i=0; i<strRow.length; i++) {
           row[i] = Double.parseDouble(strRow[i]); //(double)test2; //Double.parseDouble(strDatapoint.toString());
         }
@@ -181,10 +181,6 @@ public class DataRecorder extends SubsystemBase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    SmartDashboard.putString("LoadFile Errors",errors);
-    SmartDashboard.putNumber("LoadFile Lines",rowNum);
-
-
     //SmartDashboard.putString("fileLine", "SUCCESS!");
     return lines;
   }

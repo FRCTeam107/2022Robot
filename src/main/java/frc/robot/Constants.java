@@ -75,6 +75,7 @@ public final class Constants {
                 public static final int PICKUP_EJECT = 14;
                 static final int PICKUP_INTAKE = 16;
 
+                public static final int CLIMBER_DISMOUNT = 7;
                 public static final int CLIMBER_FIRSTBAR = 8;
                 public static final int CLIMBER_PULLUP = 9;
                 public static final int CLIMBER_GRABNEXTBAR = 10;
