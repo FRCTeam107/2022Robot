@@ -35,29 +35,36 @@ public static final class ClimberConstants {
     // TODO find values for actual robot climber arm positions
     // starting position
     public static final double armsStartingPos = 0; // starting position
+    public static final double armMaxReach = 145000;
     public static final double hookStartingPos = 0;
+    private static final double hookMaxReachPos = -406000; // 421000; 
+
 
     // reach for the bar
     public static final double armFirstBarPos = 0; // reach up to bar
-    public static final double hookAboveFirstBarPos = -234000;
+    public static final double hookAboveFirstBarPos = -219000; // -234000;
 
     
     // do a pull-up
     public static final double armPullupPos = 0; // keep arm stiff during pullup
-    public static final double hookPullupPos = 900; // position to pullup and get talons to "hook"
+    // note: pullup position is beyond limit of the hook, need to pull right to limit switch
+    public static final double hookPullupPos = (armsStartingPos + 4000); // position to pullup and get talons to "hook"
 
     // release onto talons
     public static final double armTransferOntoTalonsPos = 15000;
-    public static final double hookTransferToTalonsPos = -29800;
+    public static final double hookTransferToTalonsPos = -14800; //-29800;
 
+    // steps to get to next bar:
+    public static final double hookClearCurrentBar = -40000;
 
-    public static final double armTouchNextBar = 131500;
-    public static final double armReachForNextBar = 141250;
-    public static final double armMaxReach = 145000;
-    
-    public static final double hookTouchNextBarPos = -400000;
-    public static final double hookReachPastNextBarPos = -402000;
-    private static final double hookMaxReachPos = -406000; // 421000; 
+    public static final double armReachPastNextBar = 136000;
+    // note: position is beyond limit of the hook, need to pull right to limit switch
+    public static final double hookPastNextBar = (hookMaxReachPos - 1000);
+
+    public static final double armHugNextBar = 120000; 
+    public static final double hookPullTalonsOffBar = -100000;
+    //public static final double hookReachPastNextBarPos = -402000;
+
 
   // private static final double armExtendPos = 200.000; //268.14905;
   // private static final double armHomePos = 0.0;
@@ -159,13 +166,18 @@ public static final class ClimberArmConstants {
     //m_climber.get
     // This method will be called once per scheduler run
 
-SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPosition());
-SmartDashboard.putBoolean("climberArmFwdLimit", armHitForwardLimit());
-SmartDashboard.putBoolean("climberArmRevLimit", armHitBackLimit());
+    SmartDashboard.putBoolean("leftTalonHooked", LeftTalonHooked());
+    SmartDashboard.putBoolean("rightTalonHooked", RightTalonHooked());
+    
+    SmartDashboard.putBoolean("climberArmRevLimit", armHitBackLimit());
 
-SmartDashboard.putNumber("climbHookPosition", m_climber.getSelectedSensorPosition());
-SmartDashboard.putBoolean("climbHookForwardLimit", hookHitForwardLimit());
-SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
+    SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPosition());
+    SmartDashboard.putBoolean("climberArmFwdLimit", armHitForwardLimit());
+    SmartDashboard.putBoolean("climberArmRevLimit", armHitBackLimit());
+
+    SmartDashboard.putNumber("climbHookPosition", m_climber.getSelectedSensorPosition());
+    SmartDashboard.putBoolean("climbHookForwardLimit", hookHitForwardLimit());
+    SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
 
    // if upper or lower limit switch is hit, then reset encoder position to upper or lower
     
@@ -192,47 +204,17 @@ SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
   }
 
   
-  // public boolean extendHookToPosition(double stopPoint){
-  //   // if ( hookHitBackLimit()) {
-  //   //   stopHook();
-  //   //   return true;
-  //   // } 
-
-  //   m_climber.set(ControlMode.Position, stopPoint);
-
-
-  //   double currPosition = HookPosition();
-  //   if (currPosition >= stopPoint || hookHitBackLimit()) {    
-  //     //stopHook();
-  //     //m_climber.set(ControlMode.Position, stopPoint);
-  //     //m_climber.set(ControlMode.Position, currPosition);
-  //     return true;
-  //   } 
-
-  //   return false;
-  // }
-
-  // public boolean pullHookToPosition(double stopPoint){
-  //   // if (hookHitForwardLimit()) {
-  //   //   stopHook();
-  //   //   return true;
-  //   // } 
-
-  //   m_climber.set(ControlMode.Position, stopPoint);
-    
-  //   double currPosition = HookPosition();
-  //   if (currPosition <= stopPoint || hookHitForwardLimit()) {
-  //     return true;
-  //   } 
-
-  //   return false;
-  // }
 
   public boolean moveHookToPosition(double setPoint){
     m_climber.set(ControlMode.Position, setPoint);
-    if (Math.abs(HookPosition() - setPoint) < 2000){
+    if (Math.abs(HookPosition() - setPoint) < 1000){
       return true;
     }
+
+    // if reaching past physical limit, use the limit switch to report
+    if (setPoint < ClimberConstants.hookMaxReachPos && hookHitBackLimit()){ return true; }
+    if (setPoint > ClimberConstants.hookStartingPos && hookHitForwardLimit() ){ return true; }
+
     return false;
   }
 
@@ -268,6 +250,10 @@ SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
     if (Math.abs(ArmPosition() - setPoint) < 2000){
       return true;
     }
+    // if reaching past physical limit, use the limit switch to report
+    if (setPoint > ClimberConstants.armMaxReach && armHitForwardLimit()){ return true; }
+    if (setPoint < ClimberConstants.armsStartingPos && armHitBackLimit() ){ return true; }
+
     return false;
   }
   

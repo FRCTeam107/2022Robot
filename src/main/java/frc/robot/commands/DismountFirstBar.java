@@ -7,20 +7,20 @@
 
 package frc.robot.commands;
 
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberConstants;
 
-public class TransferToNextBar extends CommandBase {
+public class DismountFirstBar extends CommandBase {
     private final Climber m_climber;
 
     private enum commandState {
       Starting,
-      RaiseHookToClearBar,
-      BendArmBackToNextBar,
-      ReachHookPastBar,
-      RetractArmToTouchBar,
-      PullHookToReleaseTalons,
+      PullHook,
+      MoveArmForward,
+      RaiseHook,
       Finished;
 
       public commandState getNext() {
@@ -31,7 +31,9 @@ public class TransferToNextBar extends CommandBase {
     }
     private static commandState currentState;
 
-  public TransferToNextBar(Climber climber) {
+
+
+  public DismountFirstBar(Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
     currentState = commandState.Starting;
@@ -41,65 +43,44 @@ public class TransferToNextBar extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    currentState = commandState.Starting;
+    currentState = commandState.Starting; // reset to starting state
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     boolean moveToNextState = false;
+    SmartDashboard.putString("ReachForBar", "Executing");
 
     switch (currentState){
       case Starting:
-        // if both talon hooks are NOT set, don't do anything!
-        if (m_climber.AllTalonsHooked()){
+        // Just do it, don't check talon hooks
+        moveToNextState = true;
+        break;
+
+      case PullHook:
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos)){
           moveToNextState = true;
         }
-        // else {
-        //   currentState = commandState.Finished;
-        // }
-        break;
+       break;
       
-      case RaiseHookToClearBar:
-        // extend the hook past the current bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookClearCurrentBar)){
+      case MoveArmForward:
+          // move arm to vertical
+          if (m_climber.moveArmToPosition(ClimberConstants.armPullupPos)){
+            moveToNextState = true;
+          }
+          break;
+
+      case RaiseHook:
+        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos)){
           moveToNextState = true;
         }
         break;
 
-      case BendArmBackToNextBar:
-        // move arm to reach backwards slightly past the next bar
-        if (m_climber.moveArmToPosition(ClimberConstants.armReachPastNextBar)){
-          moveToNextState = true;
-        }
-        break;
-        
-      case ReachHookPastBar:
-        // extend the hook past the next bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPastNextBar)){
-          moveToNextState = true;
-        }
-        break;
-
-      case RetractArmToTouchBar:
-        // now bring arm forward to make arm touch the bar
-        if (m_climber.moveArmToPosition(ClimberConstants.armHugNextBar)) {
-          moveToNextState = true;
-        }
-        break;
-
-      case PullHookToReleaseTalons:
-        // pull the hook far enough to release the talons hooks
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar) ) {
-          moveToNextState = true;
-        }
-        break;
-     
       case Finished:
-        break;
+          break;
 
       default:
-        //break;
     }
 
     // move to next state?
@@ -112,10 +93,8 @@ public class TransferToNextBar extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (interrupted){
-      m_climber.stopHook();
-      m_climber.stopArm(); 
-    }
+    m_climber.stopHook();
+    m_climber.stopArm();
   }
 
   // Returns true when the command should end.
