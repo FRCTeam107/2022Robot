@@ -137,7 +137,7 @@ public final class Constants {
                 public static final double kI = 0.0005;
                 public static final double kD = 0.0001; 
                 public static final double kIz = 8000; 
-                public static final double kFF = 0;//.000015; 
+                public static final double kFF = 0.01;//.000015; 
                 // public static final double kMaxOutput = 1; 
                 // public static final double kMinOutput = -1;
                 // public static final double maxRPM = 5700;  

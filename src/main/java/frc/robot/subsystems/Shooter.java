@@ -137,7 +137,7 @@ public void runMotor(double speedbottom, double speedtop){
     if (cacheTopReady != topReady) {cacheTopReady=topReady; SmartDashboard.putBoolean("i T Ready", topReady); }
     if (cacheBottomReady != bottomReady) {cacheBottomReady=bottomReady; SmartDashboard.putBoolean("i B Ready", bottomReady); }
     
-    return (readyCounter > 10); //require 10 consecutive readies before reporting we are ready
+    return (readyCounter > 3); //require 10 consecutive readies before reporting we are ready
   }
 
   public void clearReadyFlags(){
