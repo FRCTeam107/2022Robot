@@ -10,9 +10,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberConstants;
+import frc.robot.subsystems.LEDLights;
 
 public class PullUpOntoTalonHooks extends CommandBase {
     private final Climber m_climber;
+    private final LEDLights m_LEDLights;
 
     private enum commandState {
       Starting,
@@ -33,9 +35,10 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
 
 
-  public PullUpOntoTalonHooks(Climber climber) {
+  public PullUpOntoTalonHooks(Climber climber, LEDLights LEDLights) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
+    m_LEDLights = LEDLights;
     currentState = commandState.Starting;
     addRequirements(m_climber);
   }
@@ -95,11 +98,13 @@ public class PullUpOntoTalonHooks extends CommandBase {
       // if both talon hooks are not set, then do another pull-up to try again
         if (m_climber.AllTalonsHooked()){
           moveToNextState = true;
-          //TODO:  turn LED lights GREEN !!!
+          m_LEDLights.lightsBlinkGreen();
+          
         } 
         else { // failed transfer, try again
           //currentState = commandState.PullTalonsAboveBar;
-          // TODO:  Blink RED on LEDS
+          
+          m_LEDLights.lightsBlinkRed();
         }
         break;
 

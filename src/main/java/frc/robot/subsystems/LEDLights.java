@@ -74,6 +74,20 @@ public class LEDLights extends SubsystemBase {
     countdownTimer = 1000;
   }
 
+  public void lightsRed(){
+    m_LEDLights.set(0.61);
+    countdownTimer = 1000;
+  }
+
+  public void lightsBlinkRed(){
+    m_LEDLights.set(0.13);
+    countdownTimer = 1000;
+  }
+
+  public void lightsBlinkGreen(){
+    m_LEDLights.set(-0.85);
+    countdownTimer = 1000;
+  }
 
   //public void LightUp(){
     //m_LEDLights.set(Color());
