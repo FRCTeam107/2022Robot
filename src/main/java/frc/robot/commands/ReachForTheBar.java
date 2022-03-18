@@ -67,7 +67,7 @@ public class ReachForTheBar extends CommandBase {
         boolean armReady = false;
         boolean hookReady = false;
         SmartDashboard.putString("ReachForBar", "StraightenArmAndLiftHook");
-        // move arm to vertical an lift hook so it is above the first bar (at same time)
+        // move arm to vertical and lift hook so it is above the first bar (at same time)
         if (m_climber.moveArmToPosition(ClimberConstants.armFirstBarPos)){
           armReady = true;
         }
