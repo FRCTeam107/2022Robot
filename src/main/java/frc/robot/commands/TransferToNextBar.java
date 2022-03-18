@@ -19,9 +19,12 @@ public class TransferToNextBar extends CommandBase {
 
     private enum commandState {
       Starting,
-      RaiseHookToClearBar,
+      RaiseHookPunchNextBar,
+      BendArmToPunchNextBar,
+      WaitForSwingToStop,
+      LowerHookBelowBar,
       BendArmBackToNextBar,
-      ReachHookPastBar,
+      ReachHookPastNextBar,
       RetractArmToTouchBar,
       PullHookToReleaseTalons,
       Finished;
@@ -33,6 +36,7 @@ public class TransferToNextBar extends CommandBase {
       }
     }
     private static commandState currentState;
+    private static int countDown;
 
   public TransferToNextBar(Climber climber, BooleanSupplier _forceToRun) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -47,13 +51,13 @@ public class TransferToNextBar extends CommandBase {
   @Override
   public void initialize() {
     currentState = commandState.Starting;
+    countDown = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     boolean moveToNextState = false;
-
     switch (currentState){
       case Starting:
         // if both talon hooks are NOT set, don't do anything!
@@ -71,13 +75,32 @@ public class TransferToNextBar extends CommandBase {
         // }
         break;
       
-      case RaiseHookToClearBar:
-        // extend the hook past the current bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookClearCurrentBar, true)){
+      case RaiseHookPunchNextBar:
+        // extend the hook past the current bar and to punch next one
+        if (m_climber.moveHookToPosition(ClimberConstants.hookToPunchNextBar, true)){
           moveToNextState = true;
         }
         break;
 
+      case BendArmToPunchNextBar:
+        if (m_climber.moveArmToPosition(ClimberConstants.armToPunchNextBar)){
+          countDown = 100; // 20ms loop * countdown timer
+          moveToNextState = true;
+        }
+        break;
+
+      case WaitForSwingToStop:
+        countDown --;
+        moveToNextState = (countDown<=0);
+        break;
+
+      case LowerHookBelowBar:
+        // extend the hook past the current bar and to punch next one
+        if (m_climber.moveHookToPosition(ClimberConstants.hookBelowNextBar, true)){
+          moveToNextState = true;
+        }
+        break;
+      
       case BendArmBackToNextBar:
         // move arm to reach backwards slightly past the next bar
         if (m_climber.moveArmToPosition(ClimberConstants.armReachPastNextBar)){
@@ -85,7 +108,7 @@ public class TransferToNextBar extends CommandBase {
         }
         break;
         
-      case ReachHookPastBar:
+      case ReachHookPastNextBar:
         // extend the hook past the next bar
         if (m_climber.moveHookToPosition(ClimberConstants.hookPastNextBar, true)){
           moveToNextState = true;
