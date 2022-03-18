@@ -75,7 +75,6 @@ public class RobotContainer {
 
       // A chooser for autonomous commands
   private final SendableChooser<Command> m_chooser;
-  private final AutonPause m_autoCommand = new AutonPause(5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -101,9 +100,23 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Add commands to the autonomous command chooser
+
+    Command TwoBall_Right = new SequentialCommandGroup(
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"),
+      new SetRobotOrientationOnField(m_Drivetrain, -80)   
+      );
+
+    Command TwoBall_Center = new SequentialCommandGroup(
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"),
+        new SetRobotOrientationOnField(m_Drivetrain, -40)   
+        );
+  
+
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
     m_chooser.addOption("Jim.csv", new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"));
+    m_chooser.addOption("2-Ball RIGHT", TwoBall_Right);
+    m_chooser.addOption("2-Ball CENTER", TwoBall_Center);
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
     SmartDashboard.putData("Auto choices", m_chooser);
   }
@@ -166,55 +179,55 @@ public class RobotContainer {
     //return m_SimpleAutonCommand;
   }
   
-  public Command ORIGgetAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+//   public Command ORIGgetAutonomousCommand() {
+//     // Create config for trajectory
+//     TrajectoryConfig config =
+//         new TrajectoryConfig(
+//                 AutoConstants.kMaxSpeedMetersPerSecond,
+//                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+//             // Add kinematics to ensure max speed is actually obeyed
+//             .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);
+//     // An example trajectory to follow.  All units in meters.
+//     Trajectory exampleTrajectory =
+//         TrajectoryGenerator.generateTrajectory(
+//             // Start at the origin facing the +X direction
+//             new Pose2d(0, 0, new Rotation2d(0)),
+//             // Pass through these two interior waypoints, making an 's' curve path
+//             List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+//             // End 3 meters straight ahead of where we started, facing forward
+//             new Pose2d(3, 0, new Rotation2d(0)),
+//             config);
 
-//  return m_Drivetrain.createCommandForTrajectory(exampleTrajectory, true);
+// //  return m_Drivetrain.createCommandForTrajectory(exampleTrajectory, true);
 
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-//SwerveControllerCommand x = new SwerveControllerCommand(trajectory, pose, kinematics, xController, yController, thetaController, outputModuleStates, requirements)
+//     var thetaController =
+//         new ProfiledPIDController(
+//             AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+//     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+// //SwerveControllerCommand x = new SwerveControllerCommand(trajectory, pose, kinematics, xController, yController, thetaController, outputModuleStates, requirements)
 
-SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_Drivetrain::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
+// SwerveControllerCommand swerveControllerCommand =
+//         new SwerveControllerCommand(
+//             exampleTrajectory,
+//             m_Drivetrain::getPose, // Functional interface to feed supplier
+//             DriveConstants.kDriveKinematics,
 
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_Drivetrain::setModuleStates,
-            m_Drivetrain);
+//             // Position controllers
+//             new PIDController(AutoConstants.kPXController, 0, 0),
+//             new PIDController(AutoConstants.kPYController, 0, 0),
+//             thetaController,
+//             m_Drivetrain::setModuleStates,
+//             m_Drivetrain);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_Drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+//     // Reset odometry to the starting pose of the trajectory.
+//     m_Drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    //return swerveControllerCommand;
-    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false));
+//     // Run path following command, then stop at the end.
+//     //return swerveControllerCommand;
+//     return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false));
 
-  }
+//   }
 
 
 }
