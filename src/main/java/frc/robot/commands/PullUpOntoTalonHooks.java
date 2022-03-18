@@ -58,7 +58,6 @@ public class PullUpOntoTalonHooks extends CommandBase {
       case Starting:
           // if both talon hooks are set, then don't do anything
           if (m_climber.AllTalonsHooked()) {
-            moveToNextState=true;
             currentState=commandState.Finished;
           }
           else {
@@ -75,7 +74,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case PullTalonsAboveBar:
         // pull hook so talon hooks go past the bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos, false)){
           moveToNextState = true;
         }
         break;
@@ -89,7 +88,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case TransferOntoTalons:
         // extend hook up so weight is transferred to talon hooks
-        if (m_climber.moveHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookTransferToTalonsPos, false)){
           moveToNextState = true;
         }
         break;

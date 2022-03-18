@@ -72,7 +72,7 @@ public class ReachForTheBar extends CommandBase {
           armReady = true;
         }
 
-        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos, true)){
           hookReady = true;
         }
      

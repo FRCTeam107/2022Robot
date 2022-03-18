@@ -59,7 +59,7 @@ public class DismountFirstBar extends CommandBase {
         break;
 
       case PullHook:
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos, true)){
           moveToNextState = true;
         }
        break;
@@ -72,7 +72,7 @@ public class DismountFirstBar extends CommandBase {
           break;
 
       case RaiseHook:
-        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos, true)){
           moveToNextState = true;
         }
         break;

@@ -47,21 +47,9 @@ public final class Constants {
                 // // public static final int ORCHESTRA = 13;
         }
 
-        public class RightJoystick{
-                // public static final int SHOOT = 1;
-                // public static final int FORCE_SHOT = 2;
-                // //public static final int TURRET_UP = 3;
-                // // public static final int JOYSTICK_FOUR = 4;
-                // // public static final int JOYSTICK_FIVE = 5;
-                // // public static final int DROP_HOPPER = 6;
-                // public static final int ENABLE_TURRET = 7;
-                // public static final int DISABLE_TURRET = 8;
-                // // public static final int JOYSTICK_SEVEN = 7;
-                // // public static final int JOYSTICK_EIGHT = 8;
-                // // public static final int JOYSTICK_NINE = 9;
-                // // public static final int JOYSTICK_TEN = 10;
-                // // public static final int JOYSTICK_ELEVEN = 11;
-        }
+        // public class RightJoystick{
+        
+        // }
 
         public class ControllerJoystick{
                 public static final int SHOOT = 1;

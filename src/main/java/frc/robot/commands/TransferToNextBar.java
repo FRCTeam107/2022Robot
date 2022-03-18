@@ -7,12 +7,15 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class TransferToNextBar extends CommandBase {
     private final Climber m_climber;
+    private final BooleanSupplier m_forceToRun;
 
     private enum commandState {
       Starting,
@@ -31,9 +34,11 @@ public class TransferToNextBar extends CommandBase {
     }
     private static commandState currentState;
 
-  public TransferToNextBar(Climber climber) {
+  public TransferToNextBar(Climber climber, BooleanSupplier _forceToRun) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
+    m_forceToRun = _forceToRun;
+
     currentState = commandState.Starting;
     addRequirements(m_climber);
   }
@@ -55,6 +60,12 @@ public class TransferToNextBar extends CommandBase {
         if (m_climber.AllTalonsHooked()){
           moveToNextState = true;
         }
+        else {
+          moveToNextState = m_forceToRun.getAsBoolean();
+        }
+        // else (if m_btnForceReady.is
+        //   moveToNextState = true;
+        // }
         // else {
         //   currentState = commandState.Finished;
         // }
@@ -62,7 +73,7 @@ public class TransferToNextBar extends CommandBase {
       
       case RaiseHookToClearBar:
         // extend the hook past the current bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookClearCurrentBar)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookClearCurrentBar, true)){
           moveToNextState = true;
         }
         break;
@@ -76,7 +87,7 @@ public class TransferToNextBar extends CommandBase {
         
       case ReachHookPastBar:
         // extend the hook past the next bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPastNextBar)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPastNextBar, true)){
           moveToNextState = true;
         }
         break;
@@ -90,7 +101,7 @@ public class TransferToNextBar extends CommandBase {
 
       case PullHookToReleaseTalons:
         // pull the hook far enough to release the talons hooks
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar) ) {
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
           moveToNextState = true;
         }
         break;

@@ -32,7 +32,7 @@ private final WPI_TalonFX m_climber, m_climberArm;
 private final DigitalInput m_talonHookLeft, m_talonHookRight;
 
 public static final class ClimberConstants {
-    // TODO find values for actual robot climber arm positions
+    // values for actual robot climber arm positions
     // starting position
     public static final double armsStartingPos = 0; // starting position
     public static final double armMaxReach = 145000;
@@ -66,20 +66,17 @@ public static final class ClimberConstants {
     //public static final double hookReachPastNextBarPos = -402000;
 
 
-  // private static final double armExtendPos = 200.000; //268.14905;
-  // private static final double armHomePos = 0.0;
 
-    //TODO tune the climber hook PID values
+    //tuned climber hook PID values
     public static final double kP = 0.04; 
     public static final double kI = 0.0001;
     public static final double kD = 0.0; 
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
-}
-// private SparkMaxLimitSwitch m_forwardLimit;
-// private SparkMaxLimitSwitch m_reverseLimit;
-//private boolean armIsUp;
 
+    public static final double kMaxOutput_Slow = 0.4; 
+    public static final double kMaxOutput_Fast = 0.7; 
+  }
 
 public static final class ClimberArmConstants { 
   
@@ -109,13 +106,21 @@ public static final class ClimberArmConstants {
     m_climber.setNeutralMode(NeutralMode.Brake);
     m_climber.setSelectedSensorPosition(ClimberConstants.hookStartingPos);
     m_climber.setInverted(TalonFXInvertType.Clockwise);
+
     m_climber.config_kP(0, ClimberConstants.kP);
     m_climber.config_kI(0, ClimberConstants.kI);
     m_climber.config_kD(0, ClimberConstants.kD);
     m_climber.config_IntegralZone(0, ClimberConstants.kIz);
     m_climber.config_kF(0, ClimberConstants.kFF);
+    m_climber.configClosedLoopPeakOutput(0, ClimberConstants.kMaxOutput_Slow);
 
-    m_climber.configClosedLoopPeakOutput(0,0.3);
+    // m_climber.config_kP(1, ClimberConstants.kP);
+    // m_climber.config_kI(1, ClimberConstants.kI);
+    // m_climber.config_kD(1, ClimberConstants.kD);
+    // m_climber.config_IntegralZone(1, ClimberConstants.kIz);
+    // m_climber.config_kF(1, ClimberConstants.kFF);
+    // m_climber.configClosedLoopPeakOutput(1, ClimberConstants.kMaxOutput_Fast);
+
 
     m_climber.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     m_climber.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
@@ -140,6 +145,7 @@ public static final class ClimberArmConstants {
     m_climberArm.setInverted(TalonFXInvertType.Clockwise);
     m_climberArm.setNeutralMode(NeutralMode.Brake);
     m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+
     // PID values for INTAKE_ARM
     m_climberArm.config_kP(0, ClimberArmConstants.kP);
     m_climberArm.config_kI(0, ClimberArmConstants.kI);
@@ -171,11 +177,11 @@ public static final class ClimberArmConstants {
     
     SmartDashboard.putBoolean("climberArmRevLimit", armHitBackLimit());
 
-    SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("climberArmPosition", m_climberArm.getSelectedSensorPosition());
     SmartDashboard.putBoolean("climberArmFwdLimit", armHitForwardLimit());
     SmartDashboard.putBoolean("climberArmRevLimit", armHitBackLimit());
 
-    SmartDashboard.putNumber("climbHookPosition", m_climber.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("climbHookPosition", m_climber.getSelectedSensorPosition());
     SmartDashboard.putBoolean("climbHookForwardLimit", hookHitForwardLimit());
     SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
 
@@ -205,7 +211,14 @@ public static final class ClimberArmConstants {
 
   
 
-  public boolean moveHookToPosition(double setPoint){
+  public boolean moveHookToPosition(double setPoint, boolean fastSpeed){
+    if (fastSpeed){ 
+      m_climber.configClosedLoopPeakOutput(0, ClimberConstants.kMaxOutput_Fast);
+    }
+    else { 
+      m_climber.configClosedLoopPeakOutput(0, ClimberConstants.kMaxOutput_Slow); 
+    }
+
     m_climber.set(ControlMode.Position, setPoint);
     if (Math.abs(HookPosition() - setPoint) < 1000){
       return true;
@@ -221,12 +234,12 @@ public static final class ClimberArmConstants {
 
   public void extendHook(){
     //m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
-    m_climber.set(ControlMode.PercentOutput, -0.3);
+    m_climber.set(ControlMode.PercentOutput, -ClimberConstants.kMaxOutput_Slow);
   }
 
   public void pullHook(){
     //m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
-    m_climber.set(ControlMode.PercentOutput, 0.3);
+    m_climber.set(ControlMode.PercentOutput, ClimberConstants.kMaxOutput_Slow);
   }
   
   public void stopHook(){

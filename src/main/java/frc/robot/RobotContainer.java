@@ -156,7 +156,8 @@ public class RobotContainer {
     // CONTROLLER'S JOYSTICK BUTTONS
     btnClimbFirstBar.whileHeld(new ReachForTheBar(m_climber));
     btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber, m_LEDLights));
-    btnClimbGrabNext.whileHeld(new TransferToNextBar(m_climber));
+    btnClimbGrabNext.whileHeld(new TransferToNextBar(m_climber,
+           () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
     btnClimbDismount.whileHeld(new DismountFirstBar(m_climber));
 
     btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));

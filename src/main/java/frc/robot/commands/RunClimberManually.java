@@ -31,7 +31,7 @@ public class RunClimberManually extends CommandBase {
     if (hookMove==0 || hookMove==45 || hookMove==315){
       m_Climber.extendHook();
     }
-    else if (hookMove==180 || hookMove==135 || hookMove==215){
+    else if (hookMove==180 || hookMove==135 || hookMove==225){
       m_Climber.pullHook();
     }
     else {
