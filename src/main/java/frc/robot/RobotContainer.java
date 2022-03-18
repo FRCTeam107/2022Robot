@@ -62,7 +62,7 @@ public class RobotContainer {
   private final Shooter m_shooter;
   private final Intake m_Intake;
   private final Climber m_climber;
-  //private final LEDLights m_LEDLights;
+  private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
   private final Limelight m_limelight;
   
@@ -86,7 +86,7 @@ public class RobotContainer {
 
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
-    //m_LEDLights = new LEDLights();
+    m_LEDLights = new LEDLights();
     m_Drivetrain  = new SwerveDrivetrain(0);  // begin assuming no field offset angle of robot (facing straight "north")
     m_Intake = new Intake ();
     m_shooter = new Shooter();
@@ -96,7 +96,7 @@ public class RobotContainer {
 
     m_DataRecorder = new DataRecorder();
    
-    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
+    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller, m_limelight));
     
     configureButtonBindings();
 
@@ -123,6 +123,7 @@ public class RobotContainer {
     JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
     JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
     JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
+    JoystickButton btnActivateLimelight = new JoystickButton(m_flightcontroller, FlightController.ACTIVATE_LIMELIGHT);
 
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
@@ -141,13 +142,15 @@ public class RobotContainer {
   
     // CONTROLLER'S JOYSTICK BUTTONS
     btnClimbFirstBar.whileHeld(new ReachForTheBar(m_climber));
-    btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber));
+    btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber, m_LEDLights));
     btnClimbGrabNext.whileHeld(new TransferToNextBar(m_climber));
     btnClimbDismount.whileHeld(new DismountFirstBar(m_climber));
 
     btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));
 
      btnCameraToggle.whenPressed(m_Camera::changeCamera);
+     btnActivateLimelight.whenPressed(m_limelight::EnableVisionProcessing);
+     btnActivateLimelight.whenReleased(m_limelight::DisableVisionProcessing);
     }
 
       /**

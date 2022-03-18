@@ -5,29 +5,32 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SwerveDrivetrain;
 //import frc.robot.subsystems.SwerveModuleMK3;
 
 public class SwerveDriveCommand extends CommandBase {
 
-  private final SwerveDrivetrain drivetrain;
-  //private final XboxController leftCcontroller;
-  private final Joystick FlightController;
+  private final SwerveDrivetrain m_drivetrain;
+  private final Joystick m_FlightController;
+  private final Limelight m_lLimelight;
+
   // private final Joystick rightController;
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(6);
   private final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(6);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(6);
 
-  public SwerveDriveCommand(SwerveDrivetrain drivetrain, Joystick controller) {
+  public SwerveDriveCommand(SwerveDrivetrain drivetrain, Joystick controller,  Limelight _limeLight) {
   //public SwerveDriveCommand(SwerveDrivetrain drivetrain, XboxController controller) {
-    this.drivetrain = drivetrain;
+    m_drivetrain = drivetrain;
+    m_lLimelight = _limeLight;
+    m_FlightController = controller;
+
     addRequirements(drivetrain);
 
-    this.FlightController = controller;
     // this.rightController = controller2;
   }
 
@@ -37,18 +40,28 @@ public class SwerveDriveCommand extends CommandBase {
     // SmartDashboard.putNumber("Y channel", FlightController.getY());
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    double X = -FlightController.getX();
+    double X = -m_FlightController.getX();
     if (Math.abs(X)<0.05){
       X = 0;
     }
-    double Y = FlightController.getY();
+    double Y = m_FlightController.getY();
     if (Math.abs(Y)<0.05){
       Y = 0;
     }
-    double Z = FlightController.getZ();
-    if (Math.abs(Z)<0.05){
-      Z = 0;
+
+    double Z;
+    if (m_lLimelight.Havetarget() ){
+      Z =  -m_lLimelight.TX() / 27 * 1.3;
+      if (Z<-1){Z=-1;}
+      else if(Z>1){Z=1;}
     }
+    else {
+      Z = m_FlightController.getZ();
+      if (Math.abs(Z)<0.05){
+        Z = 0;
+      }  
+    }
+
     final var xSpeed =
       xspeedLimiter.calculate(Y)
         * DriveConstants.kMaxSpeedMetersPerSecond;
@@ -73,7 +86,7 @@ public class SwerveDriveCommand extends CommandBase {
     //boolean calibrate = false; //controller.getLeftBumper();
 //SmartDashboard.putBoolean("calibrate", calibrate);
 
-    drivetrain.drive(xSpeed, ySpeed, rot, true);//, calibrate);
+    m_drivetrain.drive(xSpeed, ySpeed, rot, true);//, calibrate);
    
   }
 
