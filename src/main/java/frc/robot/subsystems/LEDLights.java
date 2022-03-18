@@ -16,10 +16,10 @@ public class LEDLights extends SubsystemBase {
    */
   public LEDLights() {
     super();
-    m_LEDLights = new PWMSparkMax(0);
+    m_LEDLights = new PWMSparkMax(1);
    //m_ultrasonic = new AnalogInput(0);
     //m_color = -0.99;
-    m_LEDLights.set(0);
+   // m_LEDLights.set(0);
     // SmartDashboard.putNumber("Color of LEDs", m_color);
     //SmartDashboard.putNumber("m_color", m_color);
     
@@ -38,7 +38,8 @@ public class LEDLights extends SubsystemBase {
             m_LEDLights.set(0.61);
 
           default:
-            countdownTimer = 1000;
+          m_LEDLights.set(0.55);
+          countdownTimer = 1000;
         }
       }
     }
