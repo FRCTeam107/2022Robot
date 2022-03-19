@@ -10,9 +10,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Climber.ClimberConstants;
+import frc.robot.subsystems.LEDLights;
 
 public class PullUpOntoTalonHooks extends CommandBase {
     private final Climber m_climber;
+    private final LEDLights m_LEDLights;
 
     private enum commandState {
       Starting,
@@ -33,9 +35,10 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
 
 
-  public PullUpOntoTalonHooks(Climber climber) {
+  public PullUpOntoTalonHooks(Climber climber, LEDLights LEDLights) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
+    m_LEDLights = LEDLights;
     currentState = commandState.Starting;
     addRequirements(m_climber);
   }
@@ -55,7 +58,6 @@ public class PullUpOntoTalonHooks extends CommandBase {
       case Starting:
           // if both talon hooks are set, then don't do anything
           if (m_climber.AllTalonsHooked()) {
-            moveToNextState=true;
             currentState=commandState.Finished;
           }
           else {
@@ -65,6 +67,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case StraightenArm:
           // move arm to vertical
+          m_LEDLights.lightsYellow();
           if (m_climber.moveArmToPosition(ClimberConstants.armPullupPos)){
             moveToNextState = true;
           }
@@ -72,13 +75,15 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case PullTalonsAboveBar:
         // pull hook so talon hooks go past the bar
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos)){
+        m_LEDLights.lightsYellow();
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos, false)){
           moveToNextState = true;
         }
         break;
 
       case ArmBackToTransferToTalons:
         // reach climber arm back to swing robot forward
+        m_LEDLights.lightsYellow();
         if (m_climber.moveArmToPosition(ClimberConstants.armTransferOntoTalonsPos)){
           moveToNextState = true;
         }
@@ -86,7 +91,8 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case TransferOntoTalons:
         // extend hook up so weight is transferred to talon hooks
-        if (m_climber.moveHookToPosition(ClimberConstants.hookTransferToTalonsPos)){
+        m_LEDLights.lightsYellow();
+        if (m_climber.moveHookToPosition(ClimberConstants.hookTransferToTalonsPos, false)){
           moveToNextState = true;
         }
         break;
@@ -94,12 +100,12 @@ public class PullUpOntoTalonHooks extends CommandBase {
       case CheckIfHooksLatched:
       // if both talon hooks are not set, then do another pull-up to try again
         if (m_climber.AllTalonsHooked()){
-          moveToNextState = true;
-          //TODO:  turn LED lights GREEN !!!
+          m_LEDLights.lightsGreen();
+          moveToNextState = true;         
         } 
         else { // failed transfer, try again
-          //currentState = commandState.PullTalonsAboveBar;
-          // TODO:  Blink RED on LEDS
+          m_LEDLights.lightsPurple();
+          moveToNextState = true;
         }
         break;
 

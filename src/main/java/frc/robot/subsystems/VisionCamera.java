@@ -26,6 +26,7 @@ public class VisionCamera extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("cameraPos", m_Servo.getAngle());
     // This method will be called once per scheduler run
+    m_Servo.setAngle( SmartDashboard.getNumber("cameraPos", m_Servo.getAngle()));
   }
    public void moveServoToPosition(double position){
      m_Servo.setAngle(position);
@@ -44,8 +45,8 @@ public class VisionCamera extends SubsystemBase {
    }
 
    public void changeCamera(){
-    if(m_Servo.getAngle() <= 0){m_Servo.setAngle(67);}
-    else{m_Servo.setAngle(-67);}}
+    if(m_Servo.getAngle() <= 31){m_Servo.setAngle(180);}
+    else{m_Servo.setAngle(30);}}
    
 }
 

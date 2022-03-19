@@ -9,7 +9,6 @@ import java.io.IOException;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -17,23 +16,19 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Motors;
 import frc.robot.subsystems.DataRecorder.datapoint;
 
-//import com.kauailabs.navx.*;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-//import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -124,17 +119,12 @@ public class SwerveDrivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
     // Update the odometry in the periodic block
     m_odometry.update(
-        m_gyro.getRotation2d(),
-        m_frontLeft.getState(),  // frontLeft
-        m_rearLeft.getState(),  // frontRight
-        m_frontRight.getState(),
-        m_rearRight.getState());  
-      
-        // SmartDashboard.putNumber("FL Dist", m_frontLeft.getDistance() );
-        // SmartDashboard.putNumber("BL Dist", m_rearLeft.getDistance() );
-        // SmartDashboard.putNumber("FR Dist", m_frontRight.getDistance() );
-        // SmartDashboard.putNumber("Br Dist", m_rearRight.getDistance() );
-      }
+      m_gyro.getRotation2d(),
+      m_frontLeft.getState(),  // frontLeft
+      m_rearLeft.getState(),  // frontRight
+      m_frontRight.getState(),
+      m_rearRight.getState());
+  }
 
   @Override
   public void simulationPeriodic() {

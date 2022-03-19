@@ -2,24 +2,22 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-
-// import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class LEDLights extends SubsystemBase {
   private final PWMSparkMax m_LEDLights;
   private int countdownTimer = 0;
-
+  private static double allianceLEDColor=0.99;
 
   /**
    * Creates a new Climber.
    */
   public LEDLights() {
     super();
-    m_LEDLights = new PWMSparkMax(0);
+    m_LEDLights = new PWMSparkMax(1);
    //m_ultrasonic = new AnalogInput(0);
     //m_color = -0.99;
-    m_LEDLights.set(0);
+   // m_LEDLights.set(0);
     // SmartDashboard.putNumber("Color of LEDs", m_color);
     //SmartDashboard.putNumber("m_color", m_color);
     
@@ -27,19 +25,27 @@ public class LEDLights extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (countdownTimer >0){
-      countdownTimer --;
-      if (countdownTimer==0){
+    countdownTimer --;
+
+    if (DriverStation.isAutonomous()){
+       m_LEDLights.set(0.69); //Yellow
+      return;
+    }
+
+    if (countdownTimer == 0){
+      if (allianceLEDColor==0.99){
         switch (DriverStation.getAlliance()){
-          case Blue :
-            m_LEDLights.set(0.75);
-
-          case Red:
-            m_LEDLights.set(0.61);
-
-          default:
-            countdownTimer = 1000;
+        case Blue :
+          allianceLEDColor = -0.15;
+          break;
+        case Red:
+          allianceLEDColor = -0.17;
+          break;   
+        default:
+          countdownTimer = 50;
+          break;
         }
+        m_LEDLights.set(allianceLEDColor);
       }
     }
     
@@ -66,14 +72,28 @@ public class LEDLights extends SubsystemBase {
 
   public void lightsGreen(){
     m_LEDLights.set(0.75);
-    countdownTimer = 1000;
+    countdownTimer = 150;
   }
 
   public void lightsYellow(){
-    m_LEDLights.set(0.35);
-    countdownTimer = 1000;
+    m_LEDLights.set(0.69);
+    countdownTimer = 150;
   }
 
+  public void lightsPurple(){
+    m_LEDLights.set(0.91);
+    countdownTimer = 150;
+  }
+
+  // public void lightsBlinkRed(){
+  //   m_LEDLights.set(0.13);
+  //   countdownTimer = 1000;
+  // }
+
+  // public void lightsBlinkGreen(){
+  //   m_LEDLights.set(-0.85);
+  //   countdownTimer = 1000;
+  // }
 
   //public void LightUp(){
     //m_LEDLights.set(Color());

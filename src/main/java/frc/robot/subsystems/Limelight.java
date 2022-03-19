@@ -35,15 +35,15 @@ public class Limelight extends SubsystemBase {
   private double lastTX, lastTY, lastTA;
   private double cacheTX, cacheTY, cacheTA, cacheTV;
 
-  private double x_offset;
+  // private double x_offset;
   // private List<Double> txValues;
   //private double m_AvgTx, m_AvgTy, m_AvgTa;
 
   public Limelight(){
     super();
 
-    x_offset  = SmartDashboard.getNumber("X-offset", 0.0);
-    SmartDashboard.putNumber("X-offset", x_offset);
+    // x_offset  = SmartDashboard.getNumber("X-offset", 0.0);
+    // SmartDashboard.putNumber("X-offset", x_offset);
 
     //SmartDashboard.putNumber("Limelight enabled", 0);
     m_overrideEnabled = false;
@@ -71,7 +71,7 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    x_offset  = SmartDashboard.getNumber("X-offset", 0.0);
+    // x_offset  = SmartDashboard.getNumber("X-offset", 0.0);
     if (m_visionProcessingEnabled)
     {
       m_tV = this.tV();
@@ -110,17 +110,18 @@ public class Limelight extends SubsystemBase {
     return table.getEntry("tx").getDouble(0);
   }
   public double TX(){
-     double thisTX = rawTX() - x_offset;
-     double retval;
-     //if (lastTX==999){ 
-     if ( Math.abs(lastTX) > 5){  /// was 999 
-       retval = thisTX;
-     }
-     else {
-       retval = thisTX; //(thisTX + lastTX) / 2.0;
-     }
-     lastTX = thisTX;
-     return retval;
+    return  rawTX();
+    //  double thisTX = rawTX(); // - x_offset;
+    //  double retval;
+    //  //if (lastTX==999){ 
+    //  if ( Math.abs(lastTX) > 5){  /// was 999 
+    //    retval = thisTX;
+    //  }
+    //  else {
+    //    retval = thisTX; //(thisTX + lastTX) / 2.0;
+    //  }
+    //  lastTX = thisTX;
+    //  return retval;
   }
 
   public double rawTY(){
@@ -128,35 +129,39 @@ public class Limelight extends SubsystemBase {
   }
 
   public double TY(){
-    double thisTY = rawTY();
-    double retval;
-    if (lastTX==999){ 
-      retval = thisTY;
-    }
-    else {
-      retval = thisTY + lastTY / 2.0;
-    }
-    lastTX = thisTY;
-    return retval;
+    return rawTY();
+    // double thisTY = rawTY();
+    // double retval;
+    // if (lastTX==999){ 
+    //   retval = thisTY;
+    // }
+    // else {
+    //   retval = thisTY + lastTY / 2.0;
+    // }
+    // lastTX = thisTY;
+    // return retval;
   }
 
   public double rawTA(){
     return  NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
   }
   public double TA(){
-    double thisTA = rawTA();
-    double retval;
-    if (lastTX==999){ 
-      retval = thisTA;
-    }
-    else {
-      retval = thisTA + lastTY / 2.0;
-    }
-    lastTX = thisTA;
-    return retval;
+    return rawTA();
+    // double thisTA = rawTA();
+    // double retval;
+    // if (lastTX==999){ 
+    //   retval = thisTA;
+    // }
+    // else {
+    //   retval = thisTA + lastTY / 2.0;
+    // }
+    // lastTX = thisTA;
+    // return retval;
   }
 
   public boolean Havetarget(){
+    // return true if we have a target (and vision processing enabled)
+    if (!m_visionProcessingEnabled){ return false; }
     return(this.m_tV==1);
   }
 
@@ -174,14 +179,14 @@ public class Limelight extends SubsystemBase {
     TurnOnLED();
     //SmartDashboard.putNumber("Limelight enabled", 1);
     camMode.setNumber(0);
-    pipeline.setNumber(2);  //2 for shooting?
+    //pipeline.setNumber(2);  //2 for shooting?
     m_visionProcessingEnabled = true;
   }
 
   public void DisableVisionProcessing(){
     m_visionProcessingEnabled=false;
     camMode.setNumber(1);
-    pipeline.setNumber(2);
+    //pipeline.setNumber(2);
     TurnOffLED();
     // set avg to invalid value to force reset
     lastTA = 999;
@@ -189,14 +194,14 @@ public class Limelight extends SubsystemBase {
     lastTY = 999;
   }
 
-  public void ToggleVisionProcessing(){
-    if (m_visionProcessingEnabled){
-      DisableVisionProcessing();
-    }
-    else {
-      EnableVisionProcessing();
-    }
-  }
+  // public void ToggleVisionProcessing(){
+  //   if (m_visionProcessingEnabled){
+  //     DisableVisionProcessing();
+  //   }
+  //   else {
+  //     EnableVisionProcessing();
+  //   }
+  // }
 
   public void setForceReady(boolean enableOverride){
     m_overrideEnabled = enableOverride;

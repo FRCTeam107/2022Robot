@@ -62,7 +62,7 @@ public class RobotContainer {
   private final Shooter m_shooter;
   private final Intake m_Intake;
   private final Climber m_climber;
-  //private final LEDLights m_LEDLights;
+  private final LEDLights m_LEDLights;
   private final VisionCamera m_Camera;
   private final Limelight m_limelight;
   
@@ -75,7 +75,6 @@ public class RobotContainer {
 
       // A chooser for autonomous commands
   private final SendableChooser<Command> m_chooser;
-  private final AutonPause m_autoCommand = new AutonPause(5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -86,7 +85,7 @@ public class RobotContainer {
 
     // m_rightJoystick = new Joystick(Constants.UsbPorts.RIGHT_STICK);
     m_controllerJoystick = new Joystick(Constants.UsbPorts.CONTROLLER_STICK);
-    //m_LEDLights = new LEDLights();
+    m_LEDLights = new LEDLights();
     m_Drivetrain  = new SwerveDrivetrain(0);  // begin assuming no field offset angle of robot (facing straight "north")
     m_Intake = new Intake ();
     m_shooter = new Shooter();
@@ -96,14 +95,34 @@ public class RobotContainer {
 
     m_DataRecorder = new DataRecorder();
    
-    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller));
+    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller, m_limelight));
     
     configureButtonBindings();
 
     // Add commands to the autonomous command chooser
+
+    Command TwoBall_Right = new SequentialCommandGroup(
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"),
+      new SetRobotOrientationOnField(m_Drivetrain, -80)   
+      );
+
+    Command TwoBall_Center = new SequentialCommandGroup(
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"),
+        new SetRobotOrientationOnField(m_Drivetrain, -40)   
+        );
+  
+
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
-    m_chooser.addOption("Jim.csv", new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"));
+    m_chooser.addOption("2-Ball RIGHT", TwoBall_Right);
+    m_chooser.addOption("2-Ball CENTER", TwoBall_Center);
+    //m_chooser.addOption("2-Ball LEFT", TwoBall_Left);
+    //m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
+    //m_chooser.addOption("5-Ball RIGHT", FourBall_Right);
+    //m_chooser.addOption("5-Ball RIGHT", FiveBall_Right);
+
+
+
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
     SmartDashboard.putData("Auto choices", m_chooser);
   }
@@ -123,6 +142,7 @@ public class RobotContainer {
     JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
     JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
     JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
+    JoystickButton btnActivateLimelight = new JoystickButton(m_flightcontroller, FlightController.ACTIVATE_LIMELIGHT);
 
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
@@ -140,14 +160,17 @@ public class RobotContainer {
     btnPickupIntake.whenReleased(m_Intake::StopIntake);
   
     // CONTROLLER'S JOYSTICK BUTTONS
-    btnClimbFirstBar.whileHeld(new ReachForTheBar(m_climber));
-    btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber));
-    btnClimbGrabNext.whileHeld(new TransferToNextBar(m_climber));
+    btnClimbFirstBar.whileHeld(new ReachForTheBar(m_climber, m_LEDLights));
+    btnClimbPullup.whileHeld(new PullUpOntoTalonHooks(m_climber, m_LEDLights));
+    btnClimbGrabNext.whileHeld(new TransferToNextBar(m_climber, m_LEDLights,
+           () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ));
     btnClimbDismount.whileHeld(new DismountFirstBar(m_climber));
 
     btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));
 
      btnCameraToggle.whenPressed(m_Camera::changeCamera);
+     btnActivateLimelight.whenPressed(m_limelight::EnableVisionProcessing);
+     btnActivateLimelight.whenReleased(m_limelight::DisableVisionProcessing);
     }
 
       /**
@@ -163,55 +186,55 @@ public class RobotContainer {
     //return m_SimpleAutonCommand;
   }
   
-  public Command ORIGgetAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+//   public Command ORIGgetAutonomousCommand() {
+//     // Create config for trajectory
+//     TrajectoryConfig config =
+//         new TrajectoryConfig(
+//                 AutoConstants.kMaxSpeedMetersPerSecond,
+//                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+//             // Add kinematics to ensure max speed is actually obeyed
+//             .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);
+//     // An example trajectory to follow.  All units in meters.
+//     Trajectory exampleTrajectory =
+//         TrajectoryGenerator.generateTrajectory(
+//             // Start at the origin facing the +X direction
+//             new Pose2d(0, 0, new Rotation2d(0)),
+//             // Pass through these two interior waypoints, making an 's' curve path
+//             List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+//             // End 3 meters straight ahead of where we started, facing forward
+//             new Pose2d(3, 0, new Rotation2d(0)),
+//             config);
 
-//  return m_Drivetrain.createCommandForTrajectory(exampleTrajectory, true);
+// //  return m_Drivetrain.createCommandForTrajectory(exampleTrajectory, true);
 
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-//SwerveControllerCommand x = new SwerveControllerCommand(trajectory, pose, kinematics, xController, yController, thetaController, outputModuleStates, requirements)
+//     var thetaController =
+//         new ProfiledPIDController(
+//             AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+//     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+// //SwerveControllerCommand x = new SwerveControllerCommand(trajectory, pose, kinematics, xController, yController, thetaController, outputModuleStates, requirements)
 
-SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_Drivetrain::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
+// SwerveControllerCommand swerveControllerCommand =
+//         new SwerveControllerCommand(
+//             exampleTrajectory,
+//             m_Drivetrain::getPose, // Functional interface to feed supplier
+//             DriveConstants.kDriveKinematics,
 
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_Drivetrain::setModuleStates,
-            m_Drivetrain);
+//             // Position controllers
+//             new PIDController(AutoConstants.kPXController, 0, 0),
+//             new PIDController(AutoConstants.kPYController, 0, 0),
+//             thetaController,
+//             m_Drivetrain::setModuleStates,
+//             m_Drivetrain);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_Drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+//     // Reset odometry to the starting pose of the trajectory.
+//     m_Drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    //return swerveControllerCommand;
-    return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false));
+//     // Run path following command, then stop at the end.
+//     //return swerveControllerCommand;
+//     return swerveControllerCommand.andThen(() -> m_Drivetrain.drive(0, 0, 0, false));
 
-  }
+//   }
 
 
 }

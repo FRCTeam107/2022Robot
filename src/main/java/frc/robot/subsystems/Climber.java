@@ -8,7 +8,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -17,10 +16,8 @@ import frc.robot.Constants.DIOPorts;
 import frc.robot.Constants.Motors;
 //import frc.robot.Constants.Solenoids;
 
-import java.util.concurrent.CyclicBarrier;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
+//import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -32,54 +29,59 @@ private final WPI_TalonFX m_climber, m_climberArm;
 private final DigitalInput m_talonHookLeft, m_talonHookRight;
 
 public static final class ClimberConstants {
-    // TODO find values for actual robot climber arm positions
+    // values for actual robot climber arm positions
     // starting position
     public static final double armsStartingPos = 0; // starting position
-    public static final double armMaxReach = 145000;
+    public static final double armMaxReach = 118000; // 145000;
     public static final double hookStartingPos = 0;
     private static final double hookMaxReachPos = -406000; // 421000; 
 
 
     // reach for the bar
-    public static final double armFirstBarPos = 0; // reach up to bar
+    public static final double armFirstBarPos = armsStartingPos - 7000; // reach up to bar
     public static final double hookAboveFirstBarPos = -219000; // -234000;
 
     
     // do a pull-up
     public static final double armPullupPos = 0; // keep arm stiff during pullup
     // note: pullup position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPullupPos = (armsStartingPos + 4000); // position to pullup and get talons to "hook"
+    public static final double hookPullupPos = (armsStartingPos + 10000); // position to pullup and get talons to "hook"
 
     // release onto talons
     public static final double armTransferOntoTalonsPos = 15000;
     public static final double hookTransferToTalonsPos = -14800; //-29800;
 
     // steps to get to next bar:
-    public static final double hookClearCurrentBar = -40000;
+    public static final double armToPunchNextBar = 97800; //118000;
+    public static final double hookToPunchNextBar = -320000;
 
-    public static final double armReachPastNextBar = 136000;
+    public static final double hookBelowNextBar = -314000;
+    public static final double armReachPastNextBar = 116000; //140000;
     // note: position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPastNextBar = (hookMaxReachPos - 1000);
+    public static final double hookPastNextBar = (hookMaxReachPos - 2000);
 
-    public static final double armHugNextBar = 120000; 
-    public static final double hookPullTalonsOffBar = -100000;
+    public static final double armHugNextBar = 96000; // 120000;
+    public static final double hookPullTalonsOffBar = -300000;
+
+
+// try buffering swing out of system
+    public static final double armBufferSwingPos = 20000;
+    public static final double hookBufferSwing = -100000;
+
     //public static final double hookReachPastNextBarPos = -402000;
 
 
-  // private static final double armExtendPos = 200.000; //268.14905;
-  // private static final double armHomePos = 0.0;
 
-    //TODO tune the climber hook PID values
+    //tuned climber hook PID values
     public static final double kP = 0.04; 
     public static final double kI = 0.0001;
     public static final double kD = 0.0; 
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
-}
-// private SparkMaxLimitSwitch m_forwardLimit;
-// private SparkMaxLimitSwitch m_reverseLimit;
-//private boolean armIsUp;
 
+    public static final double kMaxOutput_Slow = 0.5; 
+    public static final double kMaxOutput_Fast = 0.7;// 0.8; 
+  }
 
 public static final class ClimberArmConstants { 
   
@@ -109,13 +111,21 @@ public static final class ClimberArmConstants {
     m_climber.setNeutralMode(NeutralMode.Brake);
     m_climber.setSelectedSensorPosition(ClimberConstants.hookStartingPos);
     m_climber.setInverted(TalonFXInvertType.Clockwise);
+
     m_climber.config_kP(0, ClimberConstants.kP);
     m_climber.config_kI(0, ClimberConstants.kI);
     m_climber.config_kD(0, ClimberConstants.kD);
     m_climber.config_IntegralZone(0, ClimberConstants.kIz);
     m_climber.config_kF(0, ClimberConstants.kFF);
+    m_climber.configClosedLoopPeakOutput(0, ClimberConstants.kMaxOutput_Slow);
 
-    m_climber.configClosedLoopPeakOutput(0,0.3);
+    // m_climber.config_kP(1, ClimberConstants.kP);
+    // m_climber.config_kI(1, ClimberConstants.kI);
+    // m_climber.config_kD(1, ClimberConstants.kD);
+    // m_climber.config_IntegralZone(1, ClimberConstants.kIz);
+    // m_climber.config_kF(1, ClimberConstants.kFF);
+    // m_climber.configClosedLoopPeakOutput(1, ClimberConstants.kMaxOutput_Fast);
+
 
     m_climber.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     m_climber.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
@@ -140,6 +150,7 @@ public static final class ClimberArmConstants {
     m_climberArm.setInverted(TalonFXInvertType.Clockwise);
     m_climberArm.setNeutralMode(NeutralMode.Brake);
     m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+
     // PID values for INTAKE_ARM
     m_climberArm.config_kP(0, ClimberArmConstants.kP);
     m_climberArm.config_kI(0, ClimberArmConstants.kI);
@@ -205,7 +216,14 @@ public static final class ClimberArmConstants {
 
   
 
-  public boolean moveHookToPosition(double setPoint){
+  public boolean moveHookToPosition(double setPoint, boolean fastSpeed){
+    if (fastSpeed){ 
+      m_climber.configClosedLoopPeakOutput(0, ClimberConstants.kMaxOutput_Fast);
+    }
+    else { 
+      m_climber.configClosedLoopPeakOutput(0, ClimberConstants.kMaxOutput_Slow); 
+    }
+
     m_climber.set(ControlMode.Position, setPoint);
     if (Math.abs(HookPosition() - setPoint) < 1000){
       return true;
@@ -221,12 +239,12 @@ public static final class ClimberArmConstants {
 
   public void extendHook(){
     //m_climber.set(ControlMode.Position, ClimberConstants.armExtendPos);
-    m_climber.set(ControlMode.PercentOutput, -0.3);
+    m_climber.set(ControlMode.PercentOutput, -ClimberConstants.kMaxOutput_Slow);
   }
 
   public void pullHook(){
     //m_climber.set(ControlMode.Position, ClimberConstants.armHomePos);
-    m_climber.set(ControlMode.PercentOutput, 0.3);
+    m_climber.set(ControlMode.PercentOutput, ClimberConstants.kMaxOutput_Slow);
   }
   
   public void stopHook(){

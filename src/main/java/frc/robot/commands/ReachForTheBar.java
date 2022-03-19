@@ -11,10 +11,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class ReachForTheBar extends CommandBase {
     private final Climber m_climber;
+    private final LEDLights m_LEDLights;
 
     private enum commandState {
       Starting,
@@ -31,10 +33,10 @@ public class ReachForTheBar extends CommandBase {
 
 
 
-  public ReachForTheBar(Climber climber) {
+  public ReachForTheBar(Climber climber, LEDLights LEDLights) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
-    currentState = commandState.Starting;
+    m_LEDLights = LEDLights;
     addRequirements(m_climber);
   }
 
@@ -54,41 +56,26 @@ public class ReachForTheBar extends CommandBase {
       case Starting:
         // if any talon hooks are set, don't do anything!
         if (m_climber.LeftTalonHooked() || m_climber.RightTalonHooked()){
-          SmartDashboard.putString("ReachForBar", "Talons hooked");
           currentState = commandState.Finished;
         }
         else {
-          SmartDashboard.putString("ReachForBar", "Started");
           moveToNextState = true;
         }
         break;
 
       case StraightenArmAndLiftHook:
-        boolean armReady = false;
-        boolean hookReady = false;
-        SmartDashboard.putString("ReachForBar", "StraightenArmAndLiftHook");
-        // move arm to vertical an lift hook so it is above the first bar (at same time)
-        if (m_climber.moveArmToPosition(ClimberConstants.armFirstBarPos)){
-          armReady = true;
-        }
-
-        if (m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos)){
-          hookReady = true;
-        }
-     
-       moveToNextState = (hookReady && armReady);
+        m_LEDLights.lightsYellow();
+        // move arm to vertical and lift hook so it is above the first bar (at same time)
+        boolean armReady = m_climber.moveArmToPosition(ClimberConstants.armFirstBarPos);
+        boolean hookReady = m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos, true);   
+        moveToNextState = (hookReady && armReady);
        break;
         
       case Finished:
-          // m_climber.stopArm();
-          // m_climber.stopHook();
-          //SmartDashboard.putString("ReachForBar", "Finished");
-          break;
+        m_LEDLights.lightsGreen();
+      break;
 
       default:
-        // m_climber.stopArm();
-        // m_climber.stopHook();
-       // SmartDashboard.putString("ReachForBar", "Default");
     }
 
     // move to next state?
