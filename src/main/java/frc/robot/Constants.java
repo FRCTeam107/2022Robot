@@ -34,7 +34,7 @@ public final class Constants {
                 public static final int DRIVE_Y_AXIS = 4;
                 public static final int DRIVE_Z_AXIS = 0;
 
-                public static final int ACTIVATE_LIMELIGHT = 2;
+                public static final int ACTIVATE_LIMELIGHT = 1;
                 public static final int CLIMBER_MANUAL = 4;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;

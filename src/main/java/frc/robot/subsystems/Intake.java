@@ -30,22 +30,24 @@ public class Intake extends SubsystemBase {
   private final WPI_TalonSRX m_IntakeArm;
 
   private boolean intakeExtended = false;
-  private double m_CurrentSpeed;
+  private double m_Intake_ArmSpeed;
+  private double m_IntakeSpeed;
 
   //private DataRecorder m_dataRecorder;
   
   public static final class IntakeArmConstants {
     //TODO run arm motor to extended position, find right position
-    public static final double armRetractedPos = 0;
-    public static final double armExtendedPos = -610000;
+    public static final double armStartingPos = 0;
+    public static final double armRetractPos = 1000;
+    public static final double armExtendedPos = -52000;
     
     // intake arm PID values
-    public static final double kP = 0.04; 
-    public static final double kI = 0.0002;
+    public static final double kP =2; // 0.4; //0.04; 
+    public static final double kI = 0; //0.0002;
     public static final double kD = 0.0; 
-    public static final double kIz = 8000; 
-    public static final double kFF = 0;//.000015; 
-    public static final double kMaxOutput = 0.1; // 0.3; 
+    public static final double kIz = 0; //8000; 
+    public static final double kFF = 8; //0.1;// 0;//.000015; 
+    public static final double kMaxOutput = 0.2; // 0.3; 
     // public static final double kMinOutput = -1;
     // public static final double maxRPM = 5700;  
 }
@@ -84,13 +86,13 @@ public class Intake extends SubsystemBase {
     double junk = SmartDashboard.getNumber("intakeSpeed", 25000);
     SmartDashboard.putNumber("intakeSpeed", junk);
 
-    m_CurrentSpeed = 0;
+    m_IntakeSpeed = 0;
    
     m_IntakeArm = new WPI_TalonSRX(Motors.INTAKE_ARM);
     m_IntakeArm.configFactoryDefault();
     m_IntakeArm.setInverted(false);
     m_IntakeArm.setNeutralMode(NeutralMode.Brake);
-    m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armRetractedPos);
+    m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armStartingPos);
     // PID values for INTAKE_ARM
     m_IntakeArm.config_kP(0, IntakeArmConstants.kP);
     m_IntakeArm.config_kI(0, IntakeArmConstants.kI);
@@ -99,8 +101,6 @@ public class Intake extends SubsystemBase {
     m_IntakeArm.config_kF(0, IntakeArmConstants.kFF);
     m_IntakeArm.configClosedLoopPeakOutput(0, IntakeArmConstants.kMaxOutput);
 
-
-    m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armRetractedPos);
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
@@ -108,6 +108,7 @@ public class Intake extends SubsystemBase {
     
    // m_dataRecorder = null;
     intakeExtended = false;
+    m_Intake_ArmSpeed = 0;
   }
 
   // public void setDataRecorder(DataRecorder _dataRecorder){
@@ -124,10 +125,10 @@ public class Intake extends SubsystemBase {
 
     // runMotor(m_CurrentSpeed);
         //m_IntakeMotor.set(ControlMode.PercentOutput, m_CurrentSpeed);
-    m_IntakeMotor.set(ControlMode.Velocity, m_CurrentSpeed);
+    m_IntakeMotor.set(ControlMode.Velocity, m_IntakeSpeed);
 
     //NetworkTableInstance.getDefault().getTable("dataRecorder").
-    SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeMotorSpeed, m_CurrentSpeed);
+    SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeMotorSpeed, m_IntakeSpeed);
     if (intakeExtended) {
       SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 1.0);
     }
@@ -137,16 +138,33 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("dataRecorder.extended", intakeExtended);
 
 
-//SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
     // if upper or lower limit switch is hit, then reset encoder position to upper or lower
     if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
-      m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armRetractedPos);
-      if (!intakeExtended) { stopArm(); }
+      m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armStartingPos);
     }
-    else if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed()){
-      m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
-      if (intakeExtended) { stopArm(); }
+    
+    if (intakeExtended){
+      if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed()){
+        m_Intake_ArmSpeed = 0;
+        stopArm();
+      }
+      // else {
+      //   m_IntakeArm.set(ControlMode.PercentOutput, -IntakeArmConstants.kMaxOutput);
+      // }
     }
+    else {
+      if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
+      //   m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
+        stopArm();
+        m_Intake_ArmSpeed = 0;
+      }
+      // else {
+      //   m_IntakeArm.set(ControlMode.PercentOutput, IntakeArmConstants.kMaxOutput);
+      // }
+    }
+    m_IntakeArm.set(ControlMode.PercentOutput, m_Intake_ArmSpeed);  
+  
   }
   // public void runMotor(double speed){
   //   //m_IntakeMotor.set(ControlMode.PercentOutput, speed);
@@ -155,9 +173,9 @@ public class Intake extends SubsystemBase {
 public void extendArm(){
   // m_IntakeArm.set(ControlMode.PercentOutput, 1);
   SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 1.0);
-  m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
+  //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
   intakeExtended = true;
-
+  m_Intake_ArmSpeed = -0.20;// -IntakeArmConstants.kMaxOutput;
   // if (m_dataRecorder != null) {
   //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)1.00);
   // }
@@ -167,8 +185,9 @@ public void retractArm(){
   //m_IntakeArm.set(ControlMode.PercentOutput, -1);
   SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 0.0);
 
-  m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractedPos);
+  //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractPos);
   intakeExtended = false;
+  m_Intake_ArmSpeed = 0.30;// IntakeArmConstants.kMaxOutput;
   
   // if (m_dataRecorder != null) {
   //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)0.00);
@@ -178,10 +197,11 @@ public void retractArm(){
 
 public void stopArm() {
   m_IntakeArm.set(ControlMode.PercentOutput, 0);
+  m_Intake_ArmSpeed = 0;
 }
 
 public void runIntake(double speed){
-    m_CurrentSpeed = speed;
+    m_IntakeSpeed = speed;
   }
 
   public void HeimlichManeuver() {
