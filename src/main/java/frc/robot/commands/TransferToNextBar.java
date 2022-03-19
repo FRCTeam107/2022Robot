@@ -19,8 +19,9 @@ public class TransferToNextBar extends CommandBase {
 
     private enum commandState {
       Starting,
-      RaiseHookPunchNextBar,
-      BendArmToPunchNextBar,
+      PunchTheNextBar,
+      // RaiseHookPunchNextBar,
+      // BendArmToPunchNextBar,
       WaitForSwingToStop,
       LowerHookBelowBar,
       BendArmBackToNextBar,
@@ -63,31 +64,43 @@ public class TransferToNextBar extends CommandBase {
         // if both talon hooks are NOT set, don't do anything!
         if (m_climber.AllTalonsHooked()){
           moveToNextState = true;
+          countDown = 100;  // require next state to last at least 2 second
         }
         else {
           moveToNextState = m_forceToRun.getAsBoolean();
         }
-        // else (if m_btnForceReady.is
-        //   moveToNextState = true;
-        // }
-        // else {
-        //   currentState = commandState.Finished;
-        // }
+
         break;
       
-      case RaiseHookPunchNextBar:
+      case PunchTheNextBar:
         // extend the hook past the current bar and to punch next one
-        if (m_climber.moveHookToPosition(ClimberConstants.hookToPunchNextBar, true)){
-          moveToNextState = true;
-        }
-        break;
+        boolean hookReady = m_climber.moveHookToPosition(ClimberConstants.hookToPunchNextBar, true);
+        boolean armReady =  m_climber.moveArmToPosition(ClimberConstants.armToPunchNextBar);
+        moveToNextState = hookReady && armReady;
 
-      case BendArmToPunchNextBar:
-        if (m_climber.moveArmToPosition(ClimberConstants.armToPunchNextBar)){
-          countDown = 100; // 20ms loop * countdown timer
-          moveToNextState = true;
+        // countDown --;
+        if (!moveToNextState){
+          moveToNextState = (countDown<0 && m_forceToRun.getAsBoolean());
+        }
+
+        if (moveToNextState) {
+          countDown = 100; // 20ms loop * countdown timer;
         }
         break;
+      
+      // case RaiseHookPunchNextBar:
+      //   // extend the hook past the current bar and to punch next one
+      //   if (m_climber.moveHookToPosition(ClimberConstants.hookToPunchNextBar, true)){
+      //     moveToNextState = true;
+      //   }
+      //   break;
+
+      // case BendArmToPunchNextBar:
+      //   if (m_climber.moveArmToPosition(ClimberConstants.armToPunchNextBar)){
+      //     countDown = 100; // 20ms loop * countdown timer
+      //     moveToNextState = true;
+      //   }
+      //   break;
 
       case WaitForSwingToStop:
         countDown --;
