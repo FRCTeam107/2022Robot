@@ -11,10 +11,13 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class TransferToNextBar extends CommandBase {
     private final Climber m_climber;
+    private final LEDLights m_LEDLights;
+
     private final BooleanSupplier m_forceToRun;
 
     private enum commandState {
@@ -28,6 +31,7 @@ public class TransferToNextBar extends CommandBase {
       ReachHookPastNextBar,
       RetractArmToTouchBar,
       PullHookToReleaseTalons,
+      BufferSwingOut,
       Finished;
 
       public commandState getNext() {
@@ -39,9 +43,10 @@ public class TransferToNextBar extends CommandBase {
     private static commandState currentState;
     private static int countDown;
 
-  public TransferToNextBar(Climber climber, BooleanSupplier _forceToRun) {
+  public TransferToNextBar(Climber climber, LEDLights LEDLights, BooleanSupplier _forceToRun) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
+    m_LEDLights = LEDLights;
     m_forceToRun = _forceToRun;
 
     currentState = commandState.Starting;
@@ -64,7 +69,6 @@ public class TransferToNextBar extends CommandBase {
         // if both talon hooks are NOT set, don't do anything!
         if (m_climber.AllTalonsHooked()){
           moveToNextState = true;
-          countDown = 100;  // require next state to last at least 2 second
         }
         else {
           moveToNextState = m_forceToRun.getAsBoolean();
@@ -74,6 +78,8 @@ public class TransferToNextBar extends CommandBase {
       
       case PunchTheNextBar:
         // extend the hook past the current bar and to punch next one
+        m_LEDLights.lightsYellow();
+        
         boolean hookReady = m_climber.moveHookToPosition(ClimberConstants.hookToPunchNextBar, true);
         boolean armReady =  m_climber.moveArmToPosition(ClimberConstants.armToPunchNextBar);
         moveToNextState = hookReady && armReady;
@@ -103,12 +109,14 @@ public class TransferToNextBar extends CommandBase {
       //   break;
 
       case WaitForSwingToStop:
+        m_LEDLights.lightsYellow();
         countDown --;
         moveToNextState = (countDown<=0);
         break;
 
       case LowerHookBelowBar:
         // extend the hook past the current bar and to punch next one
+        m_LEDLights.lightsYellow();
         if (m_climber.moveHookToPosition(ClimberConstants.hookBelowNextBar, true)){
           moveToNextState = true;
         }
@@ -116,6 +124,8 @@ public class TransferToNextBar extends CommandBase {
       
       case BendArmBackToNextBar:
         // move arm to reach backwards slightly past the next bar
+        m_LEDLights.lightsYellow();
+
         if (m_climber.moveArmToPosition(ClimberConstants.armReachPastNextBar)){
           moveToNextState = true;
         }
@@ -123,6 +133,8 @@ public class TransferToNextBar extends CommandBase {
         
       case ReachHookPastNextBar:
         // extend the hook past the next bar
+        m_LEDLights.lightsYellow();
+
         if (m_climber.moveHookToPosition(ClimberConstants.hookPastNextBar, true)){
           moveToNextState = true;
         }
@@ -130,6 +142,8 @@ public class TransferToNextBar extends CommandBase {
 
       case RetractArmToTouchBar:
         // now bring arm forward to make arm touch the bar
+        m_LEDLights.lightsYellow();
+
         if (m_climber.moveArmToPosition(ClimberConstants.armHugNextBar)) {
           moveToNextState = true;
         }
@@ -137,12 +151,28 @@ public class TransferToNextBar extends CommandBase {
 
       case PullHookToReleaseTalons:
         // pull the hook far enough to release the talons hooks
+        m_LEDLights.lightsYellow();
+
         if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
           moveToNextState = true;
         }
         break;
+
+      case BufferSwingOut:
+        moveToNextState = true;
+        break;
+        // armReady = m_climber.moveArmToPosition(ClimberConstants.armBufferSwingPos);
+        // hookReady = m_climber.moveHookToPosition(ClimberConstants.hookBufferSwing);
+        // moveToNextState = armReady && hookReady;
+        // break;
      
       case Finished:
+        if (m_climber.LeftTalonHooked() || m_climber.RightTalonHooked()){
+          m_LEDLights.lightsPurple();
+        }
+        else {
+          m_LEDLights.lightsGreen();
+        }
         break;
 
       default:
