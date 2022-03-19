@@ -114,9 +114,15 @@ public class RobotContainer {
 
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
-    m_chooser.addOption("Jim.csv", new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"));
     m_chooser.addOption("2-Ball RIGHT", TwoBall_Right);
     m_chooser.addOption("2-Ball CENTER", TwoBall_Center);
+    //m_chooser.addOption("2-Ball LEFT", TwoBall_Left);
+    //m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
+    //m_chooser.addOption("5-Ball RIGHT", FourBall_Right);
+    //m_chooser.addOption("5-Ball RIGHT", FiveBall_Right);
+
+
+
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
     SmartDashboard.putData("Auto choices", m_chooser);
   }
