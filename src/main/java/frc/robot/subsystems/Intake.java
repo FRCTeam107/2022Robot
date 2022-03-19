@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase {
     public static final double kD = 0.0; 
     public static final double kIz = 8000; 
     public static final double kFF = 0;//.000015; 
-    // public static final double kMaxOutput = 1; 
+    public static final double kMaxOutput = 0.1; // 0.3; 
     // public static final double kMinOutput = -1;
     // public static final double maxRPM = 5700;  
 }
@@ -97,6 +97,7 @@ public class Intake extends SubsystemBase {
     m_IntakeArm.config_kD(0, IntakeArmConstants.kD);
     m_IntakeArm.config_IntegralZone(0, IntakeArmConstants.kIz);
     m_IntakeArm.config_kF(0, IntakeArmConstants.kFF);
+    m_IntakeArm.configClosedLoopPeakOutput(0, IntakeArmConstants.kMaxOutput);
 
 
     m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armRetractedPos);
