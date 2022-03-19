@@ -8,7 +8,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -17,10 +16,8 @@ import frc.robot.Constants.DIOPorts;
 import frc.robot.Constants.Motors;
 //import frc.robot.Constants.Solenoids;
 
-import java.util.concurrent.CyclicBarrier;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
+//import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -35,13 +32,13 @@ public static final class ClimberConstants {
     // values for actual robot climber arm positions
     // starting position
     public static final double armsStartingPos = 0; // starting position
-    public static final double armMaxReach = 145000;
+    public static final double armMaxReach = 118000; // 145000;
     public static final double hookStartingPos = 0;
     private static final double hookMaxReachPos = -406000; // 421000; 
 
 
     // reach for the bar
-    public static final double armFirstBarPos = 0; // reach up to bar
+    public static final double armFirstBarPos = armsStartingPos - 7000; // reach up to bar
     public static final double hookAboveFirstBarPos = -219000; // -234000;
 
     
@@ -55,16 +52,22 @@ public static final class ClimberConstants {
     public static final double hookTransferToTalonsPos = -14800; //-29800;
 
     // steps to get to next bar:
-    public static final double hookToPunchNextBar = -345000;
-    public static final double armToPunchNextBar = 118000;
+    public static final double armToPunchNextBar = 97800; //118000;
+    public static final double hookToPunchNextBar = -320000;
 
     public static final double hookBelowNextBar = -314000;
-    public static final double armReachPastNextBar = 136000;
+    public static final double armReachPastNextBar = 116000; //140000;
     // note: position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPastNextBar = (hookMaxReachPos - 1000);
+    public static final double hookPastNextBar = (hookMaxReachPos - 2000);
 
-    public static final double armHugNextBar = 120000; 
-    public static final double hookPullTalonsOffBar = -100000;
+    public static final double armHugNextBar = 96000; // 120000;
+    public static final double hookPullTalonsOffBar = -300000;
+
+
+// try buffering swing out of system
+    public static final double armBufferSwingPos = 20000;
+    public static final double hookBufferSwing = -100000;
+
     //public static final double hookReachPastNextBarPos = -402000;
 
 
@@ -76,8 +79,8 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.7; 
-    public static final double kMaxOutput_Fast = 1;// 0.8; 
+    public static final double kMaxOutput_Slow = 0.5; 
+    public static final double kMaxOutput_Fast = 0.7;// 0.8; 
   }
 
 public static final class ClimberArmConstants { 
