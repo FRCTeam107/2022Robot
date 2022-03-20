@@ -107,9 +107,10 @@ public class RobotContainer {
       );
 
     Command TwoBall_Center = new SequentialCommandGroup(
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"),
-        new SetRobotOrientationOnField(m_Drivetrain, -40)   
-        );
+      new SetRobotOrientationOnField(m_Drivetrain, 0),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
+      new SetRobotOrientationOnField(m_Drivetrain, -40)   
+      );
   
 
     m_chooser = new SendableChooser<>();
