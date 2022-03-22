@@ -102,8 +102,9 @@ public class RobotContainer {
     // Add commands to the autonomous command chooser
 
     Command TwoBall_Right = new SequentialCommandGroup(
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Jim.csv"),
-      new SetRobotOrientationOnField(m_Drivetrain, -80)   
+      new SetRobotOrientationOnField(m_Drivetrain, 0),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
+      new SetRobotOrientationOnField(m_Drivetrain, -90)   
       );
 
     Command TwoBall_Center = new SequentialCommandGroup(
@@ -112,14 +113,48 @@ public class RobotContainer {
       new SetRobotOrientationOnField(m_Drivetrain, -40)   
       );
   
+     Command ThreeBall_Right = new SequentialCommandGroup(
+        new SetRobotOrientationOnField(m_Drivetrain, 91),
+        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3-BallD.csv")   
+        );
 
+     Command FourBall_Right = new SequentialCommandGroup(
+          new SetRobotOrientationOnField(m_Drivetrain, 91),
+          new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "4-BallD.csv")   
+          );
+
+     Command Kraken5 = new SequentialCommandGroup(
+          new SetRobotOrientationOnField(m_Drivetrain, 100),
+          new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Kraken5.csv")   
+          );
+
+     Command Kraken7 = new SequentialCommandGroup(
+            new SetRobotOrientationOnField(m_Drivetrain, 100),
+            new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Kraken7.csv")   
+            );
+
+    Command Kraken9 = new SequentialCommandGroup(
+              new SetRobotOrientationOnField(m_Drivetrain, 100),
+              new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Kraken9.csv")   
+              );
+    
+    Command Kraken13 = new SequentialCommandGroup(
+                new SetRobotOrientationOnField(m_Drivetrain, 83),
+                new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Kraken13.csv")   
+                );
+      
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
     m_chooser.addOption("2-Ball RIGHT", TwoBall_Right);
     m_chooser.addOption("2-Ball CENTER", TwoBall_Center);
     //m_chooser.addOption("2-Ball LEFT", TwoBall_Left);
-    //m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
-    //m_chooser.addOption("5-Ball RIGHT", FourBall_Right);
+    m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
+    m_chooser.addOption("4-Ball RIGHT", FourBall_Right);
+
+    m_chooser.addOption("Kraken5", Kraken5);
+    m_chooser.addOption("Kraken7", Kraken7);
+    m_chooser.addOption("Kraken9", Kraken9);
+    m_chooser.addOption("Kraken13", Kraken13);
     //m_chooser.addOption("5-Ball RIGHT", FiveBall_Right);
 
 

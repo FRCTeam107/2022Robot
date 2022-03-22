@@ -53,7 +53,7 @@ public static final class ClimberConstants {
 
     // steps to get to next bar:
     public static final double armToPunchNextBar = 97800; //118000;
-    public static final double hookToPunchNextBar = -305000;
+    public static final double hookToPunchNextBar = -330000;
 
     public static final double hookBelowNextBar = -270000;
     public static final double armReachPastNextBar = armMaxReach; //140000;
@@ -191,17 +191,27 @@ public static final class ClimberArmConstants {
     SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
 
    // if upper or lower limit switch is hit, then reset encoder position to upper or lower
-    
+
+   // Stopped resetting it here, only doing in in RunClimberManually
+
    //if (armHitForwardLimit()){
     //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
     // }
-    if (armHitBackLimit()){
-      m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
-    }
+    // if (armHitBackLimit()){
+    //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+    // }
 
-    if (hookHitForwardLimit()){
-      m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
-    }
+    // if (hookHitForwardLimit()){
+    //   m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+    // }
+  }
+
+  public void setArmSensorPosition(double armPosition){
+    m_climberArm.setSelectedSensorPosition(armPosition);
+  }
+
+  public void setHookSensorPosition(double hookPosition){
+    m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
   }
   
   public boolean AllTalonsHooked(){

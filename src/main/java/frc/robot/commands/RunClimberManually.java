@@ -7,6 +7,7 @@ import javax.lang.model.util.ElementScanner6;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class RunClimberManually extends CommandBase {
 
@@ -28,6 +29,15 @@ public class RunClimberManually extends CommandBase {
     int hookMove = m_Joystick.getPOV();
     double armMove = m_Joystick.getY();
 
+
+    if (m_Climber.armHitBackLimit()){
+      m_Climber.setArmSensorPosition(ClimberConstants.armsStartingPos);
+    }
+
+    if (m_Climber.hookHitForwardLimit()){
+      m_Climber.setHookSensorPosition(ClimberConstants.armsStartingPos);
+    }
+    
     if (hookMove==0 || hookMove==45 || hookMove==315){
       m_Climber.extendHook();
     }
