@@ -20,15 +20,18 @@ public class Shoot extends CommandBase {
    */
   private final Shooter m_shoot;
   private final BooleanSupplier m_forceShot;
+  private final BooleanSupplier m_turboShot;
   
   private double iTop, iBottom;
  
-  public Shoot(Shooter _shooter, BooleanSupplier _forceShot) {
+  public Shoot(Shooter _shooter, BooleanSupplier _forceShot, BooleanSupplier _turboShot) {
     m_shoot = _shooter;
     m_forceShot = _forceShot;
+    m_turboShot = _turboShot;
 
-    iTop = SmartDashboard.getNumber("i Top", 5000);
-    iBottom = SmartDashboard.getNumber("i Bottom", 7000);
+
+    iTop = SmartDashboard.getNumber("i Top", 7500);
+    iBottom = SmartDashboard.getNumber("i Bottom", 7500);
     SmartDashboard.putNumber("i Top", iTop);
     SmartDashboard.putNumber("i Bottom", iBottom);
 
@@ -64,7 +67,12 @@ public class Shoot extends CommandBase {
     //   speedBottom = SmartDashboard.getNumber("i Bottom", iBottom);
     // }
 
-    m_shoot.runMotor(speedBottom ,speedTop);
+    if (m_turboShot.getAsBoolean()){
+      m_shoot.runMotor(9000 ,9000);
+    }
+    else {
+      m_shoot.runMotor(speedBottom ,speedTop);
+    }
     // SmartDashboard.putNumber("mShoot Top", speedTop);
     // SmartDashboard.putNumber("mShoot Bot", speedBottom);
    // m_turret.setLifterPosition(liftPosition);

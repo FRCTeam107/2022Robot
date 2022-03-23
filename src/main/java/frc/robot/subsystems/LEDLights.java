@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class LEDLights extends SubsystemBase {
@@ -26,29 +27,29 @@ public class LEDLights extends SubsystemBase {
   @Override
   public void periodic() {
     countdownTimer --;
-
+SmartDashboard.putNumber("LEDTimout", countdownTimer);
     if (DriverStation.isAutonomous()){
        m_LEDLights.set(0.69); //Yellow
       return;
     }
 
-    if (countdownTimer == 0){
-      if (allianceLEDColor==0.99){
-        switch (DriverStation.getAlliance()){
+    if (countdownTimer <= 0){
+      switch (DriverStation.getAlliance()){
         case Blue :
           allianceLEDColor = -0.15;
+          countdownTimer = 500;
           break;
         case Red:
           allianceLEDColor = -0.17;
+          countdownTimer = 500;
           break;   
         default:
           countdownTimer = 50;
           break;
-        }
-        m_LEDLights.set(allianceLEDColor);
       }
+      m_LEDLights.set(allianceLEDColor);
     }
-    
+        
     //SmartDashboard.putNumber("Ultra Inches", UltraInches());
     //m_UltraColor = SmartDashboard.getNumber("Ultra Inches", UltraInches());
 

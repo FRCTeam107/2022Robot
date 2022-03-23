@@ -70,10 +70,13 @@ public class TransferToNextBar extends CommandBase {
         if (m_climber.AllTalonsHooked()){
           moveToNextState = true;
         }
-        else {
-          moveToNextState = m_forceToRun.getAsBoolean();
+        else if (m_forceToRun.getAsBoolean()){
+          moveToNextState = true;
         }
-
+        else {
+          m_LEDLights.lightsPurple();
+        }
+        
         break;
       
       case PunchTheNextBar:

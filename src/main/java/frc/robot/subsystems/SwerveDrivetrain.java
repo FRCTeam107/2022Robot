@@ -101,14 +101,12 @@ public class SwerveDrivetrain extends SubsystemBase {
           : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.kMaxSpeedMetersPerSecond);
     //SwerveDriveKinematics.normalizeWheelSpeeds(states, kMaxSpeed);
+    SmartDashboard.putNumber("gyro Angle", m_gyro.getAngle());
     for (int i = 0; i < states.length; i++) {
       SwerveModuleMK3 module = modules[i];
       SwerveModuleState state = states[i];
-      SmartDashboard.putNumber(String.valueOf(i), module.getRawAngle());
-     // SmartDashboard.putNumber("speed "+String.valueOf(i), module.get)
       //below is a line to comment out from step 5
       module.setDesiredState(state);
-      SmartDashboard.putNumber("gyro Angle", m_gyro.getAngle());
     }
   }
   

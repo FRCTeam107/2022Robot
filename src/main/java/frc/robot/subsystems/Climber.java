@@ -45,7 +45,7 @@ public static final class ClimberConstants {
     // do a pull-up
     public static final double armPullupPos = 0; // keep arm stiff during pullup
     // note: pullup position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPullupPos = (armsStartingPos + 10000); // position to pullup and get talons to "hook"
+    public static final double hookPullupPos = (armsStartingPos + 20000); // position to pullup and get talons to "hook"
 
     // release onto talons
     public static final double armTransferOntoTalonsPos = 15000;
@@ -53,15 +53,15 @@ public static final class ClimberConstants {
 
     // steps to get to next bar:
     public static final double armToPunchNextBar = 97800; //118000;
-    public static final double hookToPunchNextBar = -320000;
+    public static final double hookToPunchNextBar = -330000;
 
-    public static final double hookBelowNextBar = -314000;
-    public static final double armReachPastNextBar = 116000; //140000;
+    public static final double hookBelowNextBar = -270000;
+    public static final double armReachPastNextBar = armMaxReach; //140000;
     // note: position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPastNextBar = (hookMaxReachPos - 2000);
+    public static final double hookPastNextBar = -379000;// (hookMaxReachPos - 8000);
 
-    public static final double armHugNextBar = 96000; // 120000;
-    public static final double hookPullTalonsOffBar = -300000;
+    public static final double armHugNextBar = 91000; // 120000;
+    public static final double hookPullTalonsOffBar = -200000;
 
 
 // try buffering swing out of system
@@ -79,8 +79,8 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.5; 
-    public static final double kMaxOutput_Fast = 0.7;// 0.8; 
+    public static final double kMaxOutput_Slow = 0.7; 
+    public static final double kMaxOutput_Fast = 0.82;// 0.8; 
   }
 
 public static final class ClimberArmConstants { 
@@ -191,17 +191,27 @@ public static final class ClimberArmConstants {
     SmartDashboard.putBoolean("climbHookRevLimit", hookHitBackLimit());
 
    // if upper or lower limit switch is hit, then reset encoder position to upper or lower
-    
+
+   // Stopped resetting it here, only doing in in RunClimberManually
+
    //if (armHitForwardLimit()){
     //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armMaxReach);
     // }
-    if (armHitBackLimit()){
-      m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
-    }
+    // if (armHitBackLimit()){
+    //   m_climberArm.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+    // }
 
-    if (hookHitForwardLimit()){
-      m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
-    }
+    // if (hookHitForwardLimit()){
+    //   m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
+    // }
+  }
+
+  public void setArmSensorPosition(double armPosition){
+    m_climberArm.setSelectedSensorPosition(armPosition);
+  }
+
+  public void setHookSensorPosition(double hookPosition){
+    m_climber.setSelectedSensorPosition(ClimberConstants.armsStartingPos);
   }
   
   public boolean AllTalonsHooked(){
