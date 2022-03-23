@@ -53,8 +53,8 @@ public final class Constants {
 
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
-                 public static final int CAMERA_TOGGLE  = 2;
-
+                static final int TURBO_SHOT =2;
+                public static final int CAMERA_TOGGLE = 3;
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 

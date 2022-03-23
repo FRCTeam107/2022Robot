@@ -56,9 +56,10 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
     switch (currentState){
       case Starting:
-          // if both talon hooks are set, then don't do anything
-          if (m_climber.AllTalonsHooked()) {
-            currentState=commandState.Finished;
+          // if either talon hooks are set, then don't do anything
+          if (m_climber.LeftTalonHooked() || m_climber.RightTalonHooked()) {
+            //currentState=commandState.Finished;
+            m_LEDLights.lightsPurple();
           }
           else {
             moveToNextState=true;

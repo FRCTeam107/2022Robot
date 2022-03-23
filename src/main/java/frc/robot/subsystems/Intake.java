@@ -8,15 +8,11 @@
 package frc.robot.subsystems;
 
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Motors;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 // import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -83,7 +79,7 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 500);
     m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 500);
 
-    double junk = SmartDashboard.getNumber("intakeSpeed", 25000);
+    double junk = SmartDashboard.getNumber("intakeSpeed", 30000);
     SmartDashboard.putNumber("intakeSpeed", junk);
 
     m_IntakeSpeed = 0;
@@ -104,8 +100,9 @@ public class Intake extends SubsystemBase {
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
-    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
-    
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 500);
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 500);
+
    // m_dataRecorder = null;
     intakeExtended = false;
     m_Intake_ArmSpeed = 0;

@@ -58,7 +58,7 @@ public static final class ClimberConstants {
     public static final double hookBelowNextBar = -270000;
     public static final double armReachPastNextBar = armMaxReach; //140000;
     // note: position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPastNextBar = (hookMaxReachPos - 8000);
+    public static final double hookPastNextBar = -379000;// (hookMaxReachPos - 8000);
 
     public static final double armHugNextBar = 91000; // 120000;
     public static final double hookPullTalonsOffBar = -200000;
