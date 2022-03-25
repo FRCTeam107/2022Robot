@@ -58,8 +58,8 @@ public final class Constants {
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 
-                static final int PICKUP_DOWN = 15;
-                static final int PICKUP_UP = 12;
+                static final int PICKUP_DOWN = 12;
+                static final int PICKUP_UP = 15;
                 public static final int PICKUP_EJECT = 14;
                 static final int PICKUP_INTAKE = 16;
 
@@ -163,7 +163,7 @@ public final class Constants {
 
   //these are limits you can change!!!
                // public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
-                public static final double kMaxAngularSpeed = Math.PI / 2; // 1/2 rotation per second
+                public static final double kMaxAngularSpeed = Math.PI;// / 2; // 1/2 rotation per second
               // public static double feildCalibration = 0;
                 
                     // These characterization values MUST be determined either experimentally or theoretically

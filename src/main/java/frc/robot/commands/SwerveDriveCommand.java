@@ -49,17 +49,15 @@ public class SwerveDriveCommand extends CommandBase {
       Y = 0;
     }
 
-    double Z;
-    if (m_lLimelight.Havetarget() ){
+    double Z = m_FlightController.getZ();
+    if (Math.abs(Z)<0.05){
+      Z = 0;
+    }
+
+    if (Z==0 && m_lLimelight.Havetarget() ){
       Z =  -m_lLimelight.TX() / 27 * 1.3;
       if (Z<-1){Z=-1;}
       else if(Z>1){Z=1;}
-    }
-    else {
-      Z = m_FlightController.getZ();
-      if (Math.abs(Z)<0.05){
-        Z = 0;
-      }  
     }
 
     final var xSpeed =
