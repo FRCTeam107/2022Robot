@@ -111,9 +111,9 @@ public class RobotContainer {
       );
   
     Command TwoBall_Left = new SequentialCommandGroup(
-      new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
-      new SetRobotOrientationOnField(m_Drivetrain, -130)   
+      new SetRobotOrientationOnField(m_Drivetrain, -0.02),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "twoball-c.csv"),
+      new SetRobotOrientationOnField(m_Drivetrain, -165)   
       );
         
     //  Command ThreeBall_Right = new SequentialCommandGroup(
