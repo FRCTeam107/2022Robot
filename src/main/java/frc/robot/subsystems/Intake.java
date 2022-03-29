@@ -172,6 +172,7 @@ public void extendArm(){
   SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 1.0);
   //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armExtendedPos);
   intakeExtended = true;
+  m_IntakeMotor.set(ControlMode.PercentOutput, -0.3);
   m_Intake_ArmSpeed = -0.20;// -IntakeArmConstants.kMaxOutput;
   // if (m_dataRecorder != null) {
   //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)1.00);

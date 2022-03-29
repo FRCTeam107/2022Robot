@@ -78,7 +78,7 @@ public class Shoot extends CommandBase {
    // m_turret.setLifterPosition(liftPosition);
 
 
-    if (m_forceShot.getAsBoolean() || (m_shoot.isReady()) ) { //&& m_turret.isLiftReady()) ) { //&& m_Limelight.isReady()) ){
+    if (m_forceShot.getAsBoolean()){ //} || (m_shoot.isReady()) ) { //&& m_turret.isLiftReady()) ) { //&& m_Limelight.isReady()) ){
      m_shoot.runKicker(0.3);
      // m_Hopper.runMotor(0.41);
 

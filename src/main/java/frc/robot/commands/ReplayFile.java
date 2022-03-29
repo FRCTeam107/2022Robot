@@ -33,7 +33,6 @@ public class ReplayFile extends CommandBase {
   private int replayPoint;
   private boolean intakeArmDown = false;
 
-  private StringBuilder msg = new StringBuilder("");
  
   public ReplayFile(SwerveDrivetrain _drivetrain, Intake _intake, Shooter _shooter, DataRecorder _datarecoder, String filename) {
     m_drivetrain = _drivetrain;
@@ -75,9 +74,20 @@ public class ReplayFile extends CommandBase {
       return;
     }
 
+    // check gyro angle with desired angle and make adjustments as needed
+    double Z_Rotate = replayRow[datapoint.Drive_Z];
+    double currentGyrAngle = m_drivetrain.getAngle();
+    double desiredGyroAngle = replayRow[datapoint.GyroAngle];
+    // negative Z turns clockwise (increasing gyro angle)
+    double adjustZ = (desiredGyroAngle - currentGyrAngle) * -0.025; // approx value from limelight aiming
+    if (adjustZ < -0.2) { adjustZ = -0.2;}
+    if (adjustZ > 0.2) { adjustZ = 0.2;}
+    Z_Rotate += adjustZ;
+
+
     m_drivetrain.drive(replayRow[datapoint.Drive_X], 
           replayRow[datapoint.Drive_Y],
-          replayRow[datapoint.Drive_Z], 
+          Z_Rotate, 
           true);
 
     // move intake arm up or down
