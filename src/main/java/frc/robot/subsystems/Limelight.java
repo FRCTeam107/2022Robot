@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight extends SubsystemBase {
 
-  private final double kRangeTx = 0.2;  // acceptable amount X can be off to hit the shot
+  private final double kRangeTx = 1.5;  // acceptable amount X can be off to hit the shot
   private final double kRangetY = 0.4;  // acceptable amount Y can be off to hit the shot
 
   private final NetworkTable table;

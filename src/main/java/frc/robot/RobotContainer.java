@@ -92,7 +92,7 @@ public class RobotContainer {
 
     m_DataRecorder = new DataRecorder();
    
-    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller, m_limelight));
+    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller, m_limelight, m_LEDLights));
     
     configureButtonBindings();
 
