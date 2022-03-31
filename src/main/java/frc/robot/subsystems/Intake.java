@@ -32,10 +32,10 @@ public class Intake extends SubsystemBase {
   //private DataRecorder m_dataRecorder;
   
   public static final class IntakeArmConstants {
-    //TODO run arm motor to extended position, find right position
+    //run arm motor to extended position, find right position
     public static final double armStartingPos = 0;
     public static final double armRetractPos = 1000;
-    public static final double armExtendedPos = -52000;
+    public static final double armExtendedPos = -67000;
     
     // intake arm PID values
     public static final double kP =2; // 0.4; //0.04; 
@@ -142,7 +142,8 @@ public class Intake extends SubsystemBase {
     }
     
     if (intakeExtended){
-      if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed()){
+      if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed() 
+          || m_IntakeArm.getSelectedSensorPosition() <= IntakeArmConstants.armExtendedPos){
         m_Intake_ArmSpeed = 0;
         stopArm();
       }
@@ -151,7 +152,8 @@ public class Intake extends SubsystemBase {
       // }
     }
     else {
-      if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
+      if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed() 
+        || m_IntakeArm.getSelectedSensorPosition() >= IntakeArmConstants.armRetractPos ){
       //   m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
         stopArm();
         m_Intake_ArmSpeed = 0;
