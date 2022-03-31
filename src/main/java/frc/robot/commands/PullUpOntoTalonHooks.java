@@ -34,7 +34,6 @@ public class PullUpOntoTalonHooks extends CommandBase {
     private static commandState currentState;
 
 
-
   public PullUpOntoTalonHooks(Climber climber, LEDLights LEDLights) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
