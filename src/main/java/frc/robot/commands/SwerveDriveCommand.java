@@ -44,16 +44,16 @@ public class SwerveDriveCommand extends CommandBase {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     double X = -m_FlightController.getX();
-    if (Math.abs(X)<0.05){
+    if (Math.abs(X)<0.07){
       X = 0;
     }
     double Y = m_FlightController.getY();
-    if (Math.abs(Y)<0.05){
+    if (Math.abs(Y)<0.07){
       Y = 0;
     }
 
     double Z = m_FlightController.getZ();
-    if (Math.abs(Z)<0.05){
+    if (Math.abs(Z)<0.07){
       Z = 0;
     }
 

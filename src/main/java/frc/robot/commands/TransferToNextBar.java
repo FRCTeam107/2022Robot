@@ -31,6 +31,7 @@ public class TransferToNextBar extends CommandBase {
       ReachHookPastNextBar,
       RetractArmToTouchBar,
       PullHookToReleaseTalons,
+      RetractArmForNextClimb,
       BufferSwingOut,
       Finished;
 
@@ -149,6 +150,12 @@ public class TransferToNextBar extends CommandBase {
         m_LEDLights.lightsYellow();
 
         if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
+          moveToNextState = true;
+        }
+        break;
+
+      case RetractArmForNextClimb:
+        if (m_climber.moveArmToPosition(ClimberConstants.armTransferOntoTalonsPos)) {
           moveToNextState = true;
         }
         break;
