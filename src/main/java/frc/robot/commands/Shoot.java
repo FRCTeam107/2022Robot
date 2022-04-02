@@ -12,6 +12,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 
 public class Shoot extends CommandBase {
@@ -21,14 +22,15 @@ public class Shoot extends CommandBase {
   private final Shooter m_shoot;
   private final BooleanSupplier m_forceShot;
   private final BooleanSupplier m_turboShot;
-  
+  private final Limelight m_Limelight;
+
   private double iTop, iBottom;
  
-  public Shoot(Shooter _shooter, BooleanSupplier _forceShot, BooleanSupplier _turboShot) {
+  public Shoot(Shooter _shooter, Limelight _limeLight, BooleanSupplier _forceShot, BooleanSupplier _turboShot) {
     m_shoot = _shooter;
     m_forceShot = _forceShot;
     m_turboShot = _turboShot;
-
+    m_Limelight = _limeLight;
 
     iTop = SmartDashboard.getNumber("i Top", 7500);
     iBottom = SmartDashboard.getNumber("i Bottom", 7500);
@@ -58,13 +60,19 @@ public class Shoot extends CommandBase {
 
 
     // if (m_Limelight.Havetarget()) {
-    //   // double m_tX = m_Limelight.tX();   // how far off, the 'X' value
-    //   // double m_tY = m_Limelight.tY();   //how far off, the 'Y' value
-    //   double m_tA = m_Limelight.avgTA();   //distance from target estimation
-    //   speedTop = m_tA * 3000;
-    //   speedBottom = m_tA * 4000;
-    //   speedTop = SmartDashboard.getNumber("i Top", iTop);
-    //   speedBottom = SmartDashboard.getNumber("i Bottom", iBottom);
+    // //   // double m_tX = m_Limelight.tX();   // how far off, the 'X' value
+    // //   // double m_tY = m_Limelight.tY();   //how far off, the 'Y' value
+    //   double tA = m_Limelight.TA();   //distance from target estimation
+    //   double adjustSpeed = 0;
+    //   if (tA < 0.234){
+    //     adjustSpeed = (0.234 - tA) * 3000;
+    //   }
+    //   else if (tA > 0.234){
+    //     adjustSpeed = (0.234 - tA) * 7800;
+    //   }
+    //   if (Math.abs(adjustSpeed) > 800){ adjustSpeed = Math.signum(adjustSpeed) * 800; }
+    //   speedBottom += adjustSpeed;
+    //   speedTop += adjustSpeed;
     // }
 
     if (m_turboShot.getAsBoolean()){
@@ -73,7 +81,7 @@ public class Shoot extends CommandBase {
     else {
       m_shoot.runMotor(speedBottom ,speedTop);
     }
-    // SmartDashboard.putNumber("mShoot Top", speedTop);
+   // SmartDashboard.putNumber("ShooterSppeed", speedTop);
     // SmartDashboard.putNumber("mShoot Bot", speedBottom);
    // m_turret.setLifterPosition(liftPosition);
 
