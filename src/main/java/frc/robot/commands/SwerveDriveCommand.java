@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Limelight;
@@ -57,11 +58,14 @@ public class SwerveDriveCommand extends CommandBase {
       Z = 0;
     }
 
-    // if (Z==0 && m_lLimelight.Havetarget() ){
-    //   Z =  -m_lLimelight.TX() / 27 * 1.3;
-    //   if (Z<-1){Z=-1;}
-    //   else if(Z>1){Z=1;}
-    // }
+    // if driver is pressing aim by limelight button, then use limelight if possible
+    if (m_FlightController.getRawButton(Constants.FlightController.AIM_BY_LIMELIGHT)){
+      if (m_Limelight.Havetarget() ){
+        Z =  -m_Limelight.TX() / 27 * 1.3 * 2;
+        if (Z<-1){Z=-1;}
+        else if(Z>1){Z=1;}
+      }
+    }
 
     // if limelight has target and x-axis is in range to shoot, turn lights green for 5 20ms cycles
     if (m_Limelight.Havetarget() && m_Limelight.XinRange()){
