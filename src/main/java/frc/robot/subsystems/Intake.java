@@ -132,7 +132,7 @@ public class Intake extends SubsystemBase {
     else {
       SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 0.0);
     }
-    SmartDashboard.putBoolean("dataRecorder.extended", intakeExtended);
+    //SmartDashboard.putBoolean("dataRecorder.extended", intakeExtended);
 
 
     //SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
