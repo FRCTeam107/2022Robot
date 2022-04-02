@@ -128,12 +128,21 @@ public class RobotContainer {
     
     Command ThreeBall_Right = new SequentialCommandGroup(
         new SetRobotOrientationOnField(m_Drivetrain, 82.54),
-        new ParallelCommandGroup(
-          new ClimberResetToHome(m_climber),
-          new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1.csv")
-          )   
+        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1FAST.csv")
+        // new ParallelCommandGroup(
+        //   new ClimberResetToHome(m_climber),
+        //   new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1FAST.csv")
+        //   )   
         );
       
+      // Command ThreeBallFASTER_Right = new SequentialCommandGroup(
+      //     new SetRobotOrientationOnField(m_Drivetrain, 82.54),
+      //     new ParallelCommandGroup(
+      //       new ClimberResetToHome(m_climber),
+      //       new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1FASTER.csv")
+      //       )   
+      //     );
+
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
     m_chooser.addOption("2-Ball RIGHT", TwoBall_Right);
@@ -141,13 +150,6 @@ public class RobotContainer {
     m_chooser.addOption("2-Ball LEFT", TwoBall_Left);
     m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
     // m_chooser.addOption("4-Ball RIGHT", FourBall_Right);
-
-    // m_chooser.addOption("Kraken5", Kraken5);
-    // m_chooser.addOption("Kraken7", Kraken7);
-    // m_chooser.addOption("Kraken9", Kraken9);
-    // m_chooser.addOption("Kraken13", ThreeBall_Right);
-    //m_chooser.addOption("5-Ball RIGHT", FiveBall_Right);
-
 
 
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
@@ -171,10 +173,12 @@ public class RobotContainer {
     JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
     JoystickButton btnActivateLimelight = new JoystickButton(m_flightcontroller, FlightController.ACTIVATE_LIMELIGHT);
 
+    new JoystickButton(m_controllerJoystick,11).whileHeld(new ClimberResetToHome(m_climber));
+    
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
     //new JoystickButton(m_rightJoystick, RightJoystick.TOGGLE_LIMELIGHT).whenPressed(m_limelight::ToggleVisionProcessing, m_limelight);
-    btnShoot.whileHeld(new Shoot(m_shooter, 
+    btnShoot.whileHeld(new Shoot(m_shooter, m_limelight,
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ,
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.TURBO_SHOT) ));
    
