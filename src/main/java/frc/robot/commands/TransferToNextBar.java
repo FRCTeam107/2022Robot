@@ -86,7 +86,7 @@ public class TransferToNextBar extends CommandBase {
         moveToNextState =  m_climber.moveHookToPosition(ClimberConstants.hookReleasecurrentBar, true);
 
         if (moveToNextState) {
-          countDown = 0; // 20ms loop * countdown timer;
+          countDown = 20; // 20ms loop * countdown timer;
         }
         break;
       
@@ -142,15 +142,20 @@ public class TransferToNextBar extends CommandBase {
 
         if (m_climber.moveArmToPosition(ClimberConstants.armHugNextBar)) {
           moveToNextState = true;
+          countDown = 20; // 20ms loop * countdown timer;
         }
+        // todo:  consider a pause here to settle down?
         break;
 
       case PullHookToReleaseTalons:
         // pull the hook far enough to release the talons hooks
         m_LEDLights.lightsYellow();
 
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
-          moveToNextState = true;
+        countDown --;
+        if (countDown <= 0){
+          if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
+            moveToNextState = true;
+          } 
         }
         break;
 
