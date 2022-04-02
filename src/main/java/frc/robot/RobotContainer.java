@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,6 +42,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
+import frc.robot.commands.ClimberResetToHome;
 import frc.robot.commands.DismountFirstBar;
 import frc.robot.commands.ReachForTheBar;
 import frc.robot.commands.PullUpOntoTalonHooks;
@@ -97,38 +99,39 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Add commands to the autonomous command chooser
-
     Command TwoBall_Right = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
+      new ParallelCommandGroup(
+        new ClimberResetToHome(m_climber),
+        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv") 
+        ),      
       new SetRobotOrientationOnField(m_Drivetrain, 85)   
       );
 
     Command TwoBall_Center = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
+      new ParallelCommandGroup(
+        new ClimberResetToHome(m_climber),
+        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv")
+        ),
       new SetRobotOrientationOnField(m_Drivetrain, 135)   
       );
   
     Command TwoBall_Left = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, -0.02),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "twoball-c.csv"),
+      new ParallelCommandGroup(
+        new ClimberResetToHome(m_climber),
+        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "twoball-c.csv")
+        ),
       new SetRobotOrientationOnField(m_Drivetrain, -165)   
       );
-        
-    //  Command ThreeBall_Right = new SequentialCommandGroup(
-    //     new SetRobotOrientationOnField(m_Drivetrain, 91),
-    //     new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3-BallD.csv")   
-    //     );
-
-    //  Command FourBall_Right = new SequentialCommandGroup(
-    //       new SetRobotOrientationOnField(m_Drivetrain, 91),
-    //       new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "4-BallD.csv")   
-    //       );
     
     Command ThreeBall_Right = new SequentialCommandGroup(
         new SetRobotOrientationOnField(m_Drivetrain, 82.54),
-        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1.csv")   
+        new ParallelCommandGroup(
+          new ClimberResetToHome(m_climber),
+          new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1.csv")
+          )   
         );
       
     m_chooser = new SendableChooser<>();
