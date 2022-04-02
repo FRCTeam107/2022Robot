@@ -47,10 +47,10 @@ public class RunClimberManually extends CommandBase {
     }
 
     if (armMove < -0.3){
-      m_Climber.reachArmBack();
+      m_Climber.pullArmForward();
     }
     else if (armMove > 0.3){
-      m_Climber.pullArmForward();
+      m_Climber.reachArmBack();
     }
     else {
       m_Climber.stopArm();

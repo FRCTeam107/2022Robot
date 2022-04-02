@@ -290,11 +290,11 @@ public static final class ClimberArmConstants {
 
 
    public void reachArmBack(){
-    m_climberArm.set(ControlMode.PercentOutput, -0.3);
+    m_climberArm.set(ControlMode.PercentOutput, 0.3);
   }
 
   public void pullArmForward(){
-    m_climberArm.set(ControlMode.PercentOutput, 0.3);  
+    m_climberArm.set(ControlMode.PercentOutput, -0.3);  
   }
 
   public boolean armHitForwardLimit(){
