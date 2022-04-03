@@ -147,9 +147,9 @@ public class Intake extends SubsystemBase {
         m_Intake_ArmSpeed = 0;
         stopArm();
       }
-      // else {
-      //   m_IntakeArm.set(ControlMode.PercentOutput, -IntakeArmConstants.kMaxOutput);
-      // }
+      else if (m_IntakeSpeed < 0 && m_IntakeArm.getSelectedSensorPosition() <  -10000) {
+        m_IntakeSpeed = -0.3;  // speed up on lower end of extending arm
+      }
     }
     else {
       if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed() 
@@ -158,9 +158,9 @@ public class Intake extends SubsystemBase {
         stopArm();
         m_Intake_ArmSpeed = 0;
       }
-      // else {
-      //   m_IntakeArm.set(ControlMode.PercentOutput, IntakeArmConstants.kMaxOutput);
-      // }
+      else if (m_IntakeSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -10000) {
+        m_IntakeSpeed = 0.2;  // slow down as we approach closed position
+      }
     }
     m_IntakeArm.set(ControlMode.PercentOutput, m_Intake_ArmSpeed);  
   
