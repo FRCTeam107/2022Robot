@@ -214,4 +214,8 @@ public void runIntake(double speed){
     runIntake(SmartDashboard.getNumber("intakeSpeed", 25000));
   }
 
+  public void allowAdditionalMovement(){
+    m_IntakeArm.setSelectedSensorPosition( IntakeArmConstants.armExtendedPos / 2);
+  }
+
 }
