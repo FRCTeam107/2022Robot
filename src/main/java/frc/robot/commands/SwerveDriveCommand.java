@@ -68,7 +68,7 @@ public class SwerveDriveCommand extends CommandBase {
     }
 
     // if limelight has target and x-axis is in range to shoot, turn lights green for 5 20ms cycles
-    if (m_Limelight.Havetarget() && m_Limelight.XinRange()){
+    if (m_Limelight.isReady()){
       m_LEDLights.lightsGreen(5);
     }
 
