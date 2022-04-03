@@ -78,9 +78,11 @@ public class ReplayFile extends CommandBase {
     }
 
     // check gyro angle with desired angle and make adjustments as needed
+    double X_Drive = replayRow[datapoint.Drive_X];
+    double Y_Strafe = replayRow[datapoint.Drive_Y];
     double Z_Rotate = replayRow[datapoint.Drive_Z];
 
-    if (m_Limelight.Havetarget() ){
+    if (X_Drive != 0 && Y_Strafe != 0 && m_Limelight.Havetarget() ){
       Z_Rotate =  -m_Limelight.TX() / 27 * 1.3 * 2;
       if (Z_Rotate<-1){Z_Rotate=-1;}
       else if(Z_Rotate>1){Z_Rotate=1;}
@@ -96,10 +98,7 @@ public class ReplayFile extends CommandBase {
       Z_Rotate += adjustZ;  
     }
 
-    m_drivetrain.drive(replayRow[datapoint.Drive_X], 
-          replayRow[datapoint.Drive_Y],
-          Z_Rotate, 
-          true);
+    m_drivetrain.drive(X_Drive, Y_Strafe, Z_Rotate, true);
 
     // move intake arm up or down
     if (replayRow[datapoint.IntakeIsExtended]>0 && !intakeArmDown) {
