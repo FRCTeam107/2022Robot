@@ -146,17 +146,17 @@ public class Limelight extends SubsystemBase {
     return  NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
   }
   public double TA(){
-    return rawTA();
-    // double thisTA = rawTA();
-    // double retval;
-    // if (lastTX==999){ 
-    //   retval = thisTA;
-    // }
-    // else {
-    //   retval = thisTA + lastTY / 2.0;
-    // }
-    // lastTX = thisTA;
-    // return retval;
+    //return rawTA();
+    double thisTA = rawTA();
+    double retval;
+    if (lastTA==999){ 
+      retval = thisTA;
+    }
+    else {
+      retval = (thisTA + lastTA) / 2.0;
+    }
+    lastTA = thisTA;
+    return retval;
   }
 
   public boolean Havetarget(){
