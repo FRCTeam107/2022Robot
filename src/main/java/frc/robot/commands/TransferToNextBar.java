@@ -22,15 +22,16 @@ public class TransferToNextBar extends CommandBase {
 
     private enum commandState {
       Starting,
-      PunchTheNextBar,
+      ReleaseCurrentBar,
       // RaiseHookPunchNextBar,
       // BendArmToPunchNextBar,
       WaitForSwingToStop,
-      LowerHookBelowBar,
       BendArmBackToNextBar,
+      // LowerHookBelowBar,
       ReachHookPastNextBar,
       RetractArmToTouchBar,
       PullHookToReleaseTalons,
+      RetractArmForNextClimb,
       BufferSwingOut,
       Finished;
 
@@ -79,21 +80,13 @@ public class TransferToNextBar extends CommandBase {
         
         break;
       
-      case PunchTheNextBar:
+      case ReleaseCurrentBar:
         // extend the hook past the current bar and to punch next one
         m_LEDLights.lightsYellow();
-        
-        boolean hookReady = m_climber.moveHookToPosition(ClimberConstants.hookToPunchNextBar, true);
-        boolean armReady =  m_climber.moveArmToPosition(ClimberConstants.armToPunchNextBar);
-        moveToNextState = hookReady && armReady;
-
-        // countDown --;
-        if (!moveToNextState){
-          moveToNextState = (countDown<0 && m_forceToRun.getAsBoolean());
-        }
+        moveToNextState =  m_climber.moveHookToPosition(ClimberConstants.hookReleasecurrentBar, true);
 
         if (moveToNextState) {
-          countDown = 100; // 20ms loop * countdown timer;
+          countDown = 20; // 20ms loop * countdown timer;
         }
         break;
       
@@ -117,21 +110,21 @@ public class TransferToNextBar extends CommandBase {
         moveToNextState = (countDown<=0);
         break;
 
-      case LowerHookBelowBar:
-        // extend the hook past the current bar and to punch next one
-        m_LEDLights.lightsYellow();
-        if (m_climber.moveHookToPosition(ClimberConstants.hookBelowNextBar, true)){
-          moveToNextState = true;
-        }
-        break;
-      
+            // case LowerHookBelowBar:
+      //   // extend the hook past the current bar and to punch next one
+      //   m_LEDLights.lightsYellow();
+      //   if (m_climber.moveHookToPosition(ClimberConstants.hookBelowNextBar, true)){
+      //     moveToNextState = true;
+      //   }
+      //   break;
+
       case BendArmBackToNextBar:
         // move arm to reach backwards slightly past the next bar
         m_LEDLights.lightsYellow();
 
-        if (m_climber.moveArmToPosition(ClimberConstants.armReachPastNextBar)){
-          moveToNextState = true;
-        }
+        boolean armReady = m_climber.moveArmToPosition(ClimberConstants.armReachPastNextBar);
+        boolean hookReady = m_climber.moveHookToPosition(ClimberConstants.hookBelowNextBar, true);
+        moveToNextState = (armReady && hookReady);
         break;
         
       case ReachHookPastNextBar:
@@ -149,14 +142,25 @@ public class TransferToNextBar extends CommandBase {
 
         if (m_climber.moveArmToPosition(ClimberConstants.armHugNextBar)) {
           moveToNextState = true;
+          countDown = 20; // 20ms loop * countdown timer;
         }
+        // todo:  consider a pause here to settle down?
         break;
 
       case PullHookToReleaseTalons:
         // pull the hook far enough to release the talons hooks
         m_LEDLights.lightsYellow();
 
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
+        countDown --;
+        if (countDown <= 0){
+          if (m_climber.moveHookToPosition(ClimberConstants.hookPullTalonsOffBar, false) ) {
+            moveToNextState = true;
+          } 
+        }
+        break;
+
+      case RetractArmForNextClimb:
+        if (m_climber.moveArmToPosition(ClimberConstants.armTransferOntoTalonsPos)) {
           moveToNextState = true;
         }
         break;

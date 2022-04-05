@@ -6,7 +6,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.LEDLights;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SwerveDrivetrain;
 //import frc.robot.subsystems.SwerveModuleMK3;
@@ -15,7 +17,8 @@ public class SwerveDriveCommand extends CommandBase {
 
   private final SwerveDrivetrain m_drivetrain;
   private final Joystick m_FlightController;
-  private final Limelight m_lLimelight;
+  private final Limelight m_Limelight;
+  private final LEDLights m_LEDLights;
 
   // private final Joystick rightController;
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -23,11 +26,12 @@ public class SwerveDriveCommand extends CommandBase {
   private final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(6);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(6);
 
-  public SwerveDriveCommand(SwerveDrivetrain drivetrain, Joystick controller,  Limelight _limeLight) {
+  public SwerveDriveCommand(SwerveDrivetrain drivetrain, Joystick controller,  Limelight _limeLight, LEDLights _LEDLights) {
   //public SwerveDriveCommand(SwerveDrivetrain drivetrain, XboxController controller) {
     m_drivetrain = drivetrain;
-    m_lLimelight = _limeLight;
+    m_Limelight = _limeLight;
     m_FlightController = controller;
+    m_LEDLights = _LEDLights;
 
     addRequirements(drivetrain);
 
@@ -41,23 +45,31 @@ public class SwerveDriveCommand extends CommandBase {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     double X = -m_FlightController.getX();
-    if (Math.abs(X)<0.05){
+    if (Math.abs(X)<0.07){
       X = 0;
     }
     double Y = m_FlightController.getY();
-    if (Math.abs(Y)<0.05){
+    if (Math.abs(Y)<0.07){
       Y = 0;
     }
 
     double Z = m_FlightController.getZ();
-    if (Math.abs(Z)<0.05){
+    if (Math.abs(Z)<0.07){
       Z = 0;
     }
 
-    if (Z==0 && m_lLimelight.Havetarget() ){
-      Z =  -m_lLimelight.TX() / 27 * 1.3;
-      if (Z<-1){Z=-1;}
-      else if(Z>1){Z=1;}
+    // if driver is pressing aim by limelight button, then use limelight if possible
+    if (m_FlightController.getRawButton(Constants.FlightController.AIM_BY_LIMELIGHT)){
+      if (m_Limelight.Havetarget() ){
+        Z =  -m_Limelight.TX() / 27 * 1.3 * 2;
+        if (Z<-1){Z=-1;}
+        else if(Z>1){Z=1;}
+      }
+    }
+
+    // if limelight has target and x-axis is in range to shoot, turn lights green for 5 20ms cycles
+    if (m_Limelight.isReady()){
+      m_LEDLights.lightsGreen(5);
     }
 
     final var xSpeed =

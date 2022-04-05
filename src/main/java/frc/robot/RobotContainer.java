@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,6 +42,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.VisionCamera;
+import frc.robot.commands.ClimberResetToHome;
 import frc.robot.commands.DismountFirstBar;
 import frc.robot.commands.ReachForTheBar;
 import frc.robot.commands.PullUpOntoTalonHooks;
@@ -92,45 +94,46 @@ public class RobotContainer {
 
     m_DataRecorder = new DataRecorder();
    
-    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller, m_limelight));
+    m_Drivetrain.setDefaultCommand(new SwerveDriveCommand(m_Drivetrain, m_flightcontroller, m_limelight, m_LEDLights));
     
     configureButtonBindings();
 
     // Add commands to the autonomous command chooser
-
     Command TwoBall_Right = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv"),
       new SetRobotOrientationOnField(m_Drivetrain, 85)   
       );
 
     Command TwoBall_Center = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "Center2Ball.csv"),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv"),
       new SetRobotOrientationOnField(m_Drivetrain, 135)   
       );
   
     Command TwoBall_Left = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, -0.02),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "twoball-c.csv"),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "twoball-c.csv"),
       new SetRobotOrientationOnField(m_Drivetrain, -165)   
       );
-        
-    //  Command ThreeBall_Right = new SequentialCommandGroup(
-    //     new SetRobotOrientationOnField(m_Drivetrain, 91),
-    //     new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3-BallD.csv")   
-    //     );
-
-    //  Command FourBall_Right = new SequentialCommandGroup(
-    //       new SetRobotOrientationOnField(m_Drivetrain, 91),
-    //       new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "4-BallD.csv")   
-    //       );
     
     Command ThreeBall_Right = new SequentialCommandGroup(
         new SetRobotOrientationOnField(m_Drivetrain, 82.54),
-        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1.csv")   
+        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "3Ball-1FAST.csv")
+        // new ParallelCommandGroup(
+        //   new ClimberResetToHome(m_climber),
+        //   new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1FAST.csv")
+        //   )   
         );
       
+      // Command ThreeBallFASTER_Right = new SequentialCommandGroup(
+      //     new SetRobotOrientationOnField(m_Drivetrain, 82.54),
+      //     new ParallelCommandGroup(
+      //       new ClimberResetToHome(m_climber),
+      //       new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1FASTER.csv")
+      //       )   
+      //     );
+
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
     m_chooser.addOption("2-Ball RIGHT", TwoBall_Right);
@@ -138,13 +141,6 @@ public class RobotContainer {
     m_chooser.addOption("2-Ball LEFT", TwoBall_Left);
     m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
     // m_chooser.addOption("4-Ball RIGHT", FourBall_Right);
-
-    // m_chooser.addOption("Kraken5", Kraken5);
-    // m_chooser.addOption("Kraken7", Kraken7);
-    // m_chooser.addOption("Kraken9", Kraken9);
-    // m_chooser.addOption("Kraken13", ThreeBall_Right);
-    //m_chooser.addOption("5-Ball RIGHT", FiveBall_Right);
-
 
 
     //m_chooser.addOption("Barrel", new Barrel(m_drivetrain));
@@ -168,10 +164,12 @@ public class RobotContainer {
     JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
     JoystickButton btnActivateLimelight = new JoystickButton(m_flightcontroller, FlightController.ACTIVATE_LIMELIGHT);
 
+    new JoystickButton(m_controllerJoystick,11).whileHeld(m_Intake::allowAdditionalMovement);
+    
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
     //new JoystickButton(m_rightJoystick, RightJoystick.TOGGLE_LIMELIGHT).whenPressed(m_limelight::ToggleVisionProcessing, m_limelight);
-    btnShoot.whileHeld(new Shoot(m_shooter, 
+    btnShoot.whileHeld(new Shoot(m_shooter, m_limelight,
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.FORCE_READY) ,
                 () -> m_controllerJoystick.getRawButton(ControllerJoystick.TURBO_SHOT) ));
    

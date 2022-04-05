@@ -71,9 +71,13 @@ SmartDashboard.putNumber("LEDTimout", countdownTimer);
   
   }
 
-  public void lightsGreen(){
+  public void lightsGreen(Integer timeout){
     m_LEDLights.set(0.75);
-    countdownTimer = 150;
+    countdownTimer = timeout;
+  }
+
+  public void lightsGreen(){
+    lightsGreen(100);
   }
 
   public void lightsYellow(){

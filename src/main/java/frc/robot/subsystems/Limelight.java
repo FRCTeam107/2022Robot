@@ -19,8 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Limelight extends SubsystemBase {
 
-  private final double kRangeTx = 0.2;  // acceptable amount X can be off to hit the shot
+  private final double kRangeTx = 1.5;  // acceptable amount X can be off to hit the shot
   private final double kRangetY = 0.4;  // acceptable amount Y can be off to hit the shot
+ private final double kRangetA_Low = 0.21;
+ private final double kRangetA_High = 0.31;
 
   private final NetworkTable table;
   //private final NetworkTableEntry tV, tX, tY, tA,
@@ -89,7 +91,7 @@ public class Limelight extends SubsystemBase {
     // double tV = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(999);
     // double tY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(999);
     // double tX = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(999);
-    SmartDashboard.putNumber("Limelight tX", m_tX);
+    // SmartDashboard.putNumber("Limelight tX", m_tX);
     
     if (cacheTV != m_tV) {
       cacheTV = m_tV;
@@ -146,17 +148,17 @@ public class Limelight extends SubsystemBase {
     return  NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
   }
   public double TA(){
-    return rawTA();
-    // double thisTA = rawTA();
-    // double retval;
-    // if (lastTX==999){ 
-    //   retval = thisTA;
-    // }
-    // else {
-    //   retval = thisTA + lastTY / 2.0;
-    // }
-    // lastTX = thisTA;
-    // return retval;
+    //return rawTA();
+    double thisTA = rawTA();
+    double retval;
+    if (lastTA==999){ 
+      retval = thisTA;
+    }
+    else {
+      retval = (thisTA + lastTA) / 2.0;
+    }
+    lastTA = thisTA;
+    return retval;
   }
 
   public boolean Havetarget(){
@@ -203,9 +205,9 @@ public class Limelight extends SubsystemBase {
   //   }
   // }
 
-  public void setForceReady(boolean enableOverride){
-    m_overrideEnabled = enableOverride;
-  }
+  // public void setForceReady(boolean enableOverride){
+  //   m_overrideEnabled = enableOverride;
+  // }
 
   public boolean XinRange(){
     return (Havetarget() && Math.abs(m_tX) <= kRangeTx);
@@ -213,9 +215,12 @@ public class Limelight extends SubsystemBase {
   public boolean YinRange(){
     return (Havetarget() && Math.abs(m_tY) <= kRangetY);
   }
+  public boolean AinRange(){
+    return (Havetarget() && Math.abs(m_tA) >= kRangetA_Low  && Math.abs(m_tA) <= kRangetA_High );
+  }
   public boolean isReady(){
     if (m_overrideEnabled) {return true;}
 
-    return (XinRange());// && YinRange());
+    return (XinRange()) && AinRange();// && YinRange());
   }
 }

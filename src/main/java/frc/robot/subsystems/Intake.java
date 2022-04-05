@@ -32,10 +32,10 @@ public class Intake extends SubsystemBase {
   //private DataRecorder m_dataRecorder;
   
   public static final class IntakeArmConstants {
-    //TODO run arm motor to extended position, find right position
+    //run arm motor to extended position, find right position
     public static final double armStartingPos = 0;
     public static final double armRetractPos = 1000;
-    public static final double armExtendedPos = -52000;
+    public static final double armExtendedPos = -67000;
     
     // intake arm PID values
     public static final double kP =2; // 0.4; //0.04; 
@@ -132,7 +132,7 @@ public class Intake extends SubsystemBase {
     else {
       SmartDashboard.putNumber("dataRecorder." + datapoint.IntakeIsExtended, 0.0);
     }
-    SmartDashboard.putBoolean("dataRecorder.extended", intakeExtended);
+    //SmartDashboard.putBoolean("dataRecorder.extended", intakeExtended);
 
 
     //SmartDashboard.putNumber("IntakeArmAt", m_IntakeArm.getSelectedSensorPosition());
@@ -142,23 +142,25 @@ public class Intake extends SubsystemBase {
     }
     
     if (intakeExtended){
-      if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed()){
+      if (m_IntakeArm.getSensorCollection().isRevLimitSwitchClosed() 
+          || m_IntakeArm.getSelectedSensorPosition() <= IntakeArmConstants.armExtendedPos){
         m_Intake_ArmSpeed = 0;
         stopArm();
       }
-      // else {
-      //   m_IntakeArm.set(ControlMode.PercentOutput, -IntakeArmConstants.kMaxOutput);
-      // }
+      else if (m_Intake_ArmSpeed < 0 && m_IntakeArm.getSelectedSensorPosition() <  -10000) {
+        m_Intake_ArmSpeed = -0.4;  // speed up on lower end of extending arm
+      }
     }
     else {
-      if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed()){
+      if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed() 
+        || m_IntakeArm.getSelectedSensorPosition() >= IntakeArmConstants.armRetractPos ){
       //   m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
         stopArm();
         m_Intake_ArmSpeed = 0;
       }
-      // else {
-      //   m_IntakeArm.set(ControlMode.PercentOutput, IntakeArmConstants.kMaxOutput);
-      // }
+      else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -20000) {
+        m_Intake_ArmSpeed = 0.2;  // slow down as we approach closed position
+      }
     }
     m_IntakeArm.set(ControlMode.PercentOutput, m_Intake_ArmSpeed);  
   
@@ -185,7 +187,7 @@ public void retractArm(){
 
   //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractPos);
   intakeExtended = false;
-  m_Intake_ArmSpeed = 0.30;// IntakeArmConstants.kMaxOutput;
+  m_Intake_ArmSpeed = 0.40;// IntakeArmConstants.kMaxOutput;
   
   // if (m_dataRecorder != null) {
   //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)0.00);
@@ -210,6 +212,10 @@ public void runIntake(double speed){
   }
   public void StartIntake() {
     runIntake(SmartDashboard.getNumber("intakeSpeed", 25000));
+  }
+
+  public void allowAdditionalMovement(){
+    m_IntakeArm.setSelectedSensorPosition( IntakeArmConstants.armExtendedPos / 2);
   }
 
 }

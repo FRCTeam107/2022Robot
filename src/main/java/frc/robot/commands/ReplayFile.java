@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DataRecorder;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.DataRecorder.datapoint;
@@ -28,16 +29,18 @@ public class ReplayFile extends CommandBase {
   private final SwerveDrivetrain m_drivetrain;
   private final Shooter m_Shooter;
   private final Intake m_Intake;
+  private final Limelight m_Limelight;
   private final DataRecorder m_datarecorder;
   private final List<double[]> m_replayList;
   private int replayPoint;
   private boolean intakeArmDown = false;
 
  
-  public ReplayFile(SwerveDrivetrain _drivetrain, Intake _intake, Shooter _shooter, DataRecorder _datarecoder, String filename) {
+  public ReplayFile(SwerveDrivetrain _drivetrain, Intake _intake, Shooter _shooter, Limelight _limeLight, DataRecorder _datarecoder, String filename) {
     m_drivetrain = _drivetrain;
     m_Intake = _intake;
     m_Shooter = _shooter;
+    m_Limelight = _limeLight;
     m_datarecorder = _datarecoder;
     m_replayList = m_datarecorder.LoadFile(filename);
    
@@ -74,21 +77,34 @@ public class ReplayFile extends CommandBase {
       return;
     }
 
+    // limelight on?
+    double limeLight = replayRow[0];
+    if (limeLight==1){
+      m_Limelight.EnableVisionProcessing();
+    }
+    
     // check gyro angle with desired angle and make adjustments as needed
+    double X_Drive = replayRow[datapoint.Drive_X];
+    double Y_Strafe = replayRow[datapoint.Drive_Y];
     double Z_Rotate = replayRow[datapoint.Drive_Z];
-    double currentGyrAngle = m_drivetrain.getAngle();
-    double desiredGyroAngle = replayRow[datapoint.GyroAngle];
-    // negative Z turns clockwise (increasing gyro angle)
-    double adjustZ = (desiredGyroAngle - currentGyrAngle) * -0.025; // approx value from limelight aiming
-    if (adjustZ < -0.2) { adjustZ = -0.2;}
-    if (adjustZ > 0.2) { adjustZ = 0.2;}
-    Z_Rotate += adjustZ;
 
+    if (m_Limelight.Havetarget() && (X_Drive != 0 || Y_Strafe != 0 || Z_Rotate != 0) ){
+      Z_Rotate =  -m_Limelight.TX() / 27 * 1.3 * 2;
+      if (Z_Rotate<-1){Z_Rotate=-1;}
+      else if(Z_Rotate>1){Z_Rotate=1;}
+    }
+    else {
+      Z_Rotate = replayRow[datapoint.Drive_Z];
+      double currentGyrAngle = m_drivetrain.getAngle();
+      double desiredGyroAngle = replayRow[datapoint.GyroAngle];
+      // negative Z turns clockwise (increasing gyro angle)
+      double adjustZ = (desiredGyroAngle - currentGyrAngle) * -0.05; // approx value from limelight aiming
+      if (adjustZ < -0.2) { adjustZ = -0.2;}
+      if (adjustZ > 0.2) { adjustZ = 0.2;}
+      Z_Rotate += adjustZ;  
+    }
 
-    m_drivetrain.drive(replayRow[datapoint.Drive_X], 
-          replayRow[datapoint.Drive_Y],
-          Z_Rotate, 
-          true);
+    m_drivetrain.drive(X_Drive, Y_Strafe, Z_Rotate, true);
 
     // move intake arm up or down
     if (replayRow[datapoint.IntakeIsExtended]>0 && !intakeArmDown) {

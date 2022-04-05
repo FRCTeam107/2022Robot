@@ -50,7 +50,7 @@ public class ReachForTheBar extends CommandBase {
   @Override
   public void execute() {
     boolean moveToNextState = false;
-    SmartDashboard.putString("ReachForBar", "Executing");
+    //SmartDashboard.putString("ReachForBar", "Executing");
 
     switch (currentState){
       case Starting:

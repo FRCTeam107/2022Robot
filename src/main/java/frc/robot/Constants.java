@@ -36,6 +36,7 @@ public final class Constants {
 
                 public static final int ACTIVATE_LIMELIGHT = 1;
                 public static final int CLIMBER_MANUAL = 4;
+                public static final int AIM_BY_LIMELIGHT = 13;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;
                 // public static final int GREEN_ZONE = 11;
