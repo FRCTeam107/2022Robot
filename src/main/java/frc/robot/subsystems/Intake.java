@@ -147,8 +147,8 @@ public class Intake extends SubsystemBase {
         m_Intake_ArmSpeed = 0;
         stopArm();
       }
-      else if (m_IntakeSpeed < 0 && m_IntakeArm.getSelectedSensorPosition() <  -10000) {
-        m_IntakeSpeed = -0.3;  // speed up on lower end of extending arm
+      else if (m_Intake_ArmSpeed < 0 && m_IntakeArm.getSelectedSensorPosition() <  -10000) {
+        m_Intake_ArmSpeed = -0.4;  // speed up on lower end of extending arm
       }
     }
     else {
@@ -158,8 +158,8 @@ public class Intake extends SubsystemBase {
         stopArm();
         m_Intake_ArmSpeed = 0;
       }
-      else if (m_IntakeSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -10000) {
-        m_IntakeSpeed = 0.2;  // slow down as we approach closed position
+      else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -20000) {
+        m_Intake_ArmSpeed = 0.2;  // slow down as we approach closed position
       }
     }
     m_IntakeArm.set(ControlMode.PercentOutput, m_Intake_ArmSpeed);  
@@ -187,7 +187,7 @@ public void retractArm(){
 
   //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractPos);
   intakeExtended = false;
-  m_Intake_ArmSpeed = 0.30;// IntakeArmConstants.kMaxOutput;
+  m_Intake_ArmSpeed = 0.40;// IntakeArmConstants.kMaxOutput;
   
   // if (m_dataRecorder != null) {
   //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)0.00);

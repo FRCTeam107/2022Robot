@@ -21,8 +21,8 @@ public class Limelight extends SubsystemBase {
 
   private final double kRangeTx = 1.5;  // acceptable amount X can be off to hit the shot
   private final double kRangetY = 0.4;  // acceptable amount Y can be off to hit the shot
- private final double kRangetA_Low = 0.2;
- private final double kRangetA_High = 0.35;
+ private final double kRangetA_Low = 0.21;
+ private final double kRangetA_High = 0.31;
 
   private final NetworkTable table;
   //private final NetworkTableEntry tV, tX, tY, tA,

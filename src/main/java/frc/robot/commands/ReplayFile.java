@@ -77,12 +77,18 @@ public class ReplayFile extends CommandBase {
       return;
     }
 
+    // limelight on?
+    double limeLight = replayRow[0];
+    if (limeLight==1){
+      m_Limelight.EnableVisionProcessing();
+    }
+    
     // check gyro angle with desired angle and make adjustments as needed
     double X_Drive = replayRow[datapoint.Drive_X];
     double Y_Strafe = replayRow[datapoint.Drive_Y];
     double Z_Rotate = replayRow[datapoint.Drive_Z];
 
-    if (X_Drive != 0 && Y_Strafe != 0 && m_Limelight.Havetarget() ){
+    if (m_Limelight.Havetarget() && (X_Drive != 0 || Y_Strafe != 0 || Z_Rotate != 0) ){
       Z_Rotate =  -m_Limelight.TX() / 27 * 1.3 * 2;
       if (Z_Rotate<-1){Z_Rotate=-1;}
       else if(Z_Rotate>1){Z_Rotate=1;}
@@ -92,7 +98,7 @@ public class ReplayFile extends CommandBase {
       double currentGyrAngle = m_drivetrain.getAngle();
       double desiredGyroAngle = replayRow[datapoint.GyroAngle];
       // negative Z turns clockwise (increasing gyro angle)
-      double adjustZ = (desiredGyroAngle - currentGyrAngle) * -0.025; // approx value from limelight aiming
+      double adjustZ = (desiredGyroAngle - currentGyrAngle) * -0.05; // approx value from limelight aiming
       if (adjustZ < -0.2) { adjustZ = -0.2;}
       if (adjustZ > 0.2) { adjustZ = 0.2;}
       Z_Rotate += adjustZ;  

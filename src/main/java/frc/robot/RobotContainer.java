@@ -101,28 +101,19 @@ public class RobotContainer {
     // Add commands to the autonomous command chooser
     Command TwoBall_Right = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ParallelCommandGroup(
-        new ClimberResetToHome(m_climber),
-        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv") 
-        ),      
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv"),
       new SetRobotOrientationOnField(m_Drivetrain, 85)   
       );
 
     Command TwoBall_Center = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ParallelCommandGroup(
-        new ClimberResetToHome(m_climber),
-        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv")
-        ),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv"),
       new SetRobotOrientationOnField(m_Drivetrain, 135)   
       );
   
     Command TwoBall_Left = new SequentialCommandGroup(
       new SetRobotOrientationOnField(m_Drivetrain, -0.02),
-      new ParallelCommandGroup(
-        new ClimberResetToHome(m_climber),
-        new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "twoball-c.csv")
-        ),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "twoball-c.csv"),
       new SetRobotOrientationOnField(m_Drivetrain, -165)   
       );
     
@@ -173,7 +164,7 @@ public class RobotContainer {
     JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
     JoystickButton btnActivateLimelight = new JoystickButton(m_flightcontroller, FlightController.ACTIVATE_LIMELIGHT);
 
-    new JoystickButton(m_controllerJoystick,11).whileHeld(new ClimberResetToHome(m_climber));
+    new JoystickButton(m_controllerJoystick,11).whileHeld(m_Intake::allowAdditionalMovement);
     
     btnResetDrivetrainOrientation.whenPressed(new SetRobotOrientationOnField(m_Drivetrain, 0).andThen(m_Drivetrain::resetEncoders));
 
