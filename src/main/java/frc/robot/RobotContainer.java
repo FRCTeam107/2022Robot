@@ -100,9 +100,8 @@ public class RobotContainer {
 
     // Add commands to the autonomous command chooser
     Command TwoBall_Right = new SequentialCommandGroup(
-      new SetRobotOrientationOnField(m_Drivetrain, 0),
-      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "Center2Ball.csv"),
-      new SetRobotOrientationOnField(m_Drivetrain, 85)   
+      new SetRobotOrientationOnField(m_Drivetrain, 82.54),
+      new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "twoball-right.csv")
       );
 
     Command TwoBall_Center = new SequentialCommandGroup(
@@ -126,13 +125,13 @@ public class RobotContainer {
         //   )   
         );
       
-      // Command ThreeBallFASTER_Right = new SequentialCommandGroup(
-      //     new SetRobotOrientationOnField(m_Drivetrain, 82.54),
-      //     new ParallelCommandGroup(
-      //       new ClimberResetToHome(m_climber),
-      //       new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_DataRecorder, "3Ball-1FASTER.csv")
-      //       )   
-      //     );
+    Command ThreeBall_RunForrest = new SequentialCommandGroup(
+          new SetRobotOrientationOnField(m_Drivetrain, 82.54),
+          new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "3Ball-BeforeRun.csv"),
+          new SetRobotOrientationOnField(m_Drivetrain, 0),
+          new ReplayFile(m_Drivetrain, m_Intake, m_shooter, m_limelight, m_DataRecorder, "runforestrun2.csv"),
+          new SetRobotOrientationOnField(m_Drivetrain, 142.5)
+          );
 
     m_chooser = new SendableChooser<>();
     //m_chooser.addOption("Original", ORIGgetAutonomousCommand() );
@@ -140,6 +139,7 @@ public class RobotContainer {
     m_chooser.addOption("2-Ball CENTER", TwoBall_Center);
     m_chooser.addOption("2-Ball LEFT", TwoBall_Left);
     m_chooser.addOption("3-Ball RIGHT", ThreeBall_Right);
+    m_chooser.addOption("3-Ball Run Forrest!", ThreeBall_RunForrest);
     // m_chooser.addOption("4-Ball RIGHT", FourBall_Right);
 
 
