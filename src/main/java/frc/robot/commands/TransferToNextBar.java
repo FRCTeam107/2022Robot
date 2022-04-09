@@ -142,7 +142,7 @@ public class TransferToNextBar extends CommandBase {
 
         if (m_climber.moveArmToPosition(ClimberConstants.armHugNextBar)) {
           moveToNextState = true;
-          countDown = 20; // 20ms loop * countdown timer;
+          countDown = 1; // 20ms loop * countdown timer;
         }
         // todo:  consider a pause here to settle down?
         break;
