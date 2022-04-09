@@ -82,8 +82,8 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.72; 
-    public static final double kMaxOutput_Fast = 0.84;// 0.8; 
+    public static final double kMaxOutput_Slow = 0.75; 
+    public static final double kMaxOutput_Fast = 0.87;// 0.8; 
   }
 
 public static final class ClimberArmConstants { 
