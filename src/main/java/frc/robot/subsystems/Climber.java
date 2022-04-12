@@ -38,12 +38,12 @@ public static final class ClimberConstants {
 
 
     // reach for the bar
-    public static final double armFirstBarPos = 11000; // reach up to bar
+    public static final double armFirstBarPos = 6000; // reach up to bar
     public static final double hookAboveFirstBarPos = -336000; // -234000;
 
     
     // do a pull-up
-    public static final double armPullupPos = 11000; // keep arm stiff during pullup
+    public static final double armPullupPos = 6000; // keep arm stiff during pullup
     // note: pullup position is beyond limit of the hook, need to pull right to limit switch
     public static final double hookPullupPos = -5000; // + 20000); // position to pullup and get talons to "hook"
 
@@ -82,8 +82,8 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.7; 
-    public static final double kMaxOutput_Fast = 0.82;// 0.8; 
+    public static final double kMaxOutput_Slow = 0.75; 
+    public static final double kMaxOutput_Fast = 0.87;// 0.8; 
   }
 
 public static final class ClimberArmConstants { 

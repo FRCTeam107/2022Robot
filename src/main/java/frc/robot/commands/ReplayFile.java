@@ -82,6 +82,9 @@ public class ReplayFile extends CommandBase {
     if (limeLight==1){
       m_Limelight.EnableVisionProcessing();
     }
+    if (limeLight==-1){
+      m_Limelight.DisableVisionProcessing();
+    }
     
     // check gyro angle with desired angle and make adjustments as needed
     double X_Drive = replayRow[datapoint.Drive_X];
