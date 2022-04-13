@@ -103,6 +103,9 @@ public class SwerveModuleMK3 {
     return driveMotor.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse;
 
   }
+  public double getVelocity(){
+    return driveMotor.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerPulse;
+  }
     /**
    * Returns the current state of the module.
    *

@@ -32,10 +32,18 @@ public class DataRecorder extends SubsystemBase {
     public static final int ShooterTop = 7;
     public static final int ShooterBottom = 8;
     public static final int KickerSpeed = 9;
-  }
+    public static final int frontLeftDistance = 10;
+    public static final int frontLeftVelocity = 11;
+    public static final int frontRightDistance = 12;
+    public static final int frontRightVelocity = 13;    
+    public static final int rearLeftDistance = 14;
+    public static final int rearLeftVelocity = 15;
+    public static final int rearRightDistance = 16;
+    public static final int rearRightVelocity = 17;   
+    }
 
   
-  private double[] blankvalues = {0,0,0,0,0,0,0,0,0,0};
+  private double[] blankvalues = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   private double[] datavalues = blankvalues; // same number of datapoints from  list above
 
   //private FileInputStream in = null;
@@ -74,6 +82,15 @@ public class DataRecorder extends SubsystemBase {
       datavalues[datapoint.IntakeIsExtended] = SmartDashboard.getNumber("dataRecorder." + datapoint.IntakeIsExtended, 0);
       datavalues[datapoint.IntakeMotorSpeed] = SmartDashboard.getNumber("dataRecorder." + datapoint.IntakeMotorSpeed, 0);
       datavalues[datapoint.KickerSpeed] = SmartDashboard.getNumber("dataRecorder." + datapoint.KickerSpeed, 0);
+
+      datavalues[datapoint.frontLeftDistance] = SmartDashboard.getNumber("dataRecorder." + datapoint.frontLeftDistance, 0);
+      datavalues[datapoint.frontLeftVelocity] = SmartDashboard.getNumber("dataRecorder." + datapoint.frontLeftVelocity, 0);
+      datavalues[datapoint.frontRightDistance] = SmartDashboard.getNumber("dataRecorder." + datapoint.frontRightDistance, 0);
+      datavalues[datapoint.frontRightVelocity] = SmartDashboard.getNumber("dataRecorder." + datapoint.frontRightVelocity, 0);
+      datavalues[datapoint.rearLeftDistance] = SmartDashboard.getNumber("dataRecorder." + datapoint.rearLeftDistance, 0);
+      datavalues[datapoint.rearLeftVelocity] = SmartDashboard.getNumber("dataRecorder." + datapoint.rearLeftVelocity, 0);
+      datavalues[datapoint.rearRightDistance] = SmartDashboard.getNumber("dataRecorder." + datapoint.rearRightDistance, 0);
+      datavalues[datapoint.rearRightVelocity] = SmartDashboard.getNumber("dataRecorder." + datapoint.rearRightVelocity, 0);
 
       writeValuesToFile(); 
     }
