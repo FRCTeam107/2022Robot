@@ -79,7 +79,7 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 500);
     m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 500);
 
-    double junk = SmartDashboard.getNumber("intakeSpeed", 30000);
+    double junk = SmartDashboard.getNumber("intakeSpeed", 35000);
     SmartDashboard.putNumber("intakeSpeed", junk);
 
     m_IntakeSpeed = 0;
