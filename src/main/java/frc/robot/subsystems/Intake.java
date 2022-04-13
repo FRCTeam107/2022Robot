@@ -187,7 +187,7 @@ public void retractArm(){
 
   //m_IntakeArm.set(ControlMode.Position, IntakeArmConstants.armRetractPos);
   intakeExtended = false;
-  m_Intake_ArmSpeed = 0.40;// IntakeArmConstants.kMaxOutput;
+  m_Intake_ArmSpeed = 0.50;// IntakeArmConstants.kMaxOutput;
   
   // if (m_dataRecorder != null) {
   //   m_dataRecorder.recordValue(datapoint.IntakeIsExtended, (double)0.00);
