@@ -9,9 +9,12 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDLights;
+import frc.robot.subsystems.Climber.ClimberArmConstants;
 import frc.robot.subsystems.Climber.ClimberConstants;
 
 public class TransferToNextBar extends CommandBase {
@@ -83,10 +86,15 @@ public class TransferToNextBar extends CommandBase {
       case ReleaseCurrentBar:
         // extend the hook past the current bar and to punch next one
         m_LEDLights.lightsYellow();
-        moveToNextState =  m_climber.moveHookToPosition(ClimberConstants.hookReleasecurrentBar, true);
-
+        if (m_climber.ArmPosition() < ClimberConstants.hookReleasecurrentBar){
+          moveToNextState =  true;
+        }
+        else {
+          moveToNextState =  m_climber.moveHookToPosition(ClimberConstants.hookReleasecurrentBar, true);
+        }
+        
         if (moveToNextState) {
-          countDown = 20; // 20ms loop * countdown timer;
+          countDown = 2; // 20ms loop * countdown timer;
         }
         break;
       
