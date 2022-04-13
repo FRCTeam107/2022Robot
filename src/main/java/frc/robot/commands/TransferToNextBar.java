@@ -86,7 +86,7 @@ public class TransferToNextBar extends CommandBase {
       case ReleaseCurrentBar:
         // extend the hook past the current bar and to punch next one
         m_LEDLights.lightsYellow();
-        if (m_climber.ArmPosition() < ClimberConstants.hookReleasecurrentBar){
+        if (m_climber.HookPosition() < ClimberConstants.hookReleasecurrentBar){
           moveToNextState =  true;
         }
         else {
