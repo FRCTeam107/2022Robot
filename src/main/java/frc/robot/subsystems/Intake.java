@@ -148,7 +148,7 @@ public class Intake extends SubsystemBase {
         stopArm();
       }
       else if (m_Intake_ArmSpeed < 0 && m_IntakeArm.getSelectedSensorPosition() <  -10000) {
-        m_Intake_ArmSpeed = -0.4;  // speed up on lower end of extending arm
+        m_Intake_ArmSpeed = -0.6;  // speed up on lower end of extending arm
       }
     }
     else {
