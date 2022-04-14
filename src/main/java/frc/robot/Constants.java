@@ -35,7 +35,7 @@ public final class Constants {
                 public static final int DRIVE_Z_AXIS = 0;
 
                 public static final int ACTIVATE_LIMELIGHT = 1;
-                public static final int CLIMBER_MANUAL = 4;
+                //public static final int CLIMBER_MANUAL = 4;
                 public static final int AIM_BY_LIMELIGHT = 13;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;
@@ -55,7 +55,8 @@ public final class Constants {
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
                 static final int TURBO_SHOT =2;
-                public static final int CAMERA_TOGGLE = 3;
+                //public static final int CAMERA_TOGGLE = 3;
+                public static final int CLIMBER_MANUAL = 3;
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 

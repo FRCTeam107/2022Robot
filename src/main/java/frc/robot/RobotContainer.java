@@ -156,9 +156,9 @@ public class RobotContainer {
     JoystickButton btnClimbGrabNext = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_GRABNEXTBAR);
     JoystickButton btnClimbDismount = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_DISMOUNT);
 
-    JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
+    //JoystickButton btnCameraToggle = new JoystickButton(m_controllerJoystick, ControllerJoystick.CAMERA_TOGGLE);
     JoystickButton btnResetDrivetrainOrientation =  new JoystickButton(m_controllerJoystick, ControllerJoystick.REORIENT_ROBOT);
-    JoystickButton btnClimbManualMode = new JoystickButton(m_flightcontroller, FlightController.CLIMBER_MANUAL);
+    JoystickButton btnClimbManualMode = new JoystickButton(m_controllerJoystick, ControllerJoystick.CLIMBER_MANUAL);
     JoystickButton btnActivateLimelight = new JoystickButton(m_flightcontroller, FlightController.ACTIVATE_LIMELIGHT);
 
     new JoystickButton(m_controllerJoystick,11).whileHeld(m_Intake::allowAdditionalMovement);
@@ -188,7 +188,7 @@ public class RobotContainer {
 
     btnClimbManualMode.whileHeld(new RunClimberManually(m_climber, m_controllerJoystick));
 
-     btnCameraToggle.whenPressed(m_Camera::changeCamera);
+    // btnCameraToggle.whenPressed(m_Camera::changeCamera);
      btnActivateLimelight.whenPressed(m_limelight::EnableVisionProcessing);
      btnActivateLimelight.whenReleased(m_limelight::DisableVisionProcessing);
     }
