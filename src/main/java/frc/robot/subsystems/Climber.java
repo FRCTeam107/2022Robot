@@ -34,16 +34,16 @@ public static final class ClimberConstants {
     public static final double armsStartingPos = 0; // starting position
     public static final double armMaxReach = 118000; // 145000;
     public static final double hookStartingPos = 0;
-    private static final double hookMaxReachPos = -406000; // 421000; 
+    private static final double hookMaxReachPos = -380000; //-406000; // 421000; 
 
 
     // reach for the bar
-    public static final double armFirstBarPos = 6000; // reach up to bar
-    public static final double hookAboveFirstBarPos = -336000; // -234000;
+    public static final double armFirstBarPos = 0;//6000; // reach up to bar
+    public static final double hookAboveFirstBarPos = -339000; // -234000;
 
     
     // do a pull-up
-    public static final double armPullupPos = 6000; // keep arm stiff during pullup
+    public static final double armPullupPos = 0;// 1000; // keep arm stiff during pullup
     // note: pullup position is beyond limit of the hook, need to pull right to limit switch
     public static final double hookPullupPos = -5000; // + 20000); // position to pullup and get talons to "hook"
 
