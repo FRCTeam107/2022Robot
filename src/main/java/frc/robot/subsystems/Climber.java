@@ -34,25 +34,25 @@ public static final class ClimberConstants {
     public static final double armsStartingPos = 0; // starting position
     public static final double armMaxReach = 118000; // 145000;
     public static final double hookStartingPos = 0;
-    private static final double hookMaxReachPos = -380000; //-406000; // 421000; 
+    private static final double hookMaxReachPos = -340000;// -380000; //-406000; // 421000; 
 
 
     // reach for the bar
-    public static final double armFirstBarPos = 0;//6000; // reach up to bar
-    public static final double hookAboveFirstBarPos = -339000; // -234000;
+    public static final double armFirstBarPos = 4000;//6000; // reach up to bar
+    public static final double hookAboveFirstBarPos = -320000; //-339000; // -234000;
 
     
     // do a pull-up
-    public static final double armPullupPos = 0;// 1000; // keep arm stiff during pullup
+    public static final double armPullupPos = 4000;// 1000; // keep arm stiff during pullup
     // note: pullup position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPullupPos = -5000; // + 20000); // position to pullup and get talons to "hook"
+    public static final double hookPullupPos = -2000; // -5000; // + 20000); // position to pullup and get talons to "hook"
 
     // release onto talons
     public static final double armTransferOntoTalonsPos = 21000;
-    public static final double hookTransferToTalonsPos = -35200; //-29800;
+    public static final double hookTransferToTalonsPos = -29000; //-33200; //-29800;
 
     // steps to get to next bar:
-    public static final double hookReleasecurrentBar = -52000; //-29800;
+    public static final double hookReleasecurrentBar = -65000; //-52000; //-29800;
 
     // public static final double armToPunchNextBar = 97800; //118000;
     // public static final double hookToPunchNextBar = -330000;
@@ -61,10 +61,10 @@ public static final class ClimberConstants {
     public static final double armReachPastNextBar = 160000; //140000;
 
     // note: position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPastNextBar = -378000;// (hookMaxReachPos - 8000);
+    public static final double hookPastNextBar = -337000; //-378000;// (hookMaxReachPos - 8000);
 
     public static final double armHugNextBar = 125000; // 120000;
-    public static final double hookPullTalonsOffBar = -270000;
+    public static final double hookPullTalonsOffBar = -233000; //-270000;
 
 
 // try buffering swing out of system
@@ -82,8 +82,8 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.75; 
-    public static final double kMaxOutput_Fast = 0.88;// 0.8; 
+    public static final double kMaxOutput_Slow = 0.75; //0.75; 
+    public static final double kMaxOutput_Fast = 0.88; //0.88;// 0.8; 
   }
 
 public static final class ClimberArmConstants { 
