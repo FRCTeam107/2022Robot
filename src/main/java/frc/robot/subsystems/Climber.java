@@ -82,7 +82,7 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.75; //0.75; 
+    public static final double kMaxOutput_Slow = 0.78; //0.75; 
     public static final double kMaxOutput_Fast = 0.88; //0.88;// 0.8; 
   }
 
@@ -228,6 +228,21 @@ public static final class ClimberArmConstants {
   }
 
   
+
+  public boolean moveHookToPositionSuperFast(double setPoint){
+    m_climber.configClosedLoopPeakOutput(0, 1.0);
+
+    m_climber.set(ControlMode.Position, setPoint);
+    if (Math.abs(HookPosition() - setPoint) < 1000){
+      return true;
+    }
+
+    // if reaching past physical limit, use the limit switch to report
+    if (setPoint < ClimberConstants.hookMaxReachPos && hookHitBackLimit()){ return true; }
+    if (setPoint > ClimberConstants.hookStartingPos && hookHitForwardLimit() ){ return true; }
+
+    return false;
+  }
 
   public boolean moveHookToPosition(double setPoint, boolean fastSpeed){
     if (fastSpeed){ 
