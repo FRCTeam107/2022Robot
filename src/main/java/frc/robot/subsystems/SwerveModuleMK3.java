@@ -66,8 +66,8 @@ public class SwerveModuleMK3 {
  
     driveMotor.configAllSettings(driveTalonFXConfiguration);
     driveMotor.setNeutralMode(NeutralMode.Coast);
-    driveMotor.configOpenloopRamp(1);
-    driveMotor.configClosedloopRamp(1);
+    driveMotor.configOpenloopRamp(0.9);
+    driveMotor.configClosedloopRamp(0.9);
 
     // set voltage compensation to 11 volts to smooth out battery variations
     driveMotor.configVoltageCompSaturation(11, 0);
@@ -75,6 +75,9 @@ public class SwerveModuleMK3 {
 
     // this line sets the ration of encoder pulses to actual distance travelled (in meters)
     driveMotor.configSelectedFeedbackCoefficient(DriveConstants.kEncoderDistancePerPulse);
+
+    driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 20);
+    driveMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
 
     CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
     canCoderConfiguration.magnetOffsetDegrees = offset.getDegrees();

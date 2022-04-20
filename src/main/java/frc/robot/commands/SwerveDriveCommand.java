@@ -89,7 +89,7 @@ public class SwerveDriveCommand extends CommandBase {
     // the right by default.
     final var rot =
        rotLimiter.calculate(Z)
-         * DriveConstants.kMaxSpeedMetersPerSecond;
+         * DriveConstants.kMaxAngularSpeed;
     // final var rot =
     //     -rotLimiter.calculate(0) //leftController.getZ())
     //       * SwerveDrivetrain.kMaxAngularSpeed;
