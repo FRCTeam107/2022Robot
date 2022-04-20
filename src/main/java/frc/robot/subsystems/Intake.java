@@ -158,7 +158,7 @@ public class Intake extends SubsystemBase {
         stopArm();
         m_Intake_ArmSpeed = 0;
       }
-      else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -40000) {
+      else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -25000) {
         m_Intake_ArmSpeed = 0.2;  // slow down as we approach closed position
       }
     }
