@@ -34,7 +34,9 @@ public class Intake extends SubsystemBase {
   public static final class IntakeArmConstants {
     //run arm motor to extended position, find right position
     public static final double armStartingPos = 0;
-    public static final double armRetractPos = 1000;
+   //public static final double armRetractPos = 1000;
+    public static final double armStopRetract = -2500;
+    public static final double armSlowRetract = -25000;
     public static final double armExtendedPos = -67000;
     
     // intake arm PID values
@@ -100,8 +102,8 @@ public class Intake extends SubsystemBase {
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
-    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 500);
-    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 500);
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 50);
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 50);
 
    // m_dataRecorder = null;
     intakeExtended = false;
@@ -153,12 +155,12 @@ public class Intake extends SubsystemBase {
     }
     else {
       if (m_IntakeArm.getSensorCollection().isFwdLimitSwitchClosed() 
-        || m_IntakeArm.getSelectedSensorPosition() >= IntakeArmConstants.armRetractPos ){
+        || m_IntakeArm.getSelectedSensorPosition() >= IntakeArmConstants.armStopRetract ){
       //   m_IntakeArm.setSelectedSensorPosition(IntakeArmConstants.armExtendedPos);
         stopArm();
         m_Intake_ArmSpeed = 0;
       }
-      else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() > -25000) {
+      else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() >= IntakeArmConstants.armSlowRetract) {
         m_Intake_ArmSpeed = 0.2;  // slow down as we approach closed position
       }
     }
