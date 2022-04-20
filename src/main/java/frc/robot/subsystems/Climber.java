@@ -82,8 +82,8 @@ public static final class ClimberConstants {
     public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
-    public static final double kMaxOutput_Slow = 0.78; //0.75; 
-    public static final double kMaxOutput_Fast = 0.88; //0.88;// 0.8; 
+    public static final double kMaxOutput_Slow = 0.8; //0.75; 
+    public static final double kMaxOutput_Fast = 0.9; //0.88;// 0.8; 
   }
 
 public static final class ClimberArmConstants { 
@@ -94,7 +94,7 @@ public static final class ClimberArmConstants {
   public static final double kD = 0.0; 
   public static final double kIz = 4000; 
   public static final double kFF = 0;  //.000015; 
-  // public static final double kMaxOutput = 1; 
+  public static final double kMaxOutput = 0.9; 
   // public static final double kMinOutput = -1;
   // public static final double maxRPM = 5700;  
   }
@@ -160,7 +160,7 @@ public static final class ClimberArmConstants {
     m_climberArm.config_kD(0, ClimberArmConstants.kD);
     m_climberArm.config_IntegralZone(0, ClimberArmConstants.kIz);
     m_climberArm.config_kF(0, ClimberArmConstants.kFF);
-    m_climberArm.configClosedLoopPeakOutput(0,0.7);
+    m_climberArm.configClosedLoopPeakOutput(0,ClimberArmConstants.kMaxOutput);
 
     m_climberArm.setStatusFramePeriod(StatusFrame.Status_1_General, 100);
     m_climberArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 100);
