@@ -76,7 +76,7 @@ public class Shoot extends CommandBase {
     // }
 
     if (m_turboShot.getAsBoolean()){
-      m_shoot.runMotor(9000 ,9000);
+      m_shoot.runMotor(10000 ,10000);
     }
     else {
       m_shoot.runMotor(speedBottom ,speedTop);
