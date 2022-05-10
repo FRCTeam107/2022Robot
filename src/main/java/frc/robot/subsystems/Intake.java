@@ -78,8 +78,8 @@ public class Intake extends SubsystemBase {
     m_IntakeMotor.config_IntegralZone(0, IntakeMotorConstants.kIz);
     m_IntakeMotor.config_kF(0, IntakeMotorConstants.kFF);
 
-    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 500);
-    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 500);
+    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 1000);
+    m_IntakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 1000);
 
     double junk = SmartDashboard.getNumber("intakeSpeed", 35000);
     SmartDashboard.putNumber("intakeSpeed", junk);
@@ -102,8 +102,8 @@ public class Intake extends SubsystemBase {
     // m_IntakeArm.configClearPositionOnLimitR(clearPositionOnLimitR, timeoutMs)
     // m_IntakeArm.configClearPositionOnLimitF(clearPositionOnLimitF, timeoutMs)
 
-    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 50);
-    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 50);
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_1_General, 20);
+    m_IntakeArm.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
 
    // m_dataRecorder = null;
     intakeExtended = false;

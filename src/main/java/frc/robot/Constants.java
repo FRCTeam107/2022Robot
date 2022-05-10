@@ -165,7 +165,7 @@ public final class Constants {
 
   //these are limits you can change!!!
                // public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
-                public static final double kMaxAngularSpeed = Math.PI;// / 2; // 1/2 rotation per second
+                public static final double kMaxAngularSpeed = Math.PI / 1.5;// / 2; // 1/2 rotation per second
               // public static double feildCalibration = 0;
                 
                     // These characterization values MUST be determined either experimentally or theoretically
