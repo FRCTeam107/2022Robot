@@ -161,7 +161,7 @@ public class Intake extends SubsystemBase {
         m_Intake_ArmSpeed = 0;
       }
       else if (m_Intake_ArmSpeed > 0 && m_IntakeArm.getSelectedSensorPosition() >= IntakeArmConstants.armSlowRetract) {
-        m_Intake_ArmSpeed = 0.2;  // slow down as we approach closed position
+        m_Intake_ArmSpeed = 0.15;  // slow down as we approach closed position
       }
     }
     m_IntakeArm.set(ControlMode.PercentOutput, m_Intake_ArmSpeed);  
