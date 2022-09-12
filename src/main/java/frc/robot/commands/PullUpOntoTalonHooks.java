@@ -75,7 +75,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
 
       case PullTalonsAboveBar:
         // pull hook so talon hooks go past the bar
-        m_LEDLights.lightsYellow();
+        m_LEDLights.lightsPurple();
         if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos, true)){
           moveToNextState = true;
         }
