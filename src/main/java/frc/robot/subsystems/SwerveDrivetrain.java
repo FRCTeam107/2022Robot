@@ -88,12 +88,20 @@ public class SwerveDrivetrain extends SubsystemBase {
     //   //m_gyro.reset(); //recalibrates gyro offset
     //   zeroHeading(0); // assume manual re-calibrating pointing straight 'north' on field
     // }
-
     SmartDashboard.putNumber("dataRecorder." + datapoint.Drive_X, xSpeed);
     SmartDashboard.putNumber("dataRecorder." + datapoint.Drive_Y, ySpeed);
     SmartDashboard.putNumber("dataRecorder." + datapoint.Drive_Z, rot);
     SmartDashboard.putNumber("dataRecorder." + datapoint.GyroAngle, m_gyro.getAngle());
 
+    SmartDashboard.putNumber("dataRecorder." + datapoint.frontLeftDistance, m_frontLeft.getDistance());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.frontLeftVelocity, m_frontLeft.getVelocity());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.frontRightDistance, m_frontRight.getDistance());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.frontRightVelocity, m_frontRight.getVelocity());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.rearLeftDistance, m_rearLeft.getDistance());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.rearLeftVelocity, m_rearLeft.getVelocity());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.rearRightDistance, m_rearRight.getDistance());
+    SmartDashboard.putNumber("dataRecorder." + datapoint.rearRightVelocity, m_rearRight.getVelocity());
+  
     SwerveModuleState[] states =
       DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative

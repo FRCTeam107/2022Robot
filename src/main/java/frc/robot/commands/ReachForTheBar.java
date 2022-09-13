@@ -67,7 +67,7 @@ public class ReachForTheBar extends CommandBase {
         m_LEDLights.lightsYellow();
         // move arm to vertical and lift hook so it is above the first bar (at same time)
         boolean armReady = m_climber.moveArmToPosition(ClimberConstants.armFirstBarPos);
-        boolean hookReady = m_climber.moveHookToPosition(ClimberConstants.hookAboveFirstBarPos, true);   
+        boolean hookReady = m_climber.moveHookToPositionSuperFast(ClimberConstants.hookAboveFirstBarPos);   
         moveToNextState = (hookReady && armReady);
        break;
         

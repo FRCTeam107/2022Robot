@@ -35,7 +35,7 @@ public final class Constants {
                 public static final int DRIVE_Z_AXIS = 0;
 
                 public static final int ACTIVATE_LIMELIGHT = 1;
-                public static final int CLIMBER_MANUAL = 4;
+                //public static final int CLIMBER_MANUAL = 4;
                 public static final int AIM_BY_LIMELIGHT = 13;
                 // // public static final int JOYSTICK_FIVE = 5;
                 // //public static final int TURRET_LEFT = 4;
@@ -55,7 +55,8 @@ public final class Constants {
         public class ControllerJoystick{
                 public static final int SHOOT = 1;
                 static final int TURBO_SHOT =2;
-                public static final int CAMERA_TOGGLE = 3;
+                //public static final int CAMERA_TOGGLE = 3;
+                public static final int CLIMBER_MANUAL = 3;
                 static final int FORCE_READY = 4;
                 static final int REORIENT_ROBOT = 5;
                 
@@ -160,11 +161,11 @@ public final class Constants {
                                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
                 // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-                public static final double kMaxSpeedMetersPerSecond = 0.85;//Units.feetToMeters(6);
+                public static final double kMaxSpeedMetersPerSecond = 0.85;//0.88;//0.85;//Units.feetToMeters(6);
 
   //these are limits you can change!!!
                // public static final double kMaxSpeed = Units.feetToMeters(13);//(13.6); // 20 feet per second
-                public static final double kMaxAngularSpeed = Math.PI;// / 2; // 1/2 rotation per second
+                public static final double kMaxAngularSpeed = Math.PI / 1.5;// / 2; // 1/2 rotation per second
               // public static double feildCalibration = 0;
                 
                     // These characterization values MUST be determined either experimentally or theoretically

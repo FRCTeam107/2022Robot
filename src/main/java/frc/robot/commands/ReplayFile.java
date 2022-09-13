@@ -92,7 +92,7 @@ public class ReplayFile extends CommandBase {
     double Z_Rotate = replayRow[datapoint.Drive_Z];
 
     if (m_Limelight.Havetarget() && (X_Drive != 0 || Y_Strafe != 0 || Z_Rotate != 0) ){
-      Z_Rotate =  -m_Limelight.TX() / 27 * 1.3 * 2;
+      Z_Rotate =  -m_Limelight.TX() / 27 * 0.7;//1.3 * 2;
       if (Z_Rotate<-1){Z_Rotate=-1;}
       else if(Z_Rotate>1){Z_Rotate=1;}
     }
