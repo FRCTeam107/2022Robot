@@ -15,7 +15,7 @@ import frc.robot.subsystems.LEDLights;
 public class PullUpOntoTalonHooks extends CommandBase {
     private final Climber m_climber;
     private final LEDLights m_LEDLights;
-
+private int countDown;
     private enum commandState {
       Starting,
       StraightenArm,
@@ -76,7 +76,7 @@ public class PullUpOntoTalonHooks extends CommandBase {
       case PullTalonsAboveBar:
         // pull hook so talon hooks go past the bar
         m_LEDLights.lightsPurple();
-        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos, true)){
+        if (m_climber.moveHookToPosition(ClimberConstants.hookPullupPos, false)){
           moveToNextState = true;
         }
         break;
@@ -85,8 +85,11 @@ public class PullUpOntoTalonHooks extends CommandBase {
         // reach climber arm back to swing robot forward
         m_LEDLights.lightsYellow();
         if (m_climber.moveArmToPosition(ClimberConstants.armTransferOntoTalonsPos)){
-          moveToNextState = true;
+          countDown--;
+          moveToNextState = (countDown <= 0);
+          //moveToNextState = true;
         }
+        else { countDown = 40; }
         break;
 
       case TransferOntoTalons:

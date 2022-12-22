@@ -43,12 +43,12 @@ public static final class ClimberConstants {
 
     
     // do a pull-up
-    public static final double armPullupPos = 4000;// 1000; // keep arm stiff during pullup
+    public static final double armPullupPos = 4000; //4000;// 1000; // keep arm stiff during pullup
     // note: pullup position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPullupPos = -2000; // -5000; // + 20000); // position to pullup and get talons to "hook"
+    public static final double hookPullupPos = -4000;//-2000; // -5000; // + 20000); // position to pullup and get talons to "hook"
 
     // release onto talons
-    public static final double armTransferOntoTalonsPos = 27000;
+    public static final double armTransferOntoTalonsPos = 28000;
     public static final double hookTransferToTalonsPos = -29000; //-33200; //-29800;
 
     // steps to get to next bar:
@@ -61,7 +61,7 @@ public static final class ClimberConstants {
     public static final double armReachPastNextBar = 160000; //140000;
 
     // note: position is beyond limit of the hook, need to pull right to limit switch
-    public static final double hookPastNextBar = -337000; //-378000;// (hookMaxReachPos - 8000);
+    public static final double hookPastNextBar = -350000; //-378000;// (hookMaxReachPos - 8000);
 
     public static final double armHugNextBar = 125000; // 120000;
     public static final double hookPullTalonsOffBar = -233000; //-270000;
@@ -79,7 +79,7 @@ public static final class ClimberConstants {
     public static final double kP = 0.04; 
     public static final double kI = 0.0001;
     public static final double kD = 0.0; 
-    public static final double kIz = 700; 
+    public static final double kIz = 4000; 
     public static final double kFF = 0;  //.000015; 
 
     public static final double kMaxOutput_Slow = 0.8; //0.75; 
@@ -260,7 +260,7 @@ public static final class ClimberArmConstants {
     // if reaching past physical limit, use the limit switch to report
     if (setPoint < ClimberConstants.hookMaxReachPos && hookHitBackLimit()){ return true; }
     if (setPoint > ClimberConstants.hookStartingPos && hookHitForwardLimit() ){ return true; }
-    if (hookHitForwardLimit() && Math.abs(setPoint) < 2000) return true;
+    if (hookHitForwardLimit() && setPoint > -5000) return true;
     return false;
   }
 
